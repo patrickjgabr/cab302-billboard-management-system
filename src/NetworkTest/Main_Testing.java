@@ -14,7 +14,5 @@ public class Main_Testing {
         testBillboardMap.put("InformationTextColour", "TEST");
 
         Billboard testBillboard = new Billboard(testBillboardMap);
-
-        CommunicationPacket sendingBillboard = new CommunicationPacket(testBillboard.getBillboardExport(), 100);
     }
 }

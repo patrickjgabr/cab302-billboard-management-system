@@ -17,7 +17,7 @@ public class Main_Client {
 
         Billboard testBillboard = new Billboard(testBillboardMap);
         System.out.println(testBillboard.generateXML());
-        CommunicationPacket message = new CommunicationPacket(testBillboard.getBillboardExport(), 100);
+        CommunicationPacket message = new CommunicationPacket(testBillboard);
         client.sendMessage(message);
     }
 }

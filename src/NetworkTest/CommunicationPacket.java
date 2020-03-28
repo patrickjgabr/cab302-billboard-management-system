@@ -1,29 +1,45 @@
 import java.io.Serializable;
+import java.util.List;
 import java.util.TreeMap;
 
 public class CommunicationPacket implements Serializable {
 
     private Integer communicationID;
-    private TreeMap<String, String> information;
+    private Session session;
+    private Object data;
+    private boolean bool;
 
-    public CommunicationPacket(TreeMap<String, String> information, Integer communicationID) {
-        this.communicationID = communicationID;
-        this.information = information;
+    public CommunicationPacket() {
+
     }
 
-    public Integer getCommunicationID() {
-        return communicationID;
+    public CommunicationPacket(Billboard billboard) {
+        this.communicationID = 10;
+        this.data = billboard;
     }
 
-    public void setCommunicationID(Integer communicationID) {
-        this.communicationID = communicationID;
+    public CommunicationPacket(List<Billboard> billboards) {
+        this.communicationID = 20;
+        this.data = billboards;
+    }
+    public CommunicationPacket(boolean bool) {
+        this.communicationID = 30;
+        this.bool = bool;
     }
 
-    public TreeMap<String, String> getInformation() {
-        return information;
+    public Session getSession() {
+        return session;
     }
 
-    public void setInformation(TreeMap<String, String> information) {
-        this.information = information;
+    public void setSession(Session session) {
+        this.session = session;
+    }
+
+    public Object getData() {
+        return data;
+    }
+
+    public boolean getBool() {
+        return bool;
     }
 }

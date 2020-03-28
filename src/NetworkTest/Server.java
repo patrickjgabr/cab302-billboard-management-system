@@ -15,13 +15,13 @@ public class Server {
     }
 
     public CommunicationPacket receiveMessages() {
-        CommunicationPacket communication = new CommunicationPacket(new TreeMap<String, String>(), 0);
+        CommunicationPacket message = new CommunicationPacket();
 
         try {
             socket = server.accept();
             System.out.println("Client Connected...");
             ObjectInputStream inputObject = new ObjectInputStream(socket.getInputStream());
-            communication = (CommunicationPacket)inputObject.readObject();
+            message = (CommunicationPacket) inputObject.readObject();
         }
         //NEED TO HANDLE THIS EXCEPTION
         catch (IOException errorMessage) {
@@ -31,7 +31,7 @@ public class Server {
             System.out.println(errorMessage.getMessage());
         }
 
-        return communication;
+        return message;
     }
 
     public void startServer() {

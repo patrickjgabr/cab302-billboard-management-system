@@ -6,8 +6,7 @@ public class Main_Server {
         server.startServer();
 
         CommunicationPacket message = server.receiveMessages();
+        System.out.println(message.getData());
         server.closeServer();
-        Billboard billboard = new Billboard(message.getInformation());
-        System.out.println(billboard.generateXML());
     }
 }

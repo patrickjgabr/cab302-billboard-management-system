@@ -1,8 +1,9 @@
 import com.sun.source.tree.Tree;
 
+import java.io.Serializable;
 import java.util.TreeMap;
 
-public class Billboard {
+public class Billboard implements Serializable {
 
     private String name;
     private Integer creatorID;
