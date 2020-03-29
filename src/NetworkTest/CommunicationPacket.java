@@ -21,7 +21,7 @@ public class CommunicationPacket implements Serializable {
     }
 
     /**
-     * Constructor used to create a communication packet for sending Billboard objects across a Network
+     * Constructor used to create a communication packet for sending Billboard objects across a network
      * @param billboard Billboard object being sent across the network
      */
     public CommunicationPacket(Billboard billboard) {
@@ -30,25 +30,66 @@ public class CommunicationPacket implements Serializable {
     }
 
     /**
-     * Constructor used to create a communication packet for sending an List of Billboards objects across a Network
-     * @param billboards List of Billboard objects being sent across the network
+     * Constructor used to create a communication packet for sending an array of Billboards objects across a network
+     * @param billboards Array of Billboard objects being sent across the network
      */
-    public CommunicationPacket(List<Billboard> billboards) {
+    public CommunicationPacket(Billboard[] billboards) {
         this.communicationID = 20;
         this.data = billboards;
     }
+
+    /**
+     * Constructor used to create a communication packet for sending User objects across a Network
+     * @param user User object being sent across the network
+     */
+    public CommunicationPacket(User user) {
+        this.communicationID = 30;
+        this.data = user;
+    }
+
+    /**
+     * Constructor used to create a communication packet for sending an array of User objects across a network
+     * @param users Array of User objects being sent across the network
+     */
+    public CommunicationPacket(User[] users) {
+        this.communicationID = 40;
+        this.data = users;
+    }
+
+    /**
+     * Constructor used to create a communication packet for sending the login details across a network
+     * @param loginDetails Array of two Strings. String[0] = Username String[1] = Password
+     */
+    public CommunicationPacket(String[] loginDetails) {
+        this.communicationID = 40;
+        this.data = loginDetails;
+    }
+
     public CommunicationPacket(boolean bool) {
         this.communicationID = 30;
         this.bool = bool;
     }
 
+    /**
+     * Returns the session information of the Control Panel
+     * @return Session object which contains session information about the Control Panel
+     */
     public Session getSession() {
         return session;
     }
 
+    /**
+     * Sets the session inforamtion of the communication packet
+     * @param session Session object for the Control Panel
+     */
     public void setSession(Session session) {
         this.session = session;
     }
+
+    /**
+     * Returns the data which the communication packet contains
+     * @return  A large number of different Classes that all extend Object
+     */
 
     public Object getData() {
         return data;
