@@ -1,3 +1,5 @@
+package NetworkTest;
+
 import java.util.TreeMap;
 
 public class Main_Testing {
@@ -12,7 +14,6 @@ public class Main_Testing {
         testBillboardMap.put("BackgroundColour", "TEST");
         testBillboardMap.put("InformationText", "TEST");
         testBillboardMap.put("InformationTextColour", "TEST");
-
         Billboard testBillboard = new Billboard(testBillboardMap);
     }
 }
