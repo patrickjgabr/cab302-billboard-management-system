@@ -20,12 +20,12 @@ public class User {
      * @param userID The Users ID
      */
 
-    public User(String userName, Integer salt, String userPassword, ArrayList<Integer> permission, Integer userID) {
+    public User(String userName, String userPassword, ArrayList<Integer> permission) {
         this.userName = userName;
-        this.salt = salt;
         this.userPassword = userPassword;
+        //this.salt = salt; assigned by server
         this.permission = permission;
-        this.userID = userID;
+        //this.userID = userID; assigned by server
     }
 
     /**
