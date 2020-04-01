@@ -1,35 +1,38 @@
 package ControlPanel;
 
+import Shared.*;
 import java.util.Scanner;
 
 public class CLIControlPanel {
     public static  void main (String[] args) {
-        Scanner keyboard = new Scanner(System.in);
         System.out.println("Hello World from Control Panel!");
-        System.out.print("Username: ");
-        String username = keyboard.nextLine();
-        System.out.print("Password: ");
-        String password = keyboard.nextLine();
-        System.out.println("CLI Menu (Administrator):");
-        System.out.println("    1. Billboards");
-        System.out.println("    2. Scheduler");
-        System.out.println("    3. User Management");
-        System.out.print("Option: ");
-        int selection = keyboard.nextInt();
-        if (selection == 1) {
-            System.out.println("Billboards");
-            System.out.println("    1. Create Billboard");
-            System.out.println("    2. Import Billboard");
-            System.out.println("    2. Show Billboards");
+        Scanner keyboard = new Scanner(System.in);
+        String[] LoginDetails = CLIMethods.login(keyboard);
+        while (true) {
+            int selection = CLIMethods.menu(keyboard);
+            if (selection == 1) {
+                int option = CLIMethods.billboards(keyboard);
+                if (option == 4) {
+                  continue;
+                }
+            }
+            else if (selection == 2) {
+                int option = CLIMethods.schedule(keyboard);
+                if (option == 1) {
+                    continue;
+                }
+            }
+            else if (selection == 3) {
+                int option = CLIMethods.userManagement(keyboard);
+                if (option == 3) {
+                    continue;
+                }
+            }
+            if (selection == 4) {
+                System.exit(0);
+            }
         }
-        else if (selection == 2) {
-            System.out.println("Scheduler");
-        }
-        else if (selection == 3) {
-            System.out.println("User Management");
-            System.out.println("    1. Create User");
-            System.out.println("    2. Show Users");
-        }
+
 
     }
 }

@@ -1,6 +1,6 @@
 package ControlPanel;
 
-public class PanelMethods {
+public class BillboardMethods {
     public static void test () {
         System.out.println("Git pull ????");
     }
