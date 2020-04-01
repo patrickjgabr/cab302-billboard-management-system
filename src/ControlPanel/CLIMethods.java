@@ -5,6 +5,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class CLIMethods {
@@ -69,15 +70,34 @@ public class CLIMethods {
     public static void importBillboard(Scanner keyboard) throws IOException, SAXException, ParserConfigurationException {
         File file =new File("example.xml");
         BillboardMethods.importBillboard(file);
-        System.out.println("press enter to continue.");
+        System.out.print("press enter to continue.");
         keyboard.nextLine();
     }
     public static void showBillboard(Scanner keyboard) {
 
     }
     public static void createUser(Scanner keyboard) {
-
-
+        System.out.println("Create new user: ");
+        System.out.print("Username: ");
+        String username = keyboard.nextLine();
+        System.out.print("Password: ");
+        String password = keyboard.nextLine();
+        ArrayList<Integer> perms = new ArrayList<Integer>();
+        System.out.print("Create Billboard Permission (0 = False,1 = True): ");
+        perms.add(keyboard.nextInt());
+        keyboard.nextLine();
+        System.out.print("Edit All Billboards Permission (0 = False,1 = True): ");
+        perms.add(keyboard.nextInt());
+        keyboard.nextLine();
+        System.out.print("Schedule Billboards Permission (0 = False,1 = True): ");
+        perms.add(keyboard.nextInt());
+        keyboard.nextLine();
+        System.out.print("Edit Users Permission (0 = False,1 = True): ");
+        perms.add(keyboard.nextInt());
+        keyboard.nextLine();
+        UserManagementMethods.createUser(username,password,perms);
+        System.out.print("press enter to continue.");
+        keyboard.nextLine();
     }
     public static void showUsers(Scanner keyboard) {
 
