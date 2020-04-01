@@ -20,7 +20,7 @@ public class BillboardMethods {
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.parse(file);
         doc.getDocumentElement().normalize();
-        System.out.println(" ");
+        System.out.println("  ");
         System.out.println("Billboard: "  + doc.getElementsByTagName("billboard").item(0).getAttributes().getNamedItem("background").getNodeValue());
         System.out.println("Message Colour: "  + doc.getElementsByTagName("message").item(0).getAttributes().getNamedItem("colour").getNodeValue());
         System.out.println("Message : "  + doc.getElementsByTagName("message").item(0).getTextContent());
