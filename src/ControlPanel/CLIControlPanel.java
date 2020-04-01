@@ -12,7 +12,16 @@ public class CLIControlPanel {
             int selection = CLIMethods.menu(keyboard);
             if (selection == 1) {
                 int option = CLIMethods.billboards(keyboard);
-                if (option == 4) {
+                if (option == 1) {
+                    CLIMethods.createBillboard(keyboard);
+                }
+                else if (option == 2) {
+                    CLIMethods.importBillboard(keyboard);
+                }
+                else if (option == 3) {
+                    CLIMethods.showBillboard(keyboard);
+                }
+                else if (option == 4) {
                   continue;
                 }
             }
@@ -24,7 +33,13 @@ public class CLIControlPanel {
             }
             else if (selection == 3) {
                 int option = CLIMethods.userManagement(keyboard);
-                if (option == 3) {
+                if (option == 1) {
+                    CLIMethods.createUser(keyboard);
+                }
+                else if (option == 2) {
+                    CLIMethods.showUsers(keyboard);
+                }
+                else if (option == 3) {
                     continue;
                 }
             }

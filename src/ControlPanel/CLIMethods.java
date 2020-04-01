@@ -48,4 +48,21 @@ public class CLIMethods {
         System.out.print("Option: ");
         return keyboard.nextInt();
     }
+
+    public static void createBillboard(Scanner keyboard) {
+
+    }
+    public static void importBillboard(Scanner keyboard) {
+
+    }
+    public static void showBillboard(Scanner keyboard) {
+
+    }
+    public static void createUser(Scanner keyboard) {
+
+    }
+    public static void showUsers(Scanner keyboard) {
+
+    }
+
 }
