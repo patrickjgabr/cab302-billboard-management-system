@@ -2,7 +2,7 @@ package ControlPanel;
 
 import java.util.Scanner;
 
-public class ControlPanel {
+public class CLIControlPanel {
     public static  void main (String[] args) {
         Scanner keyboard = new Scanner(System.in);
         System.out.println("Hello World from Control Panel!");
@@ -14,8 +14,8 @@ public class ControlPanel {
         System.out.println("    1. Billboards");
         System.out.println("    2. Scheduler");
         System.out.println("    3. User Management");
-        int selection = keyboard.nextInt();
         System.out.print("Option: ");
+        int selection = keyboard.nextInt();
         if (selection == 1) {
             System.out.println("Billboards");
             System.out.println("    1. Create Billboard");
