@@ -5,12 +5,14 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class CLIControlPanel {
     public static  void main (String[] args) throws ParserConfigurationException, SAXException, IOException {
         System.out.println("Hello World from Control Panel!");
         Scanner keyboard = new Scanner(System.in);
+        ArrayList<User> users = TestCase.Users();
         String[] LoginDetails = CLIMethods.login(keyboard);
         while (true) {
             int selection = CLIMethods.menu(keyboard);
@@ -41,7 +43,7 @@ public class CLIControlPanel {
                     CLIMethods.createUser(keyboard);
                 }
                 else if (option == 2) {
-                    CLIMethods.showUsers(keyboard);
+                    CLIMethods.showUsers(keyboard, users);
                 }
                 else if (option == 3) {
                     continue;

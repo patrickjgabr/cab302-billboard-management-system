@@ -99,8 +99,11 @@ public class CLIMethods {
         System.out.print("press enter to continue.");
         keyboard.nextLine();
     }
-    public static void showUsers(Scanner keyboard) {
-
+    public static void showUsers(Scanner keyboard, ArrayList<User> users) {
+        System.out.println("Users:");
+        UserManagementMethods.showUsers(users);
+        System.out.print("press enter to continue.");
+        keyboard.nextLine();
     }
 
 }

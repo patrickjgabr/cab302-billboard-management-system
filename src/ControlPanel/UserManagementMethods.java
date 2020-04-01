@@ -14,4 +14,9 @@ public class UserManagementMethods {
         System.out.println("Schedule Billboards Permission: " + newuser.getPermission().get(2));
         System.out.println("Edit Users Permission: "+ newuser.getPermission().get(3));
     }
+    public static void showUsers(ArrayList<User> users) {
+        for (User user : users){
+            System.out.println(user.getUserName()+ " " + user.getUserPassword() + " " + user.getPermission());
+        }
+    }
 }
