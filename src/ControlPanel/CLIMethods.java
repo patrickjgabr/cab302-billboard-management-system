@@ -24,7 +24,10 @@ public class CLIMethods {
         System.out.println("    3. User Management");
         System.out.println("    4. Exit");
         System.out.print("Option: ");
-        return keyboard.nextInt();
+        int select = keyboard.nextInt();
+        keyboard.nextLine();
+        return select;
+
     }
 
     public static int billboards(Scanner keyboard){
@@ -34,14 +37,18 @@ public class CLIMethods {
         System.out.println("    3. Show Billboards");
         System.out.println("    4. Back");
         System.out.print("Option: ");
-        return keyboard.nextInt();
+        int select = keyboard.nextInt();
+        keyboard.nextLine();
+        return select;
     }
 
     public static int schedule(Scanner keyboard){
         System.out.println("Scheduler");
         System.out.println("    1. Back");
         System.out.print("Option: ");
-        return keyboard.nextInt();
+        int select = keyboard.nextInt();
+        keyboard.nextLine();
+        return select;
 
     }
 
@@ -51,7 +58,9 @@ public class CLIMethods {
         System.out.println("    2. Show Users");
         System.out.println("    3. Back");
         System.out.print("Option: ");
-        return keyboard.nextInt();
+        int select = keyboard.nextInt();
+        keyboard.nextLine();
+        return select;
     }
 
     public static void createBillboard(Scanner keyboard) {
@@ -62,12 +71,12 @@ public class CLIMethods {
         BillboardMethods.importBillboard(file);
         System.out.println("press enter to continue.");
         keyboard.nextLine();
-        String temp = keyboard.nextLine();
     }
     public static void showBillboard(Scanner keyboard) {
 
     }
     public static void createUser(Scanner keyboard) {
+
 
     }
     public static void showUsers(Scanner keyboard) {
