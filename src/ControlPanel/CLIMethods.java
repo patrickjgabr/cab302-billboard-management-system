@@ -1,5 +1,10 @@
 package ControlPanel;
+import Shared.*;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class CLIMethods {
@@ -52,8 +57,12 @@ public class CLIMethods {
     public static void createBillboard(Scanner keyboard) {
 
     }
-    public static void importBillboard(Scanner keyboard) {
-
+    public static void importBillboard(Scanner keyboard) throws IOException, SAXException, ParserConfigurationException {
+        File file =new File("example.xml");
+        BillboardMethods.importBillboard(file);
+        System.out.println("press enter to continue.");
+        keyboard.nextLine();
+        String temp = keyboard.nextLine();
     }
     public static void showBillboard(Scanner keyboard) {
 

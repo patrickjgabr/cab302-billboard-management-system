@@ -1,10 +1,14 @@
 package ControlPanel;
 
 import Shared.*;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class CLIControlPanel {
-    public static  void main (String[] args) {
+    public static  void main (String[] args) throws ParserConfigurationException, SAXException, IOException {
         System.out.println("Hello World from Control Panel!");
         Scanner keyboard = new Scanner(System.in);
         String[] LoginDetails = CLIMethods.login(keyboard);
