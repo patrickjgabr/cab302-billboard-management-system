@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.TreeMap;
 
 /**
+ * v1
  * Class used to create billboard objects
  */
 

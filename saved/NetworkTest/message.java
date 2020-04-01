@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 /**
- * Last Edited: 1/04/2020
+ * v1
  * Class used to create message objects which are passwed between each of the Networked components
  */
 
