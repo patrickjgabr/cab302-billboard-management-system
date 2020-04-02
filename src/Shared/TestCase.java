@@ -36,8 +36,24 @@ public class TestCase {
                 "InfoText",
                 "#FFFFFF"));
         billboards.add(new Billboard(
-                "Billboard 1",
-                "www.google.com",
+                "Billboard 2",
+                "www.youtube.com",
+                "msgText",
+                "#FFFFFF",
+                "#FFFFFF",
+                "InfoText",
+                "#FFFFFF"));
+        billboards.add(new Billboard(
+                "Billboard 3",
+                "www.twitter.com",
+                "msgText",
+                "#FFFFFF",
+                "#FFFFFF",
+                "InfoText",
+                "#FFFFFF"));
+        billboards.add(new Billboard(
+                "Billboard 4",
+                "www.reddit.com",
                 "msgText",
                 "#FFFFFF",
                 "#FFFFFF",
@@ -45,23 +61,7 @@ public class TestCase {
                 "#FFFFFF"));
         billboards.add(new Billboard(
                 "Billboard 1",
-                "www.google.com",
-                "msgText",
-                "#FFFFFF",
-                "#FFFFFF",
-                "InfoText",
-                "#FFFFFF"));
-        billboards.add(new Billboard(
-                "Billboard 1",
-                "www.google.com",
-                "msgText",
-                "#FFFFFF",
-                "#FFFFFF",
-                "InfoText",
-                "#FFFFFF"));
-        billboards.add(new Billboard(
-                "Billboard 1",
-                "www.google.com",
+                "www.instagram.com",
                 "msgText",
                 "#FFFFFF",
                 "#FFFFFF",

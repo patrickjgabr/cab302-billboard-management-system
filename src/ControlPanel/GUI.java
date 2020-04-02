@@ -19,17 +19,4 @@ public class GUI {
             System.out.println("Error setting GUI look and feel");
         }
     }
-
-    public static JPanel billboards() {
-        JPanel panel = new JPanel();
-        return panel;
-    }
-    public static JPanel schedule() {
-        JPanel panel = new JPanel();
-        return panel;
-    }
-    public static JPanel userManagement() {
-        JPanel panel = new JPanel();
-        return panel;
-    }
 }
