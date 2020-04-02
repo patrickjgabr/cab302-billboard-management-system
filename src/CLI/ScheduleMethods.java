@@ -1,4 +1,4 @@
-package ControlPanel;
+package CLI;
 
 public class ScheduleMethods {
 }

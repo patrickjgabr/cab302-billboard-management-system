@@ -1,4 +1,4 @@
-package ControlPanel;
+package CLI;
 
 import Shared.User;
 

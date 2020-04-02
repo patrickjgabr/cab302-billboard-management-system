@@ -1,4 +1,4 @@
-package ControlPanel;
+package CLI;
 import Shared.*;
 import org.xml.sax.SAXException;
 

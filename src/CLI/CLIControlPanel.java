@@ -1,5 +1,6 @@
-package ControlPanel;
+package CLI;
 
+import Shared.TestCase;
 import Shared.*;
 import org.xml.sax.SAXException;
 
