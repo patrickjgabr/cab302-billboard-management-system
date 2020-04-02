@@ -45,9 +45,11 @@ public class ControlPanelGUI {
                 {"4","  Sample BB", "  Harry", "/url/url.com","Hello World", "Black","Grey", "Hello", "White"}
 
         };
+
         String[] columns = {"ID","Billboard","Author", "IMG SRC","Message", "Msg Colour", "BG Colour", "Info Text", "Info Colour"};
         JTable table = new JTable(tableContents, columns);
         table.getColumnModel().getColumn(0).setMaxWidth(35);
+        //table.getColumnModel().getColumn(3).setCellRenderer();
         table.setRowHeight(40);
         table.setIntercellSpacing(new Dimension(10, 20));        //##
         table.setFont(tableContentsF);
@@ -59,17 +61,22 @@ public class ControlPanelGUI {
 
         panel1.add(new JScrollPane(table));
         JLabel l = new JLabel();
-        l.setLayout(new GridLayout(2,2));
-        l.add(new JLabel());                                //fill in empty grid spaces (0,0) and (0,1)
+        l.setLayout(new GridLayout(2,3));
+        l.add(new JLabel());                                //fill in empty grid spaces (0,0) and (0,1) and (0,2)
+        l.add(new JLabel());
         l.add(new JLabel());
         JButton b = new JButton("Preview");             //placed at grid space (1,1)
+
         JButton b2 = new JButton("Create New");                //placed at grid space (1,2)
         b.setBorder(BorderFactory.createLineBorder(Color.black, 3));
+        b2.setBorder(BorderFactory.createLineBorder(Color.black, 3));
         b.setFont(buttons);
         b2.setFont(buttons);
         b.setForeground(softBlue);
         b2.setForeground(softBlue);
         l.add(b);
+        l.add(new JLabel());
+
         l.add(b2);
         panel1.add(l);
 
