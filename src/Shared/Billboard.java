@@ -18,22 +18,22 @@ public class Billboard implements Serializable {
     private String backgroundColour;
     private String informationText;
     private String informationTextColour;
-    private TreeMap<String, String> billboardExport;
+    //private TreeMap<String, String> billboardExport;
 
     /**
      * Constructs and initalizes a Billboard object
      * @param billboardInformation Contains all the information about the billboard. The Key and value pair correspond to the varaibles in the Billboard Class.
      */
-    public Billboard(TreeMap<String, String> billboardInformation) {
-        this.name = billboardInformation.get("Name");
-        this.creatorID = Integer.parseInt(billboardInformation.get("CreatorID"));
-        this.imageUrl = billboardInformation.get("ImageUrl");
-        this.messageText = billboardInformation.get("MessageText");
-        this.messageTextColour = billboardInformation.get("MessageTextColour");
-        this.backgroundColour = billboardInformation.get("BackgroundColour");
-        this.informationText = billboardInformation.get("InformationText");
-        this.informationTextColour = billboardInformation.get("InformationTextColour");
-        this.billboardExport = billboardInformation;
+    public Billboard(String name, String imageUrl, String msgText, String msgColour, String bgColour, String infoText, String infoColour) {
+        this.name = name;
+        this.imageUrl = imageUrl;
+        this.messageText = msgText;
+        this.messageTextColour = msgColour;
+        this.backgroundColour = bgColour;
+        this.informationText = infoText;
+        this.informationTextColour = infoColour;
+        //this.creatorID = Integer.parseInt(billboardInformation.get("CreatorID")); given by server???
+        //this.billboardExport = billboardInformation;
     }
 
     /**
@@ -118,5 +118,5 @@ public class Billboard implements Serializable {
      * @return TreeMap<String, String> where the Key and value pair represents the billboards information
      */
 
-    public TreeMap<String, String> getBillboardExport() { return billboardExport; }
+    //public TreeMap<String, String> getBillboardExport() { return billboardExport; }
 }
