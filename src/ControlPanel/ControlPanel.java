@@ -11,9 +11,9 @@ public class ControlPanel {
         ArrayList<Billboard> billboards = TestCase.Billboards(); //load test billboards
         JFrame frame = GUI.SetupFrame(); //init gui
         JTabbedPane pane = new JTabbedPane(); //init tabs
-        JPanel billboardsPane = GUI.billboards(); //init billboard pane
-        JPanel schedulePane = GUI.schedule(); //init schedule pane
-        JPanel userManagementPane = GUI.userManagement(); //init userManagement pane
+        JPanel billboardsPane = new JPanel();; //init billboard pane
+        JPanel schedulePane = new JPanel();; //init schedule pane
+        JPanel userManagementPane = new JPanel();; //init userManagement pane
         billboardsPane = BillboardTab.SetupBillboardsPane(billboardsPane);
         BillboardTab.SetupBillboardsTable(billboardsPane, billboards);
         pane.addTab("Billboards", billboardsPane);
