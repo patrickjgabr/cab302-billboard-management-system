@@ -15,11 +15,14 @@ public class ControlPanel {
         JPanel billboardsPane = new JPanel();                           //init billboard pane
         JPanel schedulePane = new JPanel();                             //init schedule pane
         JPanel userManagementPane = new JPanel();                       //init userManagement pane
+
         billboardsPane = BillboardTab.SetupBillboardsPane();
         BillboardTab.SetupBillboardsTable(billboardsPane, billboards);
+
         pane.addTab("Billboards", billboardsPane);
         pane.addTab("Schedule", schedulePane);
         pane.addTab("User Management", userManagementPane);
+
         frame.getContentPane().add(pane);
         frame.pack();
         frame.setLocationRelativeTo(null);

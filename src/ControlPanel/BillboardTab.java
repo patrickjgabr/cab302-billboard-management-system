@@ -6,7 +6,10 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class BillboardTab{
     public static JPanel SetupBillboardsPane() {
@@ -35,16 +38,21 @@ public class BillboardTab{
         String[] columns = {"ID","Billboard","Author", "IMG SRC","Message", "Msg Colour", "BG Colour", "Info Text", "Info Colour"};     //Column headers
 
         JTable table = new JTable(tableContents, columns);
+        table.setRowSelectionAllowed(true);
+        table.setCellSelectionEnabled(false);
         setTableFeatures(table);                            //set table font, layout, size, colour etc.
         pane.add(new JScrollPane(table));                   //add table to pane - 1st row out of 2 in the grid layout.
         //------------------------------------Table Created --------------------------------------------------------//
         JLabel bottomGrid = new JLabel();
-        bottomGrid.setLayout(new GridLayout(2,3));       //2nd row of pane gridLayout contains a label with 2 rows 3 cols
+        bottomGrid.setLayout(new GridLayout(2,3,10, 0));       //2nd row of pane gridLayout contains a label with 2 rows 3 cols
 
-        JButton previewButton = new JButton("Preview");                    //button to be placed at grid space (0,1)
-        JButton createButton = new JButton("Create New");                  //button to be placed at grid space (2,1)
+        JButton previewButton = new JButton("Preview Billboard");                    //button to be placed at grid space (0,1)
+        JButton createButton = new JButton("Create New");                        //button to be placed at grid space (2,1)
+        JButton editButton = new JButton();                  //button to be placed at grid space (3,1)
+
         setButtonLook(previewButton);
         setButtonLook(createButton);
+        setButtonLook(editButton);
 
         JLabel selectedRow = new JLabel();
         selectedRow.setFont(tableContentsF);
@@ -53,15 +61,26 @@ public class BillboardTab{
         rowSelected.addListSelectionListener(e -> {
             if (!rowSelected.isSelectionEmpty()){
                 int selected = rowSelected.getMinSelectionIndex();
-                selectedRow.setText("Row "+selected+" Selected");               //change label text to display selected row.
+                selectedRow.setText("       Row "+selected+" Selected - '" + billboards.get(selected).getName() + "'");               //change label text to display selected row.
+                editButton.setText("Edit Billboard");
             }
         });
 
         bottomGrid.add(selectedRow);        //add label showing which row is selected
         bottomGrid.add(new JLabel());       //add 2 blank labels in grid locations (1,0) and (2,0) - room to replace in future
         bottomGrid.add(new JLabel());
+
+        previewButton.addActionListener(e -> JOptionPane.showMessageDialog(null, "Not yet implemented."));
+        editButton.addActionListener(e -> {
+            if (!Objects.equals(editButton.getText(), "")){
+                JOptionPane.showMessageDialog(null, "Not yet implemented.");
+            }
+            else JOptionPane.showMessageDialog(null, "Please select a billboard first.");
+        });
+
         bottomGrid.add(previewButton);                 //place button 1 at (0,1)
-        bottomGrid.add(createButton);                 //place button 2 at (0,2)
+        bottomGrid.add(editButton);                   //place button 2 at (1,1)
+        bottomGrid.add(createButton);                  //place button 2 at (2,1)
         pane.add(bottomGrid);
     }
 
@@ -73,8 +92,10 @@ public class BillboardTab{
     }
     public static void setTableFeatures(JTable table){
         table.setRowHeight(40);
+        table.setSelectionBackground(new Color(0,74,127));
+        //table.setSelectionForeground(Color.black);
         table.setRowSelectionAllowed(true);
-        table.setColumnSelectionAllowed(true);
+        table.setColumnSelectionAllowed(false);
         table.getColumnModel().getColumn(0).setMaxWidth(35);    //set column 0 to max 35 wide (doesn't need to be big)
         table.setIntercellSpacing(new Dimension(10, 20));
         table.setFont(tableContentsF);                                      //table contents font (16px Comic sans)
