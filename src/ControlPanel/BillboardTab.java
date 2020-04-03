@@ -14,11 +14,11 @@ import java.util.Objects;
 
 public class BillboardTab{
     public static JPanel SetupBillboardsPane() {
-        JPanel panel1 = new JPanel();                                                           //first tab
-        panel1.setBorder(BorderFactory.createEmptyBorder(30,20,15,20));
-        panel1.setLayout(new GridLayout(2,1));
-        panel1.setBackground(lightGray);
-        return panel1;
+        JPanel panel = new JPanel();                                                           //first tab
+        panel.setBorder(BorderFactory.createEmptyBorder(30,20,15,20));
+        panel.setLayout(new GridLayout(2,1));
+        panel.setBackground(lightGray);
+        return panel;
     }
 
     public static JTable SetupBillboardsTable(JPanel pane, ArrayList<Billboard> billboards) {
