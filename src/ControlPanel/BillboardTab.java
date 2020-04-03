@@ -19,7 +19,6 @@ public class BillboardTab{
         panel1.setBackground(lightGray);
         return panel1;
     }
-
     public static void SetupBillboardsTable(JPanel pane, ArrayList<Billboard> billboards) {
         String[][] tableContents = new String[billboards.size()][9];                            //populating table contents with billboard array
         Integer i = 0;
@@ -48,7 +47,7 @@ public class BillboardTab{
 
         JButton previewButton = new JButton("Preview Billboard");                    //button to be placed at grid space (0,1)
         JButton createButton = new JButton("Create New");                        //button to be placed at grid space (2,1)
-        JButton editButton = new JButton();                  //button to be placed at grid space (3,1)
+        JButton editButton = new JButton();                                             //button to be placed at grid space (3,1)
 
         setButtonLook(previewButton);
         setButtonLook(createButton);
@@ -58,8 +57,8 @@ public class BillboardTab{
         selectedRow.setFont(tableContentsF);
 
         ListSelectionModel rowSelected = table.getSelectionModel();             //setup list selection model to listen for a selection of the table
-        rowSelected.addListSelectionListener(e -> {
-            if (!rowSelected.isSelectionEmpty()){
+        rowSelected.addListSelectionListener(e -> {                             //display selected billboard number and name
+            if (!rowSelected.isSelectionEmpty()){                               //display 'edit billboard' button only when one is selected.
                 int selected = rowSelected.getMinSelectionIndex();
                 selectedRow.setText("       Row "+selected+" Selected - '" + billboards.get(selected).getName() + "'");               //change label text to display selected row.
                 editButton.setText("Edit Billboard");
@@ -71,6 +70,7 @@ public class BillboardTab{
         bottomGrid.add(new JLabel());
 
         previewButton.addActionListener(e -> JOptionPane.showMessageDialog(null, "Not yet implemented."));
+        createButton.addActionListener(e -> JOptionPane.showMessageDialog(null, "Not yet implemented."));
         editButton.addActionListener(e -> {
             if (!Objects.equals(editButton.getText(), "")){
                 JOptionPane.showMessageDialog(null, "Not yet implemented.");
@@ -83,7 +83,6 @@ public class BillboardTab{
         bottomGrid.add(createButton);                  //place button 2 at (2,1)
         pane.add(bottomGrid);
     }
-
 
     public static void setButtonLook(JButton b){
         b.setBorder(BorderFactory.createLineBorder(Color.black, 3));        //set button border, font, colours etc.
