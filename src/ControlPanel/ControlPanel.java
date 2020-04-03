@@ -17,8 +17,7 @@ public class ControlPanel {
         JPanel userManagementPane = new JPanel();                       //init userManagement pane
 
         billboardsPane = BillboardTab.SetupBillboardsPane();
-        BillboardTab.SetupBillboardsTable(billboardsPane, billboards);
-
+        JTable table = BillboardTab.SetupBillboardsTable(billboardsPane, billboards);
         pane.addTab("Billboards", billboardsPane);
         pane.addTab("Schedule", schedulePane);
         pane.addTab("User Management", userManagementPane);
@@ -27,5 +26,6 @@ public class ControlPanel {
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        BillboardTab.updateTable(table, billboards);
     }
 }

@@ -5,6 +5,7 @@ import static ControlPanel.CustomFont.*;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,24 +21,18 @@ public class BillboardTab{
         return panel1;
     }
 
-    public static void SetupBillboardsTable(JPanel pane, ArrayList<Billboard> billboards) {
-        String[][] tableContents = new String[billboards.size()][9];                            //populating table contents with billboard array
-        Integer i = 0;
-        for (Billboard billboard : billboards) {
-            tableContents[i][0] = i.toString();
-            tableContents[i][1] = billboard.getName();
-            tableContents[i][2] = "TBA";
-            tableContents[i][3] = billboard.getPictureLink();
-            tableContents[i][4] = billboard.getMessageText();
-            tableContents[i][5] = billboard.getMessageTextColour();
-            tableContents[i][6] = billboard.getBackgroundColour();
-            tableContents[i][7] = billboard.getInformationText();
-            tableContents[i][8] = billboard.getInformationTextColour();
-            i++;
-        }
-        String[] columns = {"ID","Billboard","Author", "IMG SRC","Message", "Msg Colour", "BG Colour", "Info Text", "Info Colour"};     //Column headers
-
-        JTable table = new JTable(tableContents, columns);
+    public static JTable SetupBillboardsTable(JPanel pane, ArrayList<Billboard> billboards) {
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("ID");
+        model.addColumn("Billboard");
+        model.addColumn("Author");
+        model.addColumn("Image URL");
+        model.addColumn("Message Text");
+        model.addColumn("Message Colour");
+        model.addColumn("Background Colour");
+        model.addColumn("Info Text");
+        model.addColumn("Info Colour");
+        JTable table = new JTable(model);
         table.setRowSelectionAllowed(true);
         table.setCellSelectionEnabled(false);
         setTableFeatures(table);                            //set table font, layout, size, colour etc.
@@ -82,6 +77,8 @@ public class BillboardTab{
         bottomGrid.add(editButton);                   //place button 2 at (1,1)
         bottomGrid.add(createButton);                  //place button 2 at (2,1)
         pane.add(bottomGrid);
+
+        return table;
     }
 
 
@@ -103,5 +100,25 @@ public class BillboardTab{
         table.getTableHeader().setOpaque(false);
         table.getTableHeader().setFont(new Font("Comic Sans", Font.ITALIC, 18));
         table.setDefaultEditor(Object.class, null);
+    }
+
+    public static void updateTable(JTable table, ArrayList<Billboard> billboards){
+        Integer i = 0;
+        table.repaint(); //redraw table
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        for (Billboard billboard : billboards) {
+            model.addRow(new Object[]{
+                    i.toString(),
+                    billboard.getName(),
+                    "TBA",
+                    billboard.getPictureLink(),
+                    billboard.getMessageText(),
+                    billboard.getMessageTextColour(),
+                    billboard.getBackgroundColour(),
+                    billboard.getInformationText(),
+                    billboard.getBackgroundColour()});
+            i++;
+        }
+
     }
 }
