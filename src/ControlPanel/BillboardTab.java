@@ -1,5 +1,4 @@
 package ControlPanel;
-
 import Shared.Billboard;
 import static ControlPanel.CustomFont.*;
 import javax.swing.*;
@@ -41,7 +40,7 @@ public class BillboardTab{
         JLabel bottomGrid = new JLabel();
         bottomGrid.setLayout(new GridLayout(2,3,10, 0));       //2nd row of pane gridLayout contains a label with 2 rows 3 cols
 
-        JButton previewButton = new JButton("Preview Billboard");                    //button to be placed at grid space (0,1)
+        JButton previewButton = new JButton("\uD83D\uDCA9Preview Billboard");                    //button to be placed at grid space (0,1)
         JButton createButton = new JButton("Create New");                        //button to be placed at grid space (2,1)
         JButton editButton = new JButton();                  //button to be placed at grid space (3,1)
 
