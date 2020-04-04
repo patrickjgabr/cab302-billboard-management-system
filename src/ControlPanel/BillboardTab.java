@@ -54,9 +54,12 @@ public class BillboardTab{
         ListSelectionModel rowSelected = table.getSelectionModel();             //setup list selection model to listen for a selection of the table
         rowSelected.addListSelectionListener(e -> {
             if (!rowSelected.isSelectionEmpty()){
+                String thng = JOptionPane.showInputDialog(null, "Enter1: ");
+
                 int selected = rowSelected.getMinSelectionIndex();
                 selectedRow.setText("       Row "+selected+" Selected - '" + billboards.get(selected).getName() + "'");               //change label text to display selected row.
                 editButton.setText("Edit Billboard");
+
             }
         });
 
@@ -79,7 +82,6 @@ public class BillboardTab{
 
         return table;
     }
-
 
     public static void setButtonLook(JButton b){
         b.setBorder(BorderFactory.createLineBorder(Color.black, 3));        //set button border, font, colours etc.
@@ -120,4 +122,5 @@ public class BillboardTab{
         }
 
     }
+
 }
