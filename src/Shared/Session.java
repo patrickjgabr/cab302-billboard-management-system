@@ -1,7 +1,11 @@
+package Shared;
+
 import java.util.ArrayList;
 
 public class Session {
-
+    /**
+     * v1
+    */
     private String userName;
     private String sessionToken;
     private ArrayList<Boolean> permission;

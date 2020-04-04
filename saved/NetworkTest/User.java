@@ -9,6 +9,7 @@ public class User {
     private Integer userID;
 
     /**
+     * v1
      * Constructs and initalizes a User object
      * @param userName The Users username
      * @param salt  The salt value added to the Users password before it is Hashed
