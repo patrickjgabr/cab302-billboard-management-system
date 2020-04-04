@@ -118,6 +118,5 @@ public class BillboardTab{
                     billboard.getBackgroundColour()});
             i++;
         }
-
     }
 }
