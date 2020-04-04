@@ -75,6 +75,12 @@ public class BillboardTab{
             else JOptionPane.showMessageDialog(null, "Please select a billboard first.");
         });
 
+        createButton.addActionListener(e -> {
+            Billboard created = JOptionPaneMultiInput.MultiInputOptionPane();
+            billboards.add(created);
+            updateTable(table, billboards);
+        });
+
         bottomGrid.add(previewButton);                 //place button 1 at (0,1)
         bottomGrid.add(editButton);                   //place button 2 at (1,1)
         bottomGrid.add(createButton);                  //place button 2 at (2,1)

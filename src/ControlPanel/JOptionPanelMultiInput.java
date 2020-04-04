@@ -6,12 +6,9 @@ import javax.swing.*;
 import java.awt.*;
 
 class JOptionPaneMultiInput {
-    public static void main (String[]args){
-        System.out.println(MultiInputOptionPane().getInformationText());
-        System.out.println(MultiInputOptionPane().getBackgroundColour());
-        System.out.println(MultiInputOptionPane().getName());
-        System.out.println(MultiInputOptionPane().getMessageText());
-    }
+    //public static void main (String[]args){
+     //   MultiInputOptionPane();
+    //}
     public static Billboard MultiInputOptionPane() {
 
         JTextField billboardName = new JTextField();
@@ -26,26 +23,29 @@ class JOptionPaneMultiInput {
         myPanel.setLayout(new GridLayout(7,1));
         myPanel.add(new JLabel("Billboard Name: "));
         myPanel.add(billboardName);
-        //myPanel.add(Box.createHorizontalStrut(15)); // a spacer
+        myPanel.add(Box.createHorizontalStrut(5)); // a spacer
         myPanel.add(new JLabel("Image Source: "));
         myPanel.add(imgSRC);
-        myPanel.add(new JLabel("Message Text: : "));
+        myPanel.add(Box.createHorizontalStrut(5)); // a spacer
+        myPanel.add(new JLabel("Message Text: "));
         myPanel.add(messageText);
-        //myPanel.add(Box.createHorizontalStrut(15)); // a spacer
+        myPanel.add(Box.createHorizontalStrut(5)); // a spacer
         myPanel.add(new JLabel("Message Colour: "));
         myPanel.add(messageColour);
-        myPanel.add(new JLabel("Background Colour"));
+        myPanel.add(Box.createHorizontalStrut(5)); // a spacer
+        myPanel.add(new JLabel("Background Colour: "));
         myPanel.add(backgroundColour);
-        //myPanel.add(Box.createHorizontalStrut(15)); // a spacer
+        myPanel.add(Box.createHorizontalStrut(5)); // a spacer
         myPanel.add(new JLabel("Info Text: "));
         myPanel.add(infoText);
-        //myPanel.add(Box.createHorizontalStrut(15)); // a spacer
+        myPanel.add(Box.createHorizontalStrut(5)); // a spacer
         myPanel.add(new JLabel("Info Colour: "));
         myPanel.add(infoColour);
+        myPanel.add(Box.createHorizontalStrut(5)); // a spacer
 
-        int result = JOptionPane.showConfirmDialog(null, myPanel,
-                "Please Enter Billboard options", JOptionPane.OK_CANCEL_OPTION);
-        if (result == JOptionPane.OK_OPTION) {
+        int result = JOptionPane.showConfirmDialog(null, myPanel, "Please Enter Billboard options", JOptionPane.YES_NO_CANCEL_OPTION);
+
+        if (result == JOptionPane.YES_OPTION) {
             return new Billboard(billboardName.getText(), imgSRC.getText(), messageText.getText(), messageColour.getText(), backgroundColour.getText(), infoText.getText(), infoColour.getText());
         }
         return null;
