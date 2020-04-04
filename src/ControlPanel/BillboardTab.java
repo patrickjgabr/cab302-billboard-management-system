@@ -77,8 +77,10 @@ public class BillboardTab{
 
         createButton.addActionListener(e -> {
             Billboard created = JOptionPaneMultiInput.MultiInputOptionPane();
-            billboards.add(created);
-            updateTable(table, billboards);
+            if(created != null) {
+                billboards.add(created);
+                updateTable(table, billboards);
+            }
         });
 
         bottomGrid.add(previewButton);                 //place button 1 at (0,1)
@@ -110,12 +112,12 @@ public class BillboardTab{
     }
 
     public static void updateTable(JTable table, ArrayList<Billboard> billboards){
-        Integer i = 0;
-        table.repaint(); //redraw table
+        int i = 0;
         DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
         for (Billboard billboard : billboards) {
             model.addRow(new Object[]{
-                    i.toString(),
+                    Integer.toString(i),
                     billboard.getName(),
                     "TBA",
                     billboard.getPictureLink(),
