@@ -9,6 +9,7 @@ import java.util.TreeMap;
 public class Billboard implements Serializable {
 
     private String name;
+    private Integer billboardID;
     private Integer creatorID;
     private String imageUrl;
     private String messageText;
@@ -24,6 +25,7 @@ public class Billboard implements Serializable {
      */
     public Billboard(TreeMap<String, String> billboardInformation) {
         this.name = billboardInformation.get("Name");
+        this.billboardID = Integer.parseInt(billboardInformation.get("BillboardID"));
         this.creatorID = Integer.parseInt(billboardInformation.get("CreatorID"));
         this.imageUrl = billboardInformation.get("ImageUrl");
         this.messageText = billboardInformation.get("MessageText");
@@ -117,4 +119,12 @@ public class Billboard implements Serializable {
      */
 
     public TreeMap<String, String> getBillboardExport() { return billboardExport; }
+
+    public Integer getBillboardID() {
+        return billboardID;
+    }
+
+    public void setBillboardID(Integer billboardID) {
+        this.billboardID = billboardID;
+    }
 }
