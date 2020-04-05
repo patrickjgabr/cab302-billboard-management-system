@@ -16,16 +16,17 @@ public class ControlPanel {
         JPanel schedulePane = ScheduleTab.SetupSchedulePane();                             //init schedule pane
         JPanel userManagementPane = UserManagementTab.UserManagementPane();                       //init userManagement pane
         JTable table = BillboardTab.SetupBillboardsTable(billboardsPane, billboards);
+        BillboardTab.updateTable(table, billboards);
+        BillboardTab.setupButtons(table, billboardsPane,billboards);
         pane.addTab("Billboards", billboardsPane);
         pane.addTab("Schedule", schedulePane);
         pane.addTab("User Management", userManagementPane);
-
         frame.getContentPane().add(pane);
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
 
-        BillboardTab.updateTable(table, billboards);
+
     }
 }
