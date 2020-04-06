@@ -14,9 +14,8 @@ import java.util.Objects;
 public class BillboardTab{
     public static JPanel SetupBillboardsPane() {
         JPanel panel = new JPanel();                                                           //first tab
-        panel.setBorder(BorderFactory.createEmptyBorder(30,20,15,20));
-        panel.setLayout(new GridLayout(2,1));
-        panel.setBackground(lightGray);
+        panel.setLayout(new GridBagLayout());
+        //panel.setBackground(lightGray);
         return panel;
     }
 
@@ -32,10 +31,18 @@ public class BillboardTab{
         model.addColumn("Info Text");
         model.addColumn("Info Colour");
         JTable table = new JTable(model);
-        table.setRowSelectionAllowed(true);
-        table.setCellSelectionEnabled(false);
         setTableFeatures(table);                            //set table font, layout, size, colour etc.
-        pane.add(new JScrollPane(table));                   //add table to pane - 1st row out of 2 in the grid layout.
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 1;
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.NORTH;
+        c.weightx = 1;
+        c.weighty = 1;
+        c.gridwidth = 8;
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.getViewport().setBackground(lightGray);
+        pane.add(scrollPane, c);                   //add table to pane - 1st row out of 2 in the grid layout.
         //------------------------------------Table Created --------------------------------------------------------//
         return table;
     }
@@ -46,6 +53,8 @@ public class BillboardTab{
         b.setForeground(softBlue);
     }
     public static void setTableFeatures(JTable table){
+        table.setRowSelectionAllowed(true);
+        table.setCellSelectionEnabled(false);
         table.setRowHeight(40);
         table.setSelectionBackground(new Color(0,74,127));
         //table.setSelectionForeground(Color.black);
@@ -80,18 +89,19 @@ public class BillboardTab{
     }
 
     public static void setupButtons(JTable table, JPanel pane, ArrayList<Billboard> billboards) {
-        JLabel bottomGrid = new JLabel();
-        bottomGrid.setLayout(new GridLayout(2,3,10, 0));       //2nd row of pane gridLayout contains a label with 2 rows 3 cols
-
         JButton previewButton = new JButton("Preview Billboard");                    //button to be placed at grid space (0,1)
-        JButton createButton = new JButton("Create New");                        //button to be placed at grid space (2,1)
+        JButton createButton = new JButton("New Billboard");                        //button to be placed at grid space (2,1)
         JButton editButton = new JButton();                  //button to be placed at grid space (3,1)
-        editButton.setVisible(false);
-        setButtonLook(previewButton);
-        setButtonLook(createButton);
-        setButtonLook(editButton);
-
+        JButton importButton = new JButton("Import XML");
+        JButton exportButton = new JButton("Export XML");
         JLabel selectedRow = new JLabel();
+        previewButton.setFont(buttons);
+        createButton.setFont(buttons);
+        importButton.setFont(buttons);
+        exportButton.setFont(buttons);
+        editButton.setFont(buttons);
+        editButton.setVisible(false);
+        previewButton.setVisible(false);
         selectedRow.setFont(tableContentsF);
 
         ListSelectionModel rowSelected = table.getSelectionModel();             //setup list selection model to listen for a selection of the table
@@ -101,13 +111,11 @@ public class BillboardTab{
 
                 int selected = rowSelected.getMinSelectionIndex();
                 editButton.setVisible(true);
+                previewButton.setVisible(true);
                 editButton.setText("Edit " + billboards.get(selected).getName());
+                previewButton.setText("Preview " + billboards.get(selected).getName());
             }
         });
-
-        bottomGrid.add(selectedRow);        //add label showing which row is selected
-        bottomGrid.add(new JLabel());       //add 2 blank labels in grid locations (1,0) and (2,0) - room to replace in future
-        bottomGrid.add(new JLabel());
 
         previewButton.addActionListener(e -> JOptionPane.showMessageDialog(null, "Not yet implemented."));
         editButton.addActionListener(e -> {
@@ -124,11 +132,12 @@ public class BillboardTab{
                 updateTable(table, billboards);
             }
         });
-        bottomGrid.add(createButton);                  //place button 2 at (2,1)
-        bottomGrid.add(previewButton);                 //place button 1 at (0,1)
-        bottomGrid.add(editButton);                   //place button 2 at (1,1)
-
-        pane.add(bottomGrid);
+        pane.add(createButton,GUI.newButtonConstraints(0,0));                  //place button 2 at (2,1)
+        pane.add(previewButton,GUI.newButtonConstraints(3,0));                 //place button 1 at (0,1)
+        pane.add(importButton,GUI.newButtonConstraints(1,0));
+        pane.add(exportButton,GUI.newButtonConstraints(2,0));
+        pane.add(editButton,GUI.newButtonConstraints(4,0));                   //place button 2 at (1,1)
+        pane.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
     }
 
 }

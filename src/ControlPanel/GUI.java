@@ -19,4 +19,16 @@ public class GUI {
             System.out.println("Error setting GUI look and feel");
         }
     }
+
+    public static GridBagConstraints newButtonConstraints(int x, int y) {
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = x;
+        gbc.gridy = y;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.insets = new Insets(5,10,5,10);
+        gbc.anchor = GridBagConstraints.EAST;
+        return gbc;
+    }
 }
