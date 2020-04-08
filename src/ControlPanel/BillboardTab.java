@@ -65,7 +65,7 @@ public class BillboardTab{
         table.setFont(tableContentsF);                                      //table contents font (16px Comic sans)
         table.getTableHeader().setBackground(softBlue);                     //set table header colour
         table.getTableHeader().setOpaque(false);
-        table.getTableHeader().setFont(new Font("Comic Sans", Font.ITALIC, 18));
+        table.getTableHeader().setFont(tableHeader);
         table.setDefaultEditor(Object.class, null);
     }
 
