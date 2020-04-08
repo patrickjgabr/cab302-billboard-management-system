@@ -120,23 +120,28 @@ public class BillboardTab{
         previewButton.addActionListener(e -> JOptionPane.showMessageDialog(null, "Not yet implemented."));
         editButton.addActionListener(e -> {
             if (!Objects.equals(editButton.getText(), "")){
-                JOptionPane.showMessageDialog(null, "Not yet implemented.");
+                int selected = rowSelected.getMinSelectionIndex();
+                Billboard created = BillboardOptions.BillboardEditor(billboards.get(selected));
+                if(created != null) {
+                    billboards.add(created); //replace with send to server
+                    updateTable(table, billboards);
+                }
             }
             else JOptionPane.showMessageDialog(null, "Please select a billboard first.");
         });
 
         createButton.addActionListener(e -> {
-            Billboard created = JOptionPaneMultiInput.MultiInputOptionPane();
+            Billboard created = BillboardOptions.BillboardEditor();
             if(created != null) {
-                billboards.add(created);
+                billboards.add(created); //replace with send to server
                 updateTable(table, billboards);
             }
         });
         pane.add(createButton,GUI.newButtonConstraints(0,0));                  //place button 2 at (2,1)
-        pane.add(previewButton,GUI.newButtonConstraints(3,0));                 //place button 1 at (0,1)
+        pane.add(previewButton,GUI.newButtonConstraints(4,0));                 //place button 1 at (0,1)
         pane.add(importButton,GUI.newButtonConstraints(1,0));
         pane.add(exportButton,GUI.newButtonConstraints(2,0));
-        pane.add(editButton,GUI.newButtonConstraints(4,0));                   //place button 2 at (1,1)
+        pane.add(editButton,GUI.newButtonConstraints(3,0));                   //place button 2 at (1,1)
         pane.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
     }
 
