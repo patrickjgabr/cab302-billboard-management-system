@@ -67,6 +67,134 @@ public class TestCase {
                 "#FFFFFF",
                 "InfoText",
                 "#FFFFFF"));
+        billboards.add(new Billboard(
+                "Billboard 1",
+                "www.instagram.com",
+                "msgText",
+                "#FFFFFF",
+                "#FFFFFF",
+                "InfoText",
+                "#FFFFFF"));
+        billboards.add(new Billboard(
+                "Billboard 1",
+                "www.instagram.com",
+                "msgText",
+                "#FFFFFF",
+                "#FFFFFF",
+                "InfoText",
+                "#FFFFFF"));
+        billboards.add(new Billboard(
+                "Billboard 1",
+                "www.instagram.com",
+                "msgText",
+                "#FFFFFF",
+                "#FFFFFF",
+                "InfoText",
+                "#FFFFFF"));
+        billboards.add(new Billboard(
+                "Billboard 1",
+                "www.instagram.com",
+                "msgText",
+                "#FFFFFF",
+                "#FFFFFF",
+                "InfoText",
+                "#FFFFFF"));
+        billboards.add(new Billboard(
+                "Billboard 1",
+                "www.instagram.com",
+                "msgText",
+                "#FFFFFF",
+                "#FFFFFF",
+                "InfoText",
+                "#FFFFFF"));
+        billboards.add(new Billboard(
+                "Billboard 1",
+                "www.instagram.com",
+                "msgText",
+                "#FFFFFF",
+                "#FFFFFF",
+                "InfoText",
+                "#FFFFFF"));
+        billboards.add(new Billboard(
+                "Billboard 1",
+                "www.instagram.com",
+                "msgText",
+                "#FFFFFF",
+                "#FFFFFF",
+                "InfoText",
+                "#FFFFFF"));
+        billboards.add(new Billboard(
+                "Billboard 1",
+                "www.instagram.com",
+                "msgText",
+                "#FFFFFF",
+                "#FFFFFF",
+                "InfoText",
+                "#FFFFFF"));
+        billboards.add(new Billboard(
+                "Billboard 1",
+                "www.instagram.com",
+                "msgText",
+                "#FFFFFF",
+                "#FFFFFF",
+                "InfoText",
+                "#FFFFFF"));
+        billboards.add(new Billboard(
+                "Billboard 1",
+                "www.instagram.com",
+                "msgText",
+                "#FFFFFF",
+                "#FFFFFF",
+                "InfoText",
+                "#FFFFFF"));
+        billboards.add(new Billboard(
+                "Billboard 1",
+                "www.instagram.com",
+                "msgText",
+                "#FFFFFF",
+                "#FFFFFF",
+                "InfoText",
+                "#FFFFFF"));
+        billboards.add(new Billboard(
+                "Billboard 1",
+                "www.instagram.com",
+                "msgText",
+                "#FFFFFF",
+                "#FFFFFF",
+                "InfoText",
+                "#FFFFFF"));
+        billboards.add(new Billboard(
+                "Billboard 1",
+                "www.instagram.com",
+                "msgText",
+                "#FFFFFF",
+                "#FFFFFF",
+                "InfoText",
+                "#FFFFFF"));
+        billboards.add(new Billboard(
+                "Billboard 1",
+                "www.instagram.com",
+                "msgText",
+                "#FFFFFF",
+                "#FFFFFF",
+                "InfoText",
+                "#FFFFFF"));
+        billboards.add(new Billboard(
+                "Billboard 1",
+                "www.instagram.com",
+                "msgText",
+                "#FFFFFF",
+                "#FFFFFF",
+                "InfoText",
+                "#FFFFFF"));
+        billboards.add(new Billboard(
+                "Billboard 1",
+                "www.instagram.com",
+                "msgText",
+                "#FFFFFF",
+                "#FFFFFF",
+                "InfoText",
+                "#FFFFFF"));
         return billboards;
     }
 }
