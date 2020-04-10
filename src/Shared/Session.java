@@ -11,11 +11,10 @@ public class Session {
     private ArrayList<Boolean> permission;
     private String IP;
 
-    public Session(String userName, String sessionToken, ArrayList<Boolean> permission, String IP) {
+    public Session(String userName, String sessionToken, ArrayList<Boolean> permission) {
         this.userName = userName;
         this.sessionToken = sessionToken;
         this.permission = permission;
-        this.IP = IP;
     }
 
     public String getUserName() {
