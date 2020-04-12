@@ -7,6 +7,7 @@ import static ControlPanel.CustomFont.*;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -15,7 +16,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
+import java.security.cert.Extension;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -175,7 +178,9 @@ public class BillboardTab{
 
     private void fileSelection() throws ParserConfigurationException, IOException, SAXException {
         JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setAcceptAllFileFilterUsed(false);
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+        fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("*.xml", "xml"));
         int result = fileChooser.showOpenDialog(pane);
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
