@@ -1,16 +1,17 @@
 package ControlPanel;
 
+import Shared.Billboard;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 import static ControlPanel.CustomFont.lightGray;
 
 public class UserManagementTab {
-    public static JPanel UserManagementPane() {
-        JPanel panel = new JPanel();                                                           //first tab
-        panel.setBorder(BorderFactory.createEmptyBorder(30,20,15,20));
-        panel.setLayout(new GridLayout(2,1));
-        panel.setBackground(lightGray);
-        return panel;
+    private JPanel pane;
+    public UserManagementTab(JTabbedPane mainPane){
+        this.pane = new JPanel();
+        mainPane.addTab("User Management", pane);
     }
 }

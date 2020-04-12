@@ -14,13 +14,10 @@ public class ControlPanel {
         ArrayList<Billboard> billboards = TestCase.Billboards();
         JFrame frame = GUI.SetupFrame();
         JTabbedPane pane = new JTabbedPane();
+        BillboardTab billboardsPane = new BillboardTab(pane, billboards); // need to add permissions
+        UserManagementTab schedulePane = new UserManagementTab(pane);
+        ScheduleTab userManagementPane = new ScheduleTab(pane);
         pane.setFont(tabs);
-        BillboardTab billboardsPane = new BillboardTab(billboards); // need to add permissions
-        JPanel schedulePane = ScheduleTab.SetupSchedulePane();
-        JPanel userManagementPane = UserManagementTab.UserManagementPane();
-        pane.addTab("Billboards", billboardsPane.getPane());
-        pane.addTab("Schedule", schedulePane);
-        pane.addTab("User Management", userManagementPane);
         frame.getContentPane().add(pane);
         frame.pack();
         frame.setTitle("Control Panel");

@@ -16,18 +16,17 @@ public class BillboardTab{
     private ArrayList<Billboard> billboards;
     private JPanel pane;
 
-    public BillboardTab(ArrayList<Billboard> billboards){
+    public BillboardTab(JTabbedPane mainPane, ArrayList<Billboard> billboards){
         this.billboards = billboards;
         this.pane = new JPanel();                                                           //first tab
         pane.setLayout(new GridBagLayout());
         setupBillboardsTable();
         updateTable();
         setupButtons();
+        mainPane.addTab("Billboard", pane);
     }
 
-    public JPanel getPane() {
-        return pane;
-    }
+
 
     public void setupBillboardsTable() {
         DefaultTableModel model = new DefaultTableModel();
@@ -111,8 +110,6 @@ public class BillboardTab{
         ListSelectionModel rowSelected = table.getSelectionModel();             //setup list selection model to listen for a selection of the table
         rowSelected.addListSelectionListener(e -> {
             if (!rowSelected.isSelectionEmpty()){
-                //String thng = JOptionPane.showInputDialog(null, "Enter1: ");
-
                 int selected = rowSelected.getMinSelectionIndex();
                 editButton.setVisible(true);
                 previewButton.setVisible(true);
@@ -122,6 +119,7 @@ public class BillboardTab{
         });
 
         previewButton.addActionListener(e -> JOptionPane.showMessageDialog(null, "Not yet implemented."));
+
         editButton.addActionListener(e -> {
             if (!Objects.equals(editButton.getText(), "")){
                 int selected = rowSelected.getMinSelectionIndex();
