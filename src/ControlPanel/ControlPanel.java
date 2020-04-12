@@ -15,13 +15,10 @@ public class ControlPanel {
         JFrame frame = GUI.SetupFrame();
         JTabbedPane pane = new JTabbedPane();
         pane.setFont(tabs);
-        JPanel billboardsPane = BillboardTab.SetupBillboardsPane();
+        BillboardTab billboardsPane = new BillboardTab(billboards); // need to add permissions
         JPanel schedulePane = ScheduleTab.SetupSchedulePane();
         JPanel userManagementPane = UserManagementTab.UserManagementPane();
-        JTable table = BillboardTab.SetupBillboardsTable(billboardsPane, billboards);
-        BillboardTab.updateTable(table, billboards);
-        BillboardTab.setupButtons(table, billboardsPane,billboards);
-        pane.addTab("Billboards", billboardsPane);
+        pane.addTab("Billboards", billboardsPane.getPane());
         pane.addTab("Schedule", schedulePane);
         pane.addTab("User Management", userManagementPane);
         frame.getContentPane().add(pane);

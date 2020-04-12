@@ -12,14 +12,24 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class BillboardTab{
-    public static JPanel SetupBillboardsPane() {
-        JPanel panel = new JPanel();                                                           //first tab
-        panel.setLayout(new GridBagLayout());
-        //panel.setBackground(lightGray);
-        return panel;
+    private JTable table;
+    private ArrayList<Billboard> billboards;
+    private JPanel pane;
+
+    public BillboardTab(ArrayList<Billboard> billboards){
+        this.billboards = billboards;
+        this.pane = new JPanel();                                                           //first tab
+        pane.setLayout(new GridBagLayout());
+        setupBillboardsTable();
+        updateTable();
+        setupButtons();
     }
 
-    public static JTable SetupBillboardsTable(JPanel pane, ArrayList<Billboard> billboards) {
+    public JPanel getPane() {
+        return pane;
+    }
+
+    public void setupBillboardsTable() {
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("ID");
         model.addColumn("Billboard");
@@ -30,7 +40,7 @@ public class BillboardTab{
         model.addColumn("Background Colour");
         model.addColumn("Info Text");
         model.addColumn("Info Colour");
-        JTable table = new JTable(model);
+        this.table = new JTable(model);
         setTableFeatures(table);                            //set table font, layout, size, colour etc.
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -44,15 +54,9 @@ public class BillboardTab{
         scrollPane.getViewport().setBackground(lightGray);
         pane.add(scrollPane, c);                   //add table to pane - 1st row out of 2 in the grid layout.
         //------------------------------------Table Created --------------------------------------------------------//
-        return table;
     }
 
-    public static void setButtonLook(JButton b){
-        b.setBorder(BorderFactory.createLineBorder(Color.black, 3));        //set button border, font, colours etc.
-        b.setFont(buttons);
-        b.setForeground(softBlue);
-    }
-    public static void setTableFeatures(JTable table){
+    private static void setTableFeatures(JTable table){
         table.setRowSelectionAllowed(true);
         table.setCellSelectionEnabled(false);
         table.setRowHeight(40);
@@ -69,7 +73,7 @@ public class BillboardTab{
         table.setDefaultEditor(Object.class, null);
     }
 
-    public static void updateTable(JTable table, ArrayList<Billboard> billboards){
+    public void updateTable(){
         int i = 0;
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
@@ -88,7 +92,7 @@ public class BillboardTab{
         }
     }
 
-    public static void setupButtons(JTable table, JPanel pane, ArrayList<Billboard> billboards) {
+    public void setupButtons() {
         JButton previewButton = new JButton("Preview Billboard");                    //button to be placed at grid space (0,1)
         JButton createButton = new JButton("New Billboard");                        //button to be placed at grid space (2,1)
         JButton editButton = new JButton();                  //button to be placed at grid space (3,1)
@@ -124,7 +128,7 @@ public class BillboardTab{
                 Billboard created = BillboardOptions.BillboardEditor(billboards.get(selected));
                 if(created != null) {
                     billboards.add(created); //replace with send to server
-                    updateTable(table, billboards);
+                    updateTable();
                 }
             }
             else JOptionPane.showMessageDialog(null, "Please select a billboard first.");
@@ -134,7 +138,7 @@ public class BillboardTab{
             Billboard created = BillboardOptions.BillboardEditor();
             if(created != null) {
                 billboards.add(created); //replace with send to server
-                updateTable(table, billboards);
+                updateTable();
             }
         });
         pane.add(createButton,GUI.newButtonConstraints(0,0));                  //place button 2 at (2,1)
