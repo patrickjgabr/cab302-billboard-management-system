@@ -1,13 +1,21 @@
 package ControlPanel;
 import Shared.Billboard;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
 import static ControlPanel.CustomFont.*;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -21,6 +29,7 @@ public class BillboardTab{
         this.pane = new JPanel();                                                           //first tab
         pane.setLayout(new GridBagLayout());
         setupBillboardsTable();
+        setTableFeatures();
         updateTable();
         setupButtons();
         mainPane.addTab("Billboard", pane);
@@ -40,7 +49,6 @@ public class BillboardTab{
         model.addColumn("Info Text");
         model.addColumn("Info Colour");
         this.table = new JTable(model);
-        setTableFeatures(table);                            //set table font, layout, size, colour etc.
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 1;
@@ -55,12 +63,11 @@ public class BillboardTab{
         //------------------------------------Table Created --------------------------------------------------------//
     }
 
-    private static void setTableFeatures(JTable table){
+    private void setTableFeatures(){
         table.setRowSelectionAllowed(true);
         table.setCellSelectionEnabled(false);
         table.setRowHeight(40);
         table.setSelectionBackground(new Color(0,74,127));
-        //table.setSelectionForeground(Color.black);
         table.setRowSelectionAllowed(true);
         table.setColumnSelectionAllowed(false);
         table.getColumnModel().getColumn(0).setMaxWidth(35);    //set column 0 to max 35 wide (doesn't need to be big)
@@ -105,6 +112,7 @@ public class BillboardTab{
         editButton.setFont(buttons);
         editButton.setVisible(false);
         previewButton.setVisible(false);
+        exportButton.setVisible(false);
         selectedRow.setFont(tableContentsF);
 
         ListSelectionModel rowSelected = table.getSelectionModel();             //setup list selection model to listen for a selection of the table
@@ -113,12 +121,29 @@ public class BillboardTab{
                 int selected = rowSelected.getMinSelectionIndex();
                 editButton.setVisible(true);
                 previewButton.setVisible(true);
+                exportButton.setVisible(true);
+                exportButton.setText("Export " + billboards.get(selected).getName());
                 editButton.setText("Edit " + billboards.get(selected).getName());
                 previewButton.setText("Preview " + billboards.get(selected).getName());
             }
         });
 
         previewButton.addActionListener(e -> JOptionPane.showMessageDialog(null, "Not yet implemented."));
+
+
+
+
+        importButton.addActionListener(e -> {
+            try {
+                fileSelection();
+            } catch (ParserConfigurationException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (SAXException ex) {
+                ex.printStackTrace();
+            }
+        });
 
         editButton.addActionListener(e -> {
             if (!Objects.equals(editButton.getText(), "")){
@@ -145,6 +170,28 @@ public class BillboardTab{
         pane.add(exportButton,GUI.newButtonConstraints(2,0));
         pane.add(editButton,GUI.newButtonConstraints(3,0));                   //place button 2 at (1,1)
         pane.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+    }
+
+
+    private void fileSelection() throws ParserConfigurationException, IOException, SAXException {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+        int result = fileChooser.showOpenDialog(pane);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            System.out.println("PogChamp");
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(selectedFile);
+            doc.getDocumentElement().normalize();
+            System.out.println("Billboard: "  + doc.getElementsByTagName("billboard").item(0).getAttributes().getNamedItem("background").getNodeValue());
+            System.out.println("Message Colour: "  + doc.getElementsByTagName("message").item(0).getAttributes().getNamedItem("colour").getNodeValue());
+            System.out.println("Message : "  + doc.getElementsByTagName("message").item(0).getTextContent());
+            System.out.println("Picture URL: "  + doc.getElementsByTagName("picture").item(0).getAttributes().getNamedItem("url").getNodeValue());
+            System.out.println("Information Colour: "  + doc.getElementsByTagName("information").item(0).getAttributes().getNamedItem("colour").getNodeValue());
+            System.out.println("Information : "  + doc.getElementsByTagName("information").item(0).getTextContent());
+        }
+
     }
 
 }

@@ -47,7 +47,6 @@ public class UserAuthentication extends JFrame {
 
     public void setSession(Session session) {
         this.session = session;
-        System.out.println(session.getUserName());
     }
 
     public Session getSession() {
@@ -56,7 +55,7 @@ public class UserAuthentication extends JFrame {
 
     public boolean sessionCheck() {
         return true;
-    }
+    } //only return true if valid
 
     public JButton getSubmit() {
         return submit;
