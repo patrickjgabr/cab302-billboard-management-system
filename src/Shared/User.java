@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class User {
 
     private String userName;
-    private Integer salt;
     private String userPassword;
     private ArrayList<Integer> permission;
     private Integer userID;
@@ -14,18 +13,20 @@ public class User {
      * v1
      * Constructs and initalizes a User object
      * @param userName The Users username
-     * @param salt  The salt value added to the Users password before it is Hashed
      * @param userPassword The Hashed password of a User
      * @param permission The array of Integers representing the permissions of the User with a 1 or 0.
      * @param userID The Users ID
      */
 
-    public User(String userName, String userPassword, ArrayList<Integer> permission) {
+    public User(String userName, String userPassword, ArrayList<Integer> permission, Integer userID) {
         this.userName = userName;
         this.userPassword = userPassword;
-        //this.salt = salt; assigned by server
         this.permission = permission;
-        //this.userID = userID; assigned by server
+        this.userID = userID;
+    }
+
+    public User() {
+
     }
 
     /**
@@ -51,10 +52,6 @@ public class User {
      * @return Users salt value
      */
 
-    public Integer getSalt() {
-        return salt;
-    }
-
     /**
      * Returns the Users hashed password
      * @return Users hashed password
@@ -75,7 +72,7 @@ public class User {
 
     /**
      * Sets the Users new permissions
-     * @param An array of 1s and 0s representing the Users new permissions
+     * @param permission array of 1s and 0s representing the Users new permissions
      */
 
     public void setPermission(ArrayList<Integer> permission) {
@@ -89,5 +86,9 @@ public class User {
 
     public Integer getUserID() {
         return userID;
+    }
+
+    public void setUserID(Integer userID) {
+        this.userID = userID;
     }
 }

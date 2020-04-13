@@ -11,20 +11,20 @@ import java.util.TreeMap;
 public class Billboard implements Serializable {
 
     private String name;
-    private Integer creatorID;
+    private Integer billboardID = 0;
+    private String creatorName;
     private String imageUrl;
     private String messageText;
     private String messageTextColour;
     private String backgroundColour;
     private String informationText;
     private String informationTextColour;
-    //private TreeMap<String, String> billboardExport;
 
     /**
      * Constructs and initalizes a Billboard object
-     * @param billboardInformation Contains all the information about the billboard. The Key and value pair correspond to the varaibles in the Billboard Class.
      */
-    public Billboard(String name, String imageUrl, String msgText, String msgColour, String bgColour, String infoText, String infoColour) {
+    public Billboard(String creatorName, String name, String imageUrl, String msgText, String msgColour, String bgColour, String infoText, String infoColour) {
+        this.creatorName = creatorName;
         this.name = name;
         this.imageUrl = imageUrl;
         this.messageText = msgText;
@@ -32,8 +32,10 @@ public class Billboard implements Serializable {
         this.backgroundColour = bgColour;
         this.informationText = infoText;
         this.informationTextColour = infoColour;
-        //this.creatorID = Integer.parseInt(billboardInformation.get("CreatorID")); given by server???
-        //this.billboardExport = billboardInformation;
+    }
+
+    public Billboard() {
+
     }
 
     /**
@@ -46,7 +48,7 @@ public class Billboard implements Serializable {
                 "<message colour=\"#" + messageTextColour + "\">" + messageTextColour + "</message>\n" +
                 "<picture url=\"" + imageUrl + "\"/>\n" +
                 "<information colour=\"#" + informationTextColour + "\">" + informationText + "</information>\n" +
-                "<creator ID=\"" + creatorID + "\">" +
+                "<creator Name=\"" + creatorName + "\">" +
                 "</billboard>";
     }
 
@@ -100,10 +102,6 @@ public class Billboard implements Serializable {
      * @return Billboards creatorID
      */
 
-    public Integer getCreatorID() {
-        return creatorID;
-    }
-
     public String getMessageText() { return messageText; }
 
     /**
@@ -117,6 +115,12 @@ public class Billboard implements Serializable {
      * Returns all of the information about the billboard in a TreeMap
      * @return TreeMap<String, String> where the Key and value pair represents the billboards information
      */
+
+    public String getCreatorName() { return creatorName; }
+
+    public Integer getBillboardID() { return billboardID; }
+
+    public void setBillboardID(Integer billboardID) { this.billboardID = billboardID; }
 
     //public TreeMap<String, String> getBillboardExport() { return billboardExport; }
 }

@@ -1,12 +1,10 @@
-package Shared;
-
 import java.io.Serializable;
+import java.util.List;
+import java.util.TreeMap;
 
 /**
- * v1
  * Class used to create message objects which are passwed between each of the Networked components
  */
-
 public class Message implements Serializable {
 
     private Integer communicationID;
@@ -62,12 +60,17 @@ public class Message implements Serializable {
      * @param loginDetails Array of two Strings. String[0] = Username String[1] = Password
      */
     public Message(String[] loginDetails) {
-        this.communicationID = 40;
+        this.communicationID = 50;
         this.data = loginDetails;
     }
 
+    public Message(String echoMessage) {
+        this.communicationID = 60;
+        this.data = echoMessage;
+    }
+
     public Message(boolean bool) {
-        this.communicationID = 30;
+        this.communicationID = 70;
         this.bool = bool;
     }
 
@@ -98,5 +101,9 @@ public class Message implements Serializable {
 
     public boolean getBool() {
         return bool;
+    }
+
+    public Integer getCommunicationID() {
+        return communicationID;
     }
 }
