@@ -27,13 +27,11 @@ public class ClientHandler extends Thread {
         try {
             receivedMessage = (Message)inputStream.readObject();
 
-            if (receivedMessage.getCommunicationID() == 60) {
-                handleEchoMessage(receivedMessage);
-            }
+            MessageHandler messageHandler = new MessageHandler(receivedMessage);
+            Message returnMessage = messageHandler.getReturnMessage();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+            outputStream.writeObject(receivedMessage);
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 
