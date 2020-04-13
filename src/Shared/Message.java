@@ -18,41 +18,40 @@ public class Message implements Serializable {
     /**
      * Blank constuctor which can be used to create a blank CommunicationPacket
      */
-    public Message() {
-
+    public Message(Session session) {
+        this.session = session;
     }
 
-    public void requestLogin(String username) {
+    public Message(String username) {
         this.communicationID = 10;
         this.data = username;
     }
 
-    public void requestBillboards(Session session) {
+    public void requestBillboards() {
         this.communicationID = 20;
-        this.session = session;
 
     }
-    public void createBillboard(Session session, Billboard billboard) {
+    public void createBillboard(Billboard billboard) {
         this.communicationID = 21;
         this.data = billboard;
     }
 
-    public void updateBillboard(Session session, Billboard billboard) {
+    public void updateBillboard(Billboard billboard) {
         this.communicationID = 22;
         this.data = billboard;
     }
-    public void requestUsers(Session session) {
+    public void requestUsers() {
         this.communicationID = 30;
     }
-    public void createUsers(Session session, User user) {
+    public void createUsers(User user) {
         this.communicationID = 31;
         this.data = user;
     }
-    public void updateUser(Session session, User user) {
+    public void updateUser(User user) {
         this.communicationID = 32;
         this.data = user;
     }
-    public void requestSchedule(Session session) {
+    public void requestSchedule() {
         this.communicationID = 40;
     }
 
