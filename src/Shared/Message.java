@@ -22,7 +22,7 @@ public class Message implements Serializable {
         this.session = session;
     }
 
-    public Message(String username) {
+    public void requestUser(String username) {
         this.communicationID = 10;
         this.data = username;
     }
@@ -94,6 +94,8 @@ public class Message implements Serializable {
     public Object getData() {
         return data;
     }
+
+    public void setData(Object data) { this.data = data; }
 
 
     public Integer getCommunicationID() {
