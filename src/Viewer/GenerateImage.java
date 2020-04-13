@@ -59,7 +59,7 @@ public class GenerateImage {
         }catch (Exception e){
             e.printStackTrace();
         }
-        return new Billboard(name, URL, message, msgColour, background, info, infoColour);
+        return new Billboard("Test Creator Name", name, URL, message, msgColour, background, info, infoColour);
     }
                          //ignore for now please i might come back to it later but if not i will delete - Harry.
             /*

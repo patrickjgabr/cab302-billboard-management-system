@@ -66,7 +66,7 @@ public class BillboardOptions {
         int result = JOptionPane.showConfirmDialog(null, myPanel, "Please Enter Billboard options", JOptionPane.YES_NO_CANCEL_OPTION);
 
         if (result == JOptionPane.YES_OPTION) {
-            return new Billboard(billboardName.getText(), imgSRC.getText(), messageText.getText(), messageColour.getText(), backgroundColour.getText(), infoText.getText(), infoColour.getText());
+            return new Billboard("Test Creator",billboardName.getText(), imgSRC.getText(), messageText.getText(), messageColour.getText(), backgroundColour.getText(), infoText.getText(), infoColour.getText());
         }
         return null;
     }

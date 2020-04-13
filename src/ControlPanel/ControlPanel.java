@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class ControlPanel {
     private static void ShowControlPanel() {
-        ArrayList<Billboard> billboards = TestCase.Billboards();
+        ArrayList<Billboard> billboards = new ArrayList<>();
         JFrame frame = GUI.SetupFrame();
         JTabbedPane pane = new JTabbedPane();
         BillboardTab billboardsPane = new BillboardTab(pane, billboards); // need to add permissions
