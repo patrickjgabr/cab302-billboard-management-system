@@ -14,7 +14,6 @@ public class Message implements Serializable {
     private Integer communicationID;
     private Session session;
     private Object data;
-    private boolean bool;
 
     /**
      * Blank constuctor which can be used to create a blank CommunicationPacket
@@ -23,60 +22,54 @@ public class Message implements Serializable {
 
     }
 
-    /**
-     * Constructor used to create a communication packet for sending Billboard objects across a network
-     * @param billboard Billboard object being sent across the network
-     */
-    public Message(Billboard billboard) {
+    public void requestLogin(String username) {
         this.communicationID = 10;
+        this.data = username;
+    }
+
+    public void requestBillboards(Session session) {
+        this.communicationID = 20;
+        this.session = session;
+
+    }
+    public void createBillboard(Session session, Billboard billboard) {
+        this.communicationID = 21;
         this.data = billboard;
     }
 
-    /**
-     * Constructor used to create a communication packet for sending an array of Billboards objects across a network
-     * @param billboards Array of Billboard objects being sent across the network
-     */
-    public Message(Billboard[] billboards) {
-        this.communicationID = 20;
-        this.data = billboards;
+    public void updateBillboard(Session session, Billboard billboard) {
+        this.communicationID = 22;
+        this.data = billboard;
     }
-
-    /**
-     * Constructor used to create a communication packet for sending User objects across a Network
-     * @param user User object being sent across the network
-     */
-    public Message(User user) {
+    public void requestUsers(Session session) {
         this.communicationID = 30;
+    }
+    public void createUsers(Session session, User user) {
+        this.communicationID = 31;
         this.data = user;
     }
-
-    /**
-     * Constructor used to create a communication packet for sending an array of User objects across a network
-     * @param users Array of User objects being sent across the network
-     */
-    public Message(User[] users) {
+    public void updateUser(Session session, User user) {
+        this.communicationID = 32;
+        this.data = user;
+    }
+    public void requestSchedule(Session session) {
         this.communicationID = 40;
-        this.data = users;
     }
 
     /**
-     * Constructor used to create a communication packet for sending the login details across a network
-     * @param loginDetails Array of two Strings. String[0] = Username String[1] = Password
-     */
-    public Message(String[] loginDetails) {
-        this.communicationID = 50;
-        this.data = loginDetails;
+    need to decide how to schedule a billboard
+
+    public void ScheduleBillboard(Session session, Billboard billboard) {
+        this.communicationID = 41;
+        this.data = billboard;
+    }
+    **/
+
+    public void updateScheduledBillboard(Session session, Billboard billboard) {
+        this.communicationID = 42;
+        this.data = billboard;
     }
 
-    public Message(String echoMessage) {
-        this.communicationID = 60;
-        this.data = echoMessage;
-    }
-
-    public Message(boolean bool) {
-        this.communicationID = 70;
-        this.bool = bool;
-    }
 
     /**
      * Returns the session information of the Control Panel
@@ -103,9 +96,6 @@ public class Message implements Serializable {
         return data;
     }
 
-    public boolean getBool() {
-        return bool;
-    }
 
     public Integer getCommunicationID() {
         return communicationID;
