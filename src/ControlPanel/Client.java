@@ -1,5 +1,6 @@
 package ControlPanel;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -9,20 +10,21 @@ import Shared.*;
 
 public class Client {
 
-    private String serverAddress;
-    private Integer serverPort;
     private Socket socket;
-    private ServerSocket serverSocket;
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
+    private Properties properties;
 
-    public Client(String serverAddress, Integer serverPort) {
+    public Client() {
 
-        this.serverAddress = serverAddress;
-        this.serverPort = serverPort;
-        setSocket();
-        setOutputStream();
-        setInputStream();
+        try {
+            properties = new Properties();
+            setSocket();
+            setOutputStream();
+            setInputStream();
+        } catch (FileNotFoundException e) {
+            System.out.println("Properties file failed to be read. Please ensure file named \"Properties.txt\" is in \"externalResources\" folder");
+        }
 
     }
 
@@ -41,7 +43,7 @@ public class Client {
 
     private void setSocket() {
         try{
-            socket = new Socket(serverAddress, serverPort);
+            socket = new Socket(properties.getServerAddress(), Integer.parseInt(properties.getServerPort()));
         }
         //NEED TO HANDLE THIS EXCEPTION
         catch (IOException errorMessage){

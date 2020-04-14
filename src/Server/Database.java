@@ -1,6 +1,7 @@
 package Server;
 
 import java.sql.*;
+import Shared.*;
 
 public class Database {
 
@@ -55,7 +56,7 @@ public class Database {
     private void startConnection() {
         try {
             System.out.println("Database connection started...");
-            connection = DriverManager.getConnection(properties.getDatabaseURL(), properties.getUser(), properties.getPassword());
+            connection = DriverManager.getConnection(properties.getDatabaseURL(), properties.getDatabaseUser(), properties.getDatabasePassword());
             statement = connection.createStatement();
         } catch (SQLException e) {
             System.out.println("Database connection Failed: " + properties.getDatabaseURL());

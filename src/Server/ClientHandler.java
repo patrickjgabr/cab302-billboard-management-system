@@ -11,11 +11,13 @@ public class ClientHandler extends Thread {
     private Socket socket;
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
+    private Properties properties;
 
-    public ClientHandler(Socket socket, ObjectInputStream inputStream, ObjectOutputStream outputStream) {
+    public ClientHandler(Socket socket, ObjectInputStream inputStream, ObjectOutputStream outputStream, Properties properties) {
         this.socket = socket;
         this.inputStream = inputStream;
         this.outputStream = outputStream;
+        this.properties = properties;
     }
 
     @Override
@@ -27,7 +29,7 @@ public class ClientHandler extends Thread {
         try {
             receivedMessage = (Message)inputStream.readObject();
 
-            MessageHandler messageHandler = new MessageHandler(receivedMessage);
+            MessageHandler messageHandler = new MessageHandler(receivedMessage, properties);
             Message returnMessage = messageHandler.getReturnMessage();
 
             outputStream.writeObject(returnMessage);

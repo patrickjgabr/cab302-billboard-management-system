@@ -1,5 +1,8 @@
 package Server;
 
+import Shared.Properties;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -12,16 +15,23 @@ public class Server {
     private Socket socket;
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
+    private Properties properties;
     public boolean runServer = true;
 
     public Server() {
         try {
-            serverSocket = new ServerSocket(8080);
-            socket = null;
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            this.properties = new Properties();
+            try {
+                serverSocket = new ServerSocket(Integer.parseInt(properties.getServerPort()));
+                socket = null;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Properties file failed to be read. Please ensure file named \"Properties.txt\" is in \"externalResources\" folder");
         }
+
+
     }
 
     public void run() {
@@ -32,7 +42,7 @@ public class Server {
                 setOutputStream();
                 setInputStream();
 
-                Thread thread = new ClientHandler(socket, inputStream, outputStream);
+                Thread thread = new ClientHandler(socket, inputStream, outputStream, this.properties);
                 thread.start();
             }
             catch(Exception e) {

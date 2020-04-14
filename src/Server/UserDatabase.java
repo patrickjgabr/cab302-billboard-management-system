@@ -6,18 +6,11 @@ import Shared.*;
 
 public class UserDatabase extends Database{
 
-    private User user;
     private ResultSet results;
 
-    public UserDatabase(User user) {
+    public UserDatabase(Properties properties) {
         //CHANGE
-        super(new Properties("jdbc:mariadb://localhost:3306/applicationdatabase", "root", "password"));
-        this.user = user;
-    }
-
-    public UserDatabase() {
-        //CHANGE
-        super(new Properties("jdbc:mariadb://localhost:3306/applicationdatabase", "root", "password"));
+        super(properties);
     }
 
     public User getUser(boolean byID, String value) {
@@ -106,7 +99,7 @@ public class UserDatabase extends Database{
         return  permissions;
     }
 
-    public boolean isInTable() {
+    public boolean isInTable(User user) {
         boolean returnValue = false;
 
         if(user != null) {
@@ -126,19 +119,19 @@ public class UserDatabase extends Database{
         return returnValue;
     }
 
-    public void updateDatabase() {
-        if (isInTable()) {
-            updateUserTable();
-            updatePermissionsTable();
+    public void updateDatabase(User user) {
+        if (isInTable(user)) {
+            updateUserTable(user);
+            updatePermissionsTable(user);
         }
     }
 
-    private void updateUserTable() {
+    private void updateUserTable(User user) {
         String sqlUpdate = "update users set userPassword = " + "\"" + user.getUserPassword() + "\"" + "where userID = " + user.getUserID();
         super.runUpdateQuery(sqlUpdate);
     }
 
-    private void updatePermissionsTable() {
+    private void updatePermissionsTable(User user) {
         String sqlUpdate = "update permissions set createUser = " + "\"" + user.getPermission().get(0) + "\", " +
                                 "editUser = " + "\"" + user.getPermission().get(1) + "\", " +
                                 "deleteUser = " + "\"" + user.getPermission().get(2) + "\", " +
@@ -153,34 +146,38 @@ public class UserDatabase extends Database{
         super.runUpdateQuery(sqlUpdate);
     }
 
-    public void addToDatabase() {
-        if (!isInTable()) {
-            addToUserTable();
-            updateUserID();
-            addToPermissionsTable();
+    public void addToDatabase(User user) {
+        if (!isInTable(user)) {
+            addToUserTable(user);
+            String userID = getNewUserID(user);
+            addToPermissionsTable(userID, user);
             System.out.println("User added");
         }
     }
 
     //Add hashing here will need another select statement
-    private void addToUserTable() {
+    private void addToUserTable(User user) {
         String sqlInsert ="insert into users (userName, userPassword) values (\"" + user.getUserName() + "\"" + ",\"" + user.getUserPassword() + "\"" + ")";
         super.runInsertQuery(sqlInsert);
     }
 
-    private void updateUserID() {
+    private String getNewUserID(User user) {
+        String returnID = "";
+
         try {
             String sqlSelect = "select * from users where userName = \"" + user.getUserName() + "\"";
             results = super.runSelectQuery(sqlSelect);
             results.next();
-            user.setUserID(results.getInt("userID"));
+            returnID = results.getString("userID");
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return returnID;
     }
 
-    private void addToPermissionsTable() {
-        String sqlInsert = "insert into permissions value (" + user.getUserID() + ", " + user.getPermission().get(0) + ", " + user.getPermission().get(1) + ", " +
+    private void addToPermissionsTable(String userID, User user) {
+        String sqlInsert = "insert into permissions value (" + userID + ", " + user.getPermission().get(0) + ", " + user.getPermission().get(1) + ", " +
                     user.getPermission().get(2) + ", " + user.getPermission().get(3) + ", " + user.getPermission().get(4) + ", " +
                     user.getPermission().get(5) + ", " + user.getPermission().get(6) + ", " + user.getPermission().get(7) + ", " +
                     user.getPermission().get(8) + "," + user.getPermission().get(9)+ ")";

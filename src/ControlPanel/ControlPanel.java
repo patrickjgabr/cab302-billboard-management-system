@@ -33,7 +33,7 @@ public class ControlPanel {
         UserAuthentication session = new UserAuthentication();
         session.getSubmit().addActionListener(e -> {
             try {
-                Client client = new Client("127.0.0.1", 8080);
+                Client client = new Client();
                 Message login = new Message().requestUser(session.getUsername(), session.getPassword());
                 System.out.println("Logged in via server");
                 Message reply = client.sendMessage(login);

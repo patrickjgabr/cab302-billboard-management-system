@@ -8,9 +8,9 @@ public class BillboardDatabase extends Database {
 
     private ResultSet results;
 
-    public BillboardDatabase() {
+    public BillboardDatabase(Properties properties) {
         //CHANGE
-        super(new Properties("jdbc:mariadb://localhost:3306/applicationdatabase", "root", "password"));
+        super(properties);
     }
 
     public boolean isInTable(Billboard billboard) {
