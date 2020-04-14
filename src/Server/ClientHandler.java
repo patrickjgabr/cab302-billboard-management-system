@@ -30,7 +30,7 @@ public class ClientHandler extends Thread {
             MessageHandler messageHandler = new MessageHandler(receivedMessage);
             Message returnMessage = messageHandler.getReturnMessage();
 
-            outputStream.writeObject(receivedMessage);
+            outputStream.writeObject(returnMessage);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }

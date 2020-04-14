@@ -9,26 +9,26 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class UserAuthentication extends JFrame {
-    private Session session;
-    private boolean valid;
     private JButton submit;
     private JFrame frame;
+    private JTextField username;
+    private JTextField password;
 
 
     public UserAuthentication() {
         this.frame = new JFrame();
         JLabel user_label = new JLabel();
         user_label.setText("User Name :");
-        JTextField userName_text = new JTextField();
+        this.username = new JTextField();
         JLabel password_label = new JLabel();
         password_label.setText("Password :");
-        JPasswordField password_text = new JPasswordField();
+        this.password = new JPasswordField();
         this.submit = new JButton("SUBMIT");
         JPanel panel = new JPanel(new GridLayout(3, 1));
         panel.add(user_label);
-        panel.add(userName_text);
+        panel.add(username);
         panel.add(password_label);
-        panel.add(password_text);
+        panel.add(password);
         JLabel message = new JLabel();
         panel.add(message);
         panel.add(submit);
@@ -39,24 +39,13 @@ public class UserAuthentication extends JFrame {
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
         ArrayList<Boolean> permissions = new ArrayList<>();
-        setSession(new Session("name","something", permissions));
-
     }
-
-
-
-    public void setSession(Session session) {
-        this.session = session;
+    public String getUsername() {
+        return username.getText();
     }
-
-    public Session getSession() {
-        return session;
+    public String getPassword() {
+        return password.getText();
     }
-
-    public boolean sessionCheck() {
-        return true;
-    } //only return true if valid
-
     public JButton getSubmit() {
         return submit;
     }

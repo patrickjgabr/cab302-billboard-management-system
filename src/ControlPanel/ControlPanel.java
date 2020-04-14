@@ -1,6 +1,7 @@
 package ControlPanel;
 
 import Shared.Billboard;
+import Shared.Message;
 import Shared.Session;
 import Shared.TestCase;
 import static ControlPanel.CustomFont.*;
@@ -11,6 +12,9 @@ import java.util.ArrayList;
 
 public class ControlPanel {
     private static void ShowControlPanel() {
+
+
+
         ArrayList<Billboard> billboards = TestCase.billboards();
         JFrame frame = GUI.SetupFrame();
         JTabbedPane pane = new JTabbedPane();
@@ -28,11 +32,14 @@ public class ControlPanel {
     public static void main(String[] args) {
         UserAuthentication session = new UserAuthentication();
         session.getSubmit().addActionListener(e -> {
-            boolean sessionCheck = session.sessionCheck();
-            if(sessionCheck) {
+            try {
+                Client client = new Client("127.0.0.1", 8080);
+                Message login = new Message().requestUser(session.getUsername(), session.getPassword());
+                System.out.println("Logged in via server");
+                Message reply = client.sendMessage(login);
                 session.getFrame().setVisible(false);
                 ShowControlPanel();
-            } else {
+            } catch (Exception error) {
                 System.out.println("login failed");
             }
         });

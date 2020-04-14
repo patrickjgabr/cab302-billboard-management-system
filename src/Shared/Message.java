@@ -26,37 +26,45 @@ public class Message implements Serializable {
         this.session = session;
     }
 
-    public void requestUser(String username) {
+    public Message requestUser(String username, String password) {
         this.communicationID = 10;
-        this.data = username;
+        this.data = new String[]{username,password};
+        return this;
     }
 
-    public void requestBillboards() {
+    public Message requestBillboards() {
         this.communicationID = 20;
+        return this;
 
     }
-    public void createBillboard(Billboard billboard) {
+    public Message createBillboard(Billboard billboard) {
         this.communicationID = 21;
         this.data = billboard;
+        return this;
     }
 
-    public void updateBillboard(Billboard billboard) {
+    public Message updateBillboard(Billboard billboard) {
         this.communicationID = 22;
         this.data = billboard;
+        return this;
     }
-    public void requestUsers() {
+    public Message requestUsers() {
         this.communicationID = 30;
+        return this;
     }
-    public void createUsers(User user) {
+    public Message createUsers(User user) {
         this.communicationID = 31;
         this.data = user;
+        return this;
     }
-    public void updateUser(User user) {
+    public Message updateUser(User user) {
         this.communicationID = 32;
         this.data = user;
+        return this;
     }
-    public void requestSchedule() {
+    public Message requestSchedule() {
         this.communicationID = 40;
+        return this;
     }
 
     /**
@@ -68,9 +76,10 @@ public class Message implements Serializable {
     }
     **/
 
-    public void updateScheduledBillboard(Session session, Billboard billboard) {
+    public Message updateScheduledBillboard(Session session, Billboard billboard) {
         this.communicationID = 42;
         this.data = billboard;
+        return this;
     }
 
 
