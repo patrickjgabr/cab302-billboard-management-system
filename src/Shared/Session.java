@@ -9,10 +9,8 @@ public class Session {
     private String userName;
     private String sessionToken;
     private ArrayList<Boolean> permission;
-    private String IP;
 
-    public Session(String userName, String sessionToken, ArrayList<Boolean> permission) {
-        this.userName = userName;
+    public Session(String sessionToken, ArrayList<Boolean> permission) {
         this.sessionToken = sessionToken;
         this.permission = permission;
     }
@@ -31,14 +29,6 @@ public class Session {
 
     public void setSessionToken(String sessionToken) {
         this.sessionToken = sessionToken;
-    }
-
-    public String getIP() {
-        return IP;
-    }
-
-    public void setIP(String IP) {
-        this.IP = IP;
     }
 
     public ArrayList<Boolean> getPermission() {
