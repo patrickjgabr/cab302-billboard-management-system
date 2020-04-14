@@ -3,7 +3,7 @@ import Shared.*;
 import java.util.ArrayList;
 
 public class TestCase {
-    public static ArrayList<User> Users () {
+    public static ArrayList<User> users () {
         ArrayList<User> users = new ArrayList<>();
         ArrayList<Integer> perms = new ArrayList<>();
         perms.add(0,1);
@@ -24,5 +24,11 @@ public class TestCase {
         perms.add(3,0);
         users.add(new User("user2", "pass",perms, 0));
         return users;
+    }
+
+    public static ArrayList<Billboard> billboards () {
+        ArrayList<Billboard> billboards = new ArrayList<>();
+        billboards.add(new Billboard("creatorName", "name", "imageUrl", "msgText", "msgColour", "bgColour", "infoText", "infoColour"));
+        return billboards;
     }
 }

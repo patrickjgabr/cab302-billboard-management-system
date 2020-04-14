@@ -24,7 +24,7 @@ public class Client {
 
     }
 
-    public Message sendMessgae(Message message) {
+    public Message sendMessage(Message message) {
         Message returnMessage = new Message();
 
         try {

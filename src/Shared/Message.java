@@ -18,6 +18,10 @@ public class Message implements Serializable {
     /**
      * Blank constuctor which can be used to create a blank CommunicationPacket
      */
+    public Message() {
+
+    }
+
     public Message(Session session) {
         this.session = session;
     }
