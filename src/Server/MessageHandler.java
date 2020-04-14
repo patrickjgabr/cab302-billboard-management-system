@@ -64,8 +64,8 @@ public class MessageHandler {
 
     private void handleUpdateBillboard() {
         try {
-            BillboardDatabase billboardDB = new BillboardDatabase((Billboard)sentMessage.getData());
-            billboardDB.updateDatabase();
+            BillboardDatabase billboardDB = new BillboardDatabase();
+            billboardDB.updateDatabase((Billboard)sentMessage.getData());
             returnMessage.setData(200);
         } catch (Exception e) {
             returnMessage.setData(500);
@@ -74,8 +74,8 @@ public class MessageHandler {
 
     private void handleAddBillboard() {
         try {
-            BillboardDatabase billboardDB = new BillboardDatabase((Billboard)sentMessage.getData());
-            billboardDB.addToDatabase();
+            BillboardDatabase billboardDB = new BillboardDatabase();
+            billboardDB.addToDatabase((Billboard)sentMessage.getData());
             returnMessage.setData(200);
         } catch (Exception e) {
             returnMessage.setData(500);

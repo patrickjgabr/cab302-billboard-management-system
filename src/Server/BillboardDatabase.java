@@ -1,31 +1,25 @@
 package Server;
 
 import java.sql.*;
+
 import Shared.*;
 
-public class BillboardDatabase{
+public class BillboardDatabase extends Database {
 
-
-    private Billboard billboard;
-    private Connection connection;
-    private Statement statement;
     private ResultSet results;
 
-    public BillboardDatabase(Billboard billboard) {this.billboard = billboard;}
+    public BillboardDatabase() {
+        //CHANGE
+        super(new Properties("jdbc:mariadb://localhost:3306/applicationdatabase", "root", "password"));
+    }
 
-    public BillboardDatabase() {}
-
-    public boolean isInTable() {
+    public boolean isInTable(Billboard billboard) {
         boolean returnValue = false;
 
         try {
-            connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/applicationdatabase", "root", "password");
-            statement = connection.createStatement();
-
             String sqlSelect = "select billboardID from billboards where billboardID = " + billboard.getBillboardID();
-            results = statement.executeQuery(sqlSelect);
+            results = super.runSelectQuery(sqlSelect);
             returnValue = results.first();
-            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -36,10 +30,8 @@ public class BillboardDatabase{
         Billboard[] billboards = {};
 
         try {
-            connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/applicationdatabase", "root", "password");
-            statement = connection.createStatement();
             String sqlSelect = "SELECT * FROM billboards";
-            results = statement.executeQuery(sqlSelect);
+            results = super.runSelectQuery(sqlSelect);
 
             results.last();
             billboards = new Billboard[results.getRow()];
@@ -62,9 +54,6 @@ public class BillboardDatabase{
         Billboard returnValue = new Billboard();
 
         try {
-
-            connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/applicationdatabase", "root", "password");
-            statement = connection.createStatement();
             String sqlSelect;
 
             if(byID) {
@@ -74,7 +63,7 @@ public class BillboardDatabase{
                 sqlSelect = "SELECT * FROM billboards WHERE name = \"" + value + "\"";
             }
 
-            results = statement.executeQuery(sqlSelect);
+            results = super.runSelectQuery(sqlSelect);
             results.next();
 
             returnValue = resultsSetToBillboard(results);
@@ -111,13 +100,9 @@ public class BillboardDatabase{
         return returnValue;
     }
 
-    public void updateDatabase() {
-        if (isInTable()) {
-            try {
-                connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/applicationdatabase", "root", "password");
-                statement = connection.createStatement();
-
-                String sqlUpdate = "update billboards set name = " + "\"" + billboard.getName()+ "\", " +
+    public void updateDatabase(Billboard billboard) {
+        if (isInTable(billboard)) {
+            String sqlUpdate = "update billboards set name = " + "\"" + billboard.getName()+ "\", " +
                         "imageUrl = " + "\"" + billboard.getPictureLink() + "\", " +
                         "messageText = " + "\"" + billboard.getMessageText() + "\", " +
                         "messageTextColour = " + "\"" + billboard.getMessageTextColour() + "\", " +
@@ -126,27 +111,13 @@ public class BillboardDatabase{
                         "informationTextColour = " + "\"" + billboard.getBackgroundColour() + "\"" +
                         "where billboardID = " + billboard.getBillboardID();
 
-                statement.executeQuery(sqlUpdate);
-                connection.close();
-                System.out.println("Billboard update");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
+            super.runUpdateQuery(sqlUpdate);
         }
-        else {
-            System.out.println("Billboard not updated");
-        }
-
     }
 
-    public void addToDatabase() {
-        if(!isInTable()) {
-            try {
-                connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/applicationdatabase", "root", "password");
-                statement = connection.createStatement();
-
-                String sqlInsert = "insert into billboards values ( NULL, " + "\"" + billboard.getCreatorName() + "\", " +
+    public void addToDatabase(Billboard billboard) {
+        if(!isInTable(billboard)) {
+            String sqlInsert = "insert into billboards values ( NULL, " + "\"" + billboard.getCreatorName() + "\", " +
                                                                     "\"" + billboard.getName() + "\", " +
                                                                     "\"" + billboard.getPictureLink() + "\", " +
                                                                     "\"" + billboard.getMessageText() + "\", " +
@@ -154,15 +125,7 @@ public class BillboardDatabase{
                                                                     "\"" + billboard.getBackgroundColour() + "\", " +
                                                                     "\"" + billboard.getInformationText() + "\", " +
                                                                     "\"" + billboard.getInformationTextColour() + "\")";
-                statement.executeQuery(sqlInsert);
-                connection.close();
-                System.out.println("Billboard added");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        else {
-            System.out.println("Billboard not added");
+            super.runInsertQuery(sqlInsert);
         }
     }
 }

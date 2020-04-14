@@ -4,32 +4,26 @@ import java.sql.*;
 import java.util.ArrayList;
 import Shared.*;
 
-public class UserDatabase {
+public class UserDatabase extends Database{
 
     private User user;
-    private Connection connection;
-    private Statement statement;
     private ResultSet results;
 
     public UserDatabase(User user) {
+        //CHANGE
+        super(new Properties("jdbc:mariadb://localhost:3306/applicationdatabase", "root", "password"));
         this.user = user;
     }
 
     public UserDatabase() {
-
+        //CHANGE
+        super(new Properties("jdbc:mariadb://localhost:3306/applicationdatabase", "root", "password"));
     }
-
-    //public Session login(String userName) {
-
-    //}
 
     public User getUser(boolean byID, String value) {
         User returnValue = new User();
 
         try {
-
-            connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/applicationdatabase", "root", "password");
-            statement = connection.createStatement();
             String sqlSelect;
 
             if(byID) {
@@ -39,7 +33,7 @@ public class UserDatabase {
                 sqlSelect = "SELECT * FROM USERS t1 JOIN PERMISSIONS t2 ON t2.userID = t1.userID WHERE t1.userName = \"" + value + "\"";
             }
 
-            results = statement.executeQuery(sqlSelect);
+            results = super.runSelectQuery(sqlSelect);
             results.next();
 
             returnValue = resultsSetToUser(results);
@@ -55,10 +49,9 @@ public class UserDatabase {
         User[] allUser = {};
 
         try {
-            connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/applicationdatabase", "root", "password");
-            statement = connection.createStatement();
+
             String sqlSelect = "SELECT * FROM USERS t1 JOIN PERMISSIONS t2 ON t2.userID = t1.userID";
-            results = statement.executeQuery(sqlSelect);
+            results = super.runSelectQuery(sqlSelect);
 
             results.last();
             allUser = new User[results.getRow()];
@@ -118,16 +111,16 @@ public class UserDatabase {
 
         if(user != null) {
             try {
-                connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/applicationdatabase", "root", "password");
-                statement = connection.createStatement();
-
                 String sqlSelect = "select userID from users where userID = " + user.getUserID().toString();
-                results = statement.executeQuery(sqlSelect);
+                results = super.runSelectQuery(sqlSelect);
                 returnValue = results.first();
-                connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        }
+
+        if (returnValue) {
+            System.out.println("User already exists in table");
         }
 
         return returnValue;
@@ -135,34 +128,18 @@ public class UserDatabase {
 
     public void updateDatabase() {
         if (isInTable()) {
-            try {
-                connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/applicationdatabase", "root", "password");
-                statement = connection.createStatement();
-                updateUserTable();
-                updatePermissionsTable();
-                connection.close();
-                System.out.println("User updated");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        else {
-            System.out.println("User not updated");
+            updateUserTable();
+            updatePermissionsTable();
         }
     }
 
     private void updateUserTable() {
-        try {
-            String sqlUpdate = "update users set userPassword = " + "\"" + user.getUserPassword() + "\"" + "where userID = " + user.getUserID();
-            statement.executeQuery(sqlUpdate);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        String sqlUpdate = "update users set userPassword = " + "\"" + user.getUserPassword() + "\"" + "where userID = " + user.getUserID();
+        super.runUpdateQuery(sqlUpdate);
     }
 
     private void updatePermissionsTable() {
-        try {
-            String sqlUpdate = "update permissions set createUser = " + "\"" + user.getPermission().get(0) + "\", " +
+        String sqlUpdate = "update permissions set createUser = " + "\"" + user.getPermission().get(0) + "\", " +
                                 "editUser = " + "\"" + user.getPermission().get(1) + "\", " +
                                 "deleteUser = " + "\"" + user.getPermission().get(2) + "\", " +
                                 "changePassword = " + "\"" + user.getPermission().get(3) + "\", " +
@@ -173,44 +150,28 @@ public class UserDatabase {
                                 "viewSchedule = " + "\"" + user.getPermission().get(8) + "\", " +
                                 "editSchedule = " + "\"" + user.getPermission().get(9) + "\"" +
                                 "where userID = " + user.getUserID();
-            statement.executeQuery(sqlUpdate);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        super.runUpdateQuery(sqlUpdate);
     }
 
     public void addToDatabase() {
         if (!isInTable()) {
-            try {
-                connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/applicationdatabase", "root", "password");
-                statement = connection.createStatement();
-                addToUserTable();
-                updateUserID();
-                addToPermissionsTable();
-                connection.close();
-                System.out.println("User added");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        else {
-            System.out.println("User not added");
+            addToUserTable();
+            updateUserID();
+            addToPermissionsTable();
+            System.out.println("User added");
         }
     }
 
+    //Add hashing here will need another select statement
     private void addToUserTable() {
-        try {
-            String sqlInsert ="insert into users values ( NULL" + ",\"" + user.getUserName() + "\"" + ",\"" + user.getUserPassword() + "\"" + ")";
-            statement.executeQuery(sqlInsert);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        String sqlInsert ="insert into users (userName, userPassword) values (\"" + user.getUserName() + "\"" + ",\"" + user.getUserPassword() + "\"" + ")";
+        super.runInsertQuery(sqlInsert);
     }
 
     private void updateUserID() {
         try {
             String sqlSelect = "select * from users where userName = \"" + user.getUserName() + "\"";
-            results = statement.executeQuery(sqlSelect);
+            results = super.runSelectQuery(sqlSelect);
             results.next();
             user.setUserID(results.getInt("userID"));
         } catch (SQLException e) {
@@ -219,14 +180,11 @@ public class UserDatabase {
     }
 
     private void addToPermissionsTable() {
-        try {
-            String sqlInsert = "insert into permissions value (" + user.getUserID() + ", " + user.getPermission().get(0) + ", " + user.getPermission().get(1) + ", " +
+        String sqlInsert = "insert into permissions value (" + user.getUserID() + ", " + user.getPermission().get(0) + ", " + user.getPermission().get(1) + ", " +
                     user.getPermission().get(2) + ", " + user.getPermission().get(3) + ", " + user.getPermission().get(4) + ", " +
                     user.getPermission().get(5) + ", " + user.getPermission().get(6) + ", " + user.getPermission().get(7) + ", " +
                     user.getPermission().get(8) + "," + user.getPermission().get(9)+ ")";
-            statement.executeQuery(sqlInsert);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        super.runInsertQuery(sqlInsert);
+
     }
 }

@@ -2,26 +2,17 @@ package Server;
 
 import Shared.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class Main_Database {
 
     public static void main(String[] args) {
- //       UserDatabase userDatabase = new UserDatabase();
- //       User[] getUserValue = userDatabase.getUsers();
 
- //       for (User user: getUserValue) {
- //           System.out.println(user.getUserID());
- //       }
+        Billboard newBilboard = new Billboard("test", "test", "test", "test", "test", "test", "test", "test");
 
-        BillboardDatabase billboardDatabase = new BillboardDatabase();
-
-        Billboard getValue = billboardDatabase.getBillboard(true, "100001");
-        System.out.println(getValue.generateXML());
-
-        Billboard[] getValues = billboardDatabase.getBillboards();
-
-        for (Billboard billboard: getValues) {
-            System.out.println(billboard.generateXML());
-        }
+        BillboardDatabase billboardDB = new BillboardDatabase();
+        billboardDB.addToDatabase(newBilboard);
 
     }
 }
