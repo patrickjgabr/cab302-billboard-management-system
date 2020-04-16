@@ -39,12 +39,4 @@ public class ClientHandler extends Thread {
 
         System.out.println("Client handler socket closed...");
     }
-
-    private void handleEchoMessage(Message received ) {
-        try {
-            outputStream.writeObject(received);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
