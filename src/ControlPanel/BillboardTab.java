@@ -27,7 +27,7 @@ public class BillboardTab{
     private ArrayList<Billboard> billboards;
     private JPanel pane;
 
-    public BillboardTab(JTabbedPane mainPane, ArrayList<Billboard> billboards){
+    public BillboardTab(JTabbedPane mainPane, boolean[]permissions, ArrayList<Billboard> billboards){
         this.billboards = billboards;
         this.pane = new JPanel();                                                           //first tab
         pane.setLayout(new GridBagLayout());

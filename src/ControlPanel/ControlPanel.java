@@ -11,16 +11,18 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class ControlPanel {
-    private static void ShowControlPanel() {
+    private static void ShowControlPanel(boolean[] permissions) {
 
 
-
+        if (permissions[0]) {
+            System.out.println("true");
+        }
         ArrayList<Billboard> billboards = TestCase.billboards();
         JFrame frame = GUI.SetupFrame();
         JTabbedPane pane = new JTabbedPane();
-        BillboardTab billboardsPane = new BillboardTab(pane, billboards); // need to add permissions
-        UserManagementTab schedulePane = new UserManagementTab(pane);
-        ScheduleTab userManagementPane = new ScheduleTab(pane);
+        BillboardTab billboardsPane = new BillboardTab(pane, permissions, billboards);
+        ScheduleTab userManagementPane = new ScheduleTab(pane, permissions);
+        UserManagementTab schedulePane = new UserManagementTab(pane, permissions);
         pane.setFont(tabs);
         frame.getContentPane().add(pane);
         frame.pack();
@@ -33,12 +35,13 @@ public class ControlPanel {
         UserAuthentication session = new UserAuthentication();
         session.getSubmit().addActionListener(e -> {
             try {
-                Client client = new Client();
-                Message login = new Message().requestUser(session.getUsername(), session.getPassword());
-                System.out.println("Logged in via server");
-                Message reply = client.sendMessage(login);
+                //Client client = new Client();
+                //Message login = new Message().requestUser(session.getUsername(), session.getPassword());
+                //System.out.println("Logged in via server");
+                //Message reply = client.sendMessage(login);
                 session.getFrame().setVisible(false);
-                ShowControlPanel();
+                boolean[] permissions = {true,true,true,true};
+                ShowControlPanel(permissions);
             } catch (Exception error) {
                 System.out.println("login failed");
             }
