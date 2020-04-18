@@ -13,7 +13,6 @@ public class UserDatabase extends Database{
     private ResultSet results;
 
     public UserDatabase(Properties properties) {
-        //CHANGE
         super(properties);
     }
 
@@ -42,22 +41,17 @@ public class UserDatabase extends Database{
         return returnValue;
     }
 
-    public User[] getUsers() {
-        User[] allUser = {};
+    public ArrayList<User> getUsers() {
+        ArrayList<User> allUser = new ArrayList<>();
 
         try {
 
             String sqlSelect = "SELECT * FROM USERS t1 JOIN PERMISSIONS t2 ON t2.userID = t1.userID";
             results = super.runSelectQuery(sqlSelect);
 
-            results.last();
-            allUser = new User[results.getRow()];
-            results.beforeFirst();
-
-            Integer index = 0;
             while(results.next()) {
-                allUser[index] = resultsSetToUser(results);
-                index++;
+                User user = resultsSetToUser(results);
+                allUser.add(user);
             }
         } catch (SQLException e) {
             e.printStackTrace();

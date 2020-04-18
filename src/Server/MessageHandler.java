@@ -1,6 +1,9 @@
 package Server;
 import Shared.*;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 public class MessageHandler {
     
     private Message sentMessage;
@@ -60,7 +63,7 @@ public class MessageHandler {
     private void handleGetUsers() {
         try {
             UserDatabase userDB = new UserDatabase(properties);
-            User[] requestedUsers = userDB.getUsers();
+            ArrayList<User> requestedUsers = userDB.getUsers();
             returnMessage.setData(requestedUsers);
         } catch (Exception e) {
             returnMessage.setData(500);
@@ -101,7 +104,7 @@ public class MessageHandler {
     private void handleGetBillboards() {
         try {
             BillboardDatabase billboardDB = new BillboardDatabase(properties);
-            Billboard[] requestedBillboards = billboardDB.getBillboards();
+            ArrayList<Billboard> requestedBillboards = billboardDB.getBillboards();
             returnMessage.setData(requestedBillboards);
         } catch (Exception e) {
             returnMessage.setData(500);

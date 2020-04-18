@@ -1,6 +1,7 @@
 package Server;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 import Shared.*;
 
@@ -9,7 +10,6 @@ public class BillboardDatabase extends Database {
     private ResultSet results;
 
     public BillboardDatabase(Properties properties) {
-        //CHANGE
         super(properties);
     }
 
@@ -26,21 +26,16 @@ public class BillboardDatabase extends Database {
         return returnValue;
     }
 
-    public Billboard[] getBillboards() {
-        Billboard[] billboards = {};
+    public ArrayList<Billboard> getBillboards() {
+        ArrayList<Billboard> billboards = new ArrayList<>();
 
         try {
             String sqlSelect = "SELECT * FROM billboards";
             results = super.runSelectQuery(sqlSelect);
 
-            results.last();
-            billboards = new Billboard[results.getRow()];
-            results.beforeFirst();
-
-            Integer index = 0;
             while(results.next()) {
-                billboards[index] = resultsSetToBillboard(results);
-                index++;
+                Billboard billboard = resultsSetToBillboard(results);
+                billboards.add(billboard);
             }
         } catch (SQLException e) {
             e.printStackTrace();
