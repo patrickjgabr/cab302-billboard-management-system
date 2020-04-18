@@ -9,6 +9,10 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ *Server class which handles all of the server side components. This class runs constantly
+ */
+
 public class Server {
 
     private ServerSocket serverSocket;
@@ -21,6 +25,8 @@ public class Server {
     public Server() {
         try {
             this.properties = new Properties();
+            Database database = new Database(properties);
+            database.checkDatabase();
             try {
                 serverSocket = new ServerSocket(Integer.parseInt(properties.getServerPort()));
                 socket = null;
@@ -30,8 +36,6 @@ public class Server {
         } catch (FileNotFoundException e) {
             System.out.println("Properties file failed to be read. Please ensure file named \"Properties.txt\" is in \"externalResources\" folder");
         }
-
-
     }
 
     public void run() {
