@@ -92,4 +92,6 @@ public class User implements Serializable {
     public void setUserID(Integer userID) {
         this.userID = userID;
     }
+
+    public void setUserPassword(String userPassword) {this.userPassword = userPassword;}
 }
