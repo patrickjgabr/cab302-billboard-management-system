@@ -167,6 +167,15 @@ public class BillboardTab{
                 updateTable();
             }
         });
+
+        exportButton.addActionListener(e -> {
+            JFileChooser f = new JFileChooser();
+            f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            f.showSaveDialog(null);
+            System.out.println(f.getSelectedFile());
+        });
+
+
         pane.add(createButton,GUI.newButtonConstraints(0,0));                  //place button 2 at (2,1)
         pane.add(previewButton,GUI.newButtonConstraints(4,0));                 //place button 1 at (0,1)
         pane.add(importButton,GUI.newButtonConstraints(1,0));
