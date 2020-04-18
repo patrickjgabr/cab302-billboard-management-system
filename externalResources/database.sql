@@ -1,14 +1,10 @@
- DROP DATABASE IF EXISTS applicationDatabase;
- CREATE DATABASE testDatabase;
- USE testDatabase;
- 
- CREATE TABLE `users` (
+CREATE TABLE `users` (
  	`userID` INT NOT NULL AUTO_INCREMENT,
  	`userName` VARCHAR(64) NOT NULL UNIQUE,
  	`userPassword` VARCHAR(64) NOT NULL,
  	
  	PRIMARY KEY (`userID`)
- );
+);
  
 CREATE TABLE `billboards` (
   `billboardID` INT NOT NULL AUTO_INCREMENT,
@@ -24,7 +20,7 @@ CREATE TABLE `billboards` (
   PRIMARY KEY (`billboardID`)
 );
  
- CREATE TABLE `permissions` (
+CREATE TABLE `permissions` (
   `userID` INT NOT NULL,
   `createUser` INT NOT NULL,
   `editUser` INT NOT NULL,
