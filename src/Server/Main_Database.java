@@ -17,7 +17,5 @@ public class Main_Database {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
-
     }
 }

@@ -1,7 +1,11 @@
 package Server;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import Shared.*;
 
 public class UserDatabase extends Database{
@@ -127,7 +131,16 @@ public class UserDatabase extends Database{
     }
 
     private void updateUserTable(User user) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            user.setUserPassword(Arrays.toString(md.digest(String.format("%s%s", user.getUserID(), user.getUserPassword()).getBytes())));
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
         String sqlUpdate = "update users set userPassword = " + "\"" + user.getUserPassword() + "\"" + "where userID = " + user.getUserID();
+
         super.runUpdateQuery(sqlUpdate);
     }
 
@@ -151,6 +164,7 @@ public class UserDatabase extends Database{
             addToUserTable(user);
             String userID = getNewUserID(user);
             addToPermissionsTable(userID, user);
+            updateUserTable(user);
             System.out.println("User added");
         }
     }
