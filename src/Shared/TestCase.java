@@ -28,7 +28,9 @@ public class TestCase {
 
     public static ArrayList<Billboard> billboards () {
         ArrayList<Billboard> billboards = new ArrayList<>();
-        billboards.add(new Billboard("creatorName", "name", "imageUrl", "msgText", "msgColour", "bgColour", "infoText", "infoColour"));
+        billboards.add(new Billboard("creatorName", "name", "imageUrl", "msgText", "", "#000FFF", "infoText", ""));
+        billboards.add(new Billboard("Harry", "Test", "NA", "This is the main test", "", "", "info text", ""));
+
         return billboards;
     }
 }

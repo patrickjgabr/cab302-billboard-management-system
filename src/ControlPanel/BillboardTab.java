@@ -1,5 +1,6 @@
 package ControlPanel;
 import Shared.Billboard;
+import Viewer.BillboardToImage;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -131,9 +132,10 @@ public class BillboardTab{
             }
         });
 
-        previewButton.addActionListener(e -> JOptionPane.showMessageDialog(null, "Not yet implemented."));
 
-
+        previewButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(null, BillboardToImage.Generate(billboards.get(rowSelected.getMinSelectionIndex())), "Preview: ", JOptionPane.INFORMATION_MESSAGE);
+        });
 
 
         importButton.addActionListener(e -> {

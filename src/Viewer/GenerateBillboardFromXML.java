@@ -1,6 +1,6 @@
 package Viewer;
 
-import ControlPanel.CustomFont;
+//import ControlPanel.CustomFont;
 import Shared.Billboard;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -17,7 +17,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-public class GenerateImage {
+public class GenerateBillboardFromXML{
     public static Billboard XMLToBillboard(File XMLFile, String name){
         String background = "";
         String message = "";
@@ -61,27 +61,4 @@ public class GenerateImage {
         }
         return new Billboard("Test Creator Name", name, URL, message, msgColour, background, info, infoColour);
     }
-                         //ignore for now please i might come back to it later but if not i will delete - Harry.
-            /*
-        BufferedImage bi = new BufferedImage(1280,720, BufferedImage.TYPE_INT_RGB);
-        Graphics gr = bi.getGraphics();
-        gr.setColor(background);
-        gr.fillRect(0,0,bi.getWidth(),bi.getHeight());
-
-        gr.setColor(messageText);
-        gr.setFont(new Font("Monospaced", Font.BOLD, 24));
-        gr.drawString(message, 100, 200);
-
-        gr.setColor(infoText);
-        gr.setFont(new Font("Monospaced", Font.BOLD, 20));
-        gr.drawString(info, 140, 600);
-
-        //ImageIO.write(bi, "png", new File("."));
-
-        JFrame f = new JFrame();
-        f.getContentPane().add(new JLabel(new ImageIcon(bi)));
-        f.pack();
-        f.setVisible(true);
-        System.out.println("Success");
-         */
 }
