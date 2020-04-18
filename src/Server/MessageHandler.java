@@ -90,7 +90,8 @@ public class MessageHandler {
     private void handleGetUser() {
         try {
             UserDatabase userDB = new UserDatabase(properties);
-            User requestedUser = userDB.getUser(false, (String) sentMessage.getData());
+
+            User requestedUser = userDB.getUser(false, (String[]) sentMessage.getData());
             returnMessage.setData(requestedUser);
         } catch (Exception e) {
             returnMessage.setData(500);

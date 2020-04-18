@@ -35,10 +35,10 @@ public class ControlPanel {
         UserAuthentication session = new UserAuthentication();
         session.getSubmit().addActionListener(e -> {
             try {
-                //Client client = new Client();
-                //Message login = new Message().requestUser(session.getUsername(), session.getPassword());
-                //System.out.println("Logged in via server");
-                //Message reply = client.sendMessage(login);
+                Client client = new Client();
+                Message login = new Message().requestUser(session.getUsername(), session.getPassword());
+                System.out.println("Logged in via server");
+                Message reply = client.sendMessage(login);
                 session.getFrame().setVisible(false);
                 boolean[] permissions = {true,true,true,true};
                 ShowControlPanel(permissions);

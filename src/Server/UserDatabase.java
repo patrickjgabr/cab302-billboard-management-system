@@ -17,17 +17,17 @@ public class UserDatabase extends Database{
         super(properties);
     }
 
-    public User getUser(boolean byID, String value) {
+    public User getUser(boolean byID, String[] value) {
         User returnValue = new User();
 
         try {
             String sqlSelect;
 
             if(byID) {
-                sqlSelect = "SELECT * FROM USERS t1 JOIN PERMISSIONS t2 ON t2.userID = t1.userID WHERE t1.userID = " + value;
+                sqlSelect = "SELECT * FROM USERS t1 JOIN PERMISSIONS t2 ON t2.userID = t1.userID WHERE t1.userID = " + value[0];
             }
             else {
-                sqlSelect = "SELECT * FROM USERS t1 JOIN PERMISSIONS t2 ON t2.userID = t1.userID WHERE t1.userName = \"" + value + "\"";
+                sqlSelect = "SELECT * FROM USERS t1 JOIN PERMISSIONS t2 ON t2.userID = t1.userID WHERE t1.userName = \"" + value[0] + "\"";
             }
 
             results = super.runSelectQuery(sqlSelect);
