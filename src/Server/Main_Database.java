@@ -12,8 +12,12 @@ public class Main_Database {
 
         try {
             Properties properties = new Properties();
-            Database db = new Database(properties);
-            db.checkDatabase();
+            ScheduleDatabase scheduleDb = new ScheduleDatabase(properties);
+            ArrayList<Event> schedule = scheduleDb.getSchedule();
+
+            for (Event event: schedule) {
+                System.out.println("BillboardID: " + event.getBillboardID() + " At start time: " + event.getStartTime() + " At end time: " + event.getEndTime());
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
