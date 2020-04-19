@@ -36,7 +36,7 @@ public class ControlPanel {
         session.getSubmit().addActionListener(e -> {
             try {
                 Client client = new Client();
-                Message login = new Message().requestUser(session.getUsername(), session.getPassword());
+                Message login = new Message().loginUser(session.getUsername(), session.getPassword());
                 System.out.println("Logged in via server");
                 Message reply = client.sendMessage(login);
                 session.getFrame().setVisible(false);

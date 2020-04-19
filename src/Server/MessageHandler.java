@@ -39,7 +39,9 @@ public class MessageHandler {
 
         //Group of if statements which directs the class to return a specific Message object based off the communicationID
         if (sentMessage.getCommunicationID() == 10) {
-            handleGetUser();
+            handleUserLogin();
+        } else if (sentMessage.getCommunicationID() == 11) {
+            handleUserLogout();
         } else if (sentMessage.getCommunicationID() == 20) {
             handleGetBillboards();
         } else if (sentMessage.getCommunicationID() == 21) {
@@ -57,6 +59,49 @@ public class MessageHandler {
         //Prints a message to the console indicating that the message handler object is closed.
         System.out.println("Message Handler closed...");
         return  returnMessage;
+    }
+
+    /**
+     * Method which handles a Message object containing communicationID 10. This indicates that the client is requesting a single
+     * user from the database.
+     */
+    private void handleUserLogin() {
+        try {
+            //Instantiates a new UserDatabase object connecting to the database specified by the Properties Object.
+            //  Uses the getUser method to get a User Object from the database.
+            UserDatabase userDB = new UserDatabase(properties);
+            User requestedUser = userDB.getUser(false, (String[]) sentMessage.getData());
+            String token = generateToken();
+
+            //Sets return data to the User object returned by the database.
+            returnMessage.setData(requestedUser.getPermission());
+            returnMessage.setSession(token);
+
+            //NEED TO ADD PUTTING TOKEN INTO DATABASE
+        } catch (Exception e) {
+
+            //Sets the return data to 500 if the Select is unsuccessful.
+            returnMessage.setData(500);
+        }
+    }
+
+    private void handleUserLogout() {
+
+    }
+
+
+    private String generateToken() {
+
+        StringBuilder tokenBuilder = new StringBuilder(64);
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvxyz!@#$%^&*()_+-={}[]:<>?,./";
+
+        for (int i = 0; i < 64; i++) {
+            int index = (int)(characters.length()* Math.random());
+            tokenBuilder.append(characters.charAt(index));
+        }
+
+        System.out.println(tokenBuilder.toString());
+        return tokenBuilder.toString();
     }
 
     /**
@@ -112,26 +157,6 @@ public class MessageHandler {
 
             //Sets return data to the ArrayList<User> returned by the database.
             returnMessage.setData(requestedUsers);
-        } catch (Exception e) {
-
-            //Sets the return data to 500 if the Select is unsuccessful.
-            returnMessage.setData(500);
-        }
-    }
-
-    /**
-     * Method which handles a Message object containing communicationID 10. This indicates that the client is requesting a single
-     * user from the database.
-     */
-    private void handleGetUser() {
-        try {
-            //Instantiates a new UserDatabase object connecting to the database specified by the Properties Object.
-            //  Uses the getUser method to get a User Object from the database.
-            UserDatabase userDB = new UserDatabase(properties);
-            User requestedUser = userDB.getUser(false, (String[]) sentMessage.getData());
-
-            //Sets return data to the User object returned by the database.
-            returnMessage.setData(requestedUser);
         } catch (Exception e) {
 
             //Sets the return data to 500 if the Select is unsuccessful.

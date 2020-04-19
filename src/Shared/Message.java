@@ -1,10 +1,6 @@
 package Shared;
 
-import Shared.Session;
-
 import java.io.Serializable;
-import java.util.List;
-import java.util.TreeMap;
 
 /**
  * Class used to create message objects which are passwed between each of the Networked components
@@ -12,7 +8,7 @@ import java.util.TreeMap;
 public class Message implements Serializable {
 
     private Integer communicationID;
-    private Session session;
+    private String session;
     private Object data;
 
     /**
@@ -22,13 +18,19 @@ public class Message implements Serializable {
 
     }
 
-    public Message(Session session) {
+    public Message(String session) {
         this.session = session;
     }
 
-    public Message requestUser(String username, String password) {
+    public Message loginUser(String username, String password) {
         this.communicationID = 10;
         this.data = new String[]{username,password};
+        return this;
+    }
+
+    public Message logoutUser(String token) {
+        this.communicationID = 11;
+        this.session = token;
         return this;
     }
 
@@ -76,18 +78,21 @@ public class Message implements Serializable {
     }
     **/
 
+
+    /**
     public Message updateScheduledBillboard(Session session, Billboard billboard) {
         this.communicationID = 42;
         this.data = billboard;
         return this;
     }
+     */
 
 
     /**
      * Returns the session information of the Control Panel
      * @return Session object which contains session information about the Control Panel
      */
-    public Session getSession() {
+    public String getSession() {
         return session;
     }
 
@@ -95,7 +100,7 @@ public class Message implements Serializable {
      * Sets the session inforamtion of the communication packet
      * @param session Session object for the Control Panel
      */
-    public void setSession(Session session) {
+    public void setSession(String session) {
         this.session = session;
     }
 
