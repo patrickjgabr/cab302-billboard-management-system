@@ -2,7 +2,6 @@ package ControlPanel;
 
 import Shared.Billboard;
 import Shared.Message;
-import Shared.Session;
 import Shared.TestCase;
 import static ControlPanel.CustomFont.*;
 import javax.swing.*;
