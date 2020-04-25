@@ -69,7 +69,7 @@ public class UserDatabase extends Database{
             String userPassword = resultSet.getString("userPassword");
             ArrayList<Integer> permission = generatePermissionsArray(resultSet);
 
-            returnValue = new User(userName, userPassword, permission, userID);
+            returnValue = new User(userName, userPassword, permission, userID, "test");
 
         } catch (SQLException e) {
             e.printStackTrace();

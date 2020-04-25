@@ -1,6 +1,6 @@
 package Shared;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.TreeMap;
 
 /**
@@ -32,6 +32,26 @@ public class Billboard implements Serializable {
         this.backgroundColour = bgColour;
         this.informationText = infoText;
         this.informationTextColour = infoColour;
+    }
+
+    public Billboard(byte[] bytes){
+        try {
+            ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(bytes));
+            Object bb = inputStream.readObject();
+            Billboard billboard = (Billboard) bb;
+
+            this.creatorName = billboard.creatorName;
+            this.name = billboard.name;
+            this.imageUrl = billboard.imageUrl;
+            this.messageText = billboard.messageText;
+            this.messageTextColour = billboard.messageTextColour;
+            this.backgroundColour = billboard.backgroundColour;
+            this.informationText = billboard.informationText;
+            this.informationTextColour = billboard.informationTextColour;
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public Billboard() {
@@ -123,4 +143,21 @@ public class Billboard implements Serializable {
     public void setBillboardID(Integer billboardID) { this.billboardID = billboardID; }
 
     //public TreeMap<String, String> getBillboardExport() { return billboardExport; }
+
+    public static byte [] BillboardToByte(Billboard billboard){
+        ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
+        ObjectOutputStream objOutput = null;
+        byte [] data;
+        try {
+            objOutput = new ObjectOutputStream(byteOutput);
+            objOutput.writeObject(billboard);
+            data = byteOutput.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+            data = new byte[]{0};
+        }
+
+        return data;
+    }
+
 }

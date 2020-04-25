@@ -1,6 +1,6 @@
 package Shared;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 
 public class User implements Serializable {
@@ -9,6 +9,7 @@ public class User implements Serializable {
     private String userPassword;
     private ArrayList<Integer> permission;
     private Integer userID;
+    private String salt;
 
     /**
      * v1
@@ -19,13 +20,28 @@ public class User implements Serializable {
      * @param userID The Users ID
      */
 
-    public User(String userName, String userPassword, ArrayList<Integer> permission, Integer userID) {
+    public User(String userName, String userPassword, ArrayList<Integer> permission, Integer userID, String salt)  {
         this.userName = userName;
         this.userPassword = userPassword;
         this.permission = permission;
         this.userID = userID;
+        this.salt = salt;
     }
+    public User(byte[] bytes){
+        try {
+            ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(bytes));
+            Object user = inputStream.readObject();
+            User createdUser = (User) user;
+            this.userName = createdUser.userName;
+            this.userPassword = createdUser.userPassword;
+            this.permission = createdUser.permission;
+            this.userID = createdUser.userID;
+            this.salt = createdUser.salt;
 
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
     public User() {
 
     }
@@ -94,4 +110,28 @@ public class User implements Serializable {
     }
 
     public void setUserPassword(String userPassword) {this.userPassword = userPassword;}
+
+    /**
+     * Returns byte array for a user object which can be sent and stored in the database
+     * @param user user object to be converted to byte array.
+     * @return Byte array
+     */
+    public static byte[] userToByte(User user) {
+        ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
+        ObjectOutputStream objOutput = null;
+        byte[] data;
+        try {
+            objOutput = new ObjectOutputStream(byteOutput);
+            objOutput.writeObject(user);
+            data = byteOutput.toByteArray();
+        } catch (IOException e) {
+            data = new byte[]{0};
+        }
+        return data;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
 }
+
