@@ -70,6 +70,7 @@ public class Database {
 
     private void closeConnection() {
         try {
+            statement.close();
             connection.close();
             System.out.println("Database connection closed... ");
         } catch (SQLException e) {
@@ -78,7 +79,18 @@ public class Database {
         }
     }
 
+    // ----------------------------------- CREATING FUNCTIONS ------------------------------------------------
+
     public void checkDatabase() {
+
+        if (tablesExist() ) {//&& tablesCorrect()) {
+            System.out.println("Database check: Passed");
+        } else {
+            System.out.println("Database check: Failed");
+        }
+    }
+
+    private boolean tablesExist() {
         startConnection();
         String sqlShow = "SHOW TABLES";
         ArrayList<String> tables = new ArrayList<>();
@@ -92,12 +104,36 @@ public class Database {
         }
         closeConnection();
 
-        if (tables.size() != 5 && checkTables(tables) == false) {
-            createDatabase();
-        } else {
-            System.out.println("Using existing database...");
+
+        boolean correctConfiguration = true;
+
+        if (!tables.contains("billboards") || !tables.contains("permissions") || !tables.contains("schedule") || !tables.contains("sessions") || !tables.contains("users")) {
+            correctConfiguration = false;
+            System.out.println("Database error: Database missing table/s");
+            dropAllTables(tables);
         }
+        return  correctConfiguration;
     }
+
+    private void dropAllTables(ArrayList<String> tables) {
+        System.out.println("Dropping all tables... ");
+        startConnection();
+        for (String table: tables) {
+            String dropTable = "DROP TABLE " + table;
+            try {
+                statement.executeQuery(dropTable);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        closeConnection();
+    }
+
+    private boolean tablesCorrect() {
+        return true;
+    }
+
+    // ------------------------------- CREATING FUNCTIONS ------------------------------------
 
     private void createDatabase() {
         startConnection();
@@ -145,17 +181,5 @@ public class Database {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
-    }
-
-    private boolean checkTables(ArrayList<String> tables) {
-        boolean correctConfiguration = true;
-
-        if (!tables.contains("billboards") || !tables.contains("permissions") || !tables.contains("schedule") || !tables.contains("sessions") || !tables.contains("users")) {
-            correctConfiguration = false;
-        }
-
-        return  correctConfiguration;
     }
 }

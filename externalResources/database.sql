@@ -22,17 +22,10 @@ CREATE TABLE `billboards` (
  
 CREATE TABLE `permissions` (
   `userID` INT NOT NULL,
-  `createUser` INT NOT NULL,
-  `editUser` INT NOT NULL,
-  `deleteUser` INT NOT NULL,
-  `changePassword` INT NOT NULL,
-  `assignRole` INT NOT NULL,
   `createBillboard` INT NOT NULL,
-  `editBillboard` INT NOT NULL,
-  `viewBillboard` INT NOT NULL,
-  `viewSchedule` INT NOT NULL,
-  `editSchedule` INT NOT NULL,
-  
+  `editAllBillboards` INT NOT NULL,
+  `scheduleBillboard` INT NOT NULL,
+  `editUsers` INT NOT NULL,
   FOREIGN KEY (`userID`) REFERENCES `users` (`userID`),
   PRIMARY KEY (`userID`)
 );
@@ -46,7 +39,6 @@ CREATE TABLE `schedule` (
   `interval` time NOT NULL,
   `date` date NOT NULL,
   `inputDate` date NOT NULL,
-  
   FOREIGN KEY (`billboardID`) REFERENCES `billboards` (`billboardID`),
   PRIMARY KEY (`eventID`)
 );
@@ -55,11 +47,9 @@ CREATE TABLE `schedule` (
 CREATE TABLE `sessions` (
 	`sessionToken` INT NOT NULL,
 	`userID` INT NOT NULL UNIQUE,
-	
 	FOREIGN KEY (`userID`) REFERENCES `users` (`userID`),
 	PRIMARY KEY (`sessionToken`)
 );
-
 
  ALTER TABLE `users` AUTO_INCREMENT = 100000;
  ALTER TABLE `billboards` AUTO_INCREMENT = 100000;
@@ -68,5 +58,4 @@ CREATE TABLE `sessions` (
  INSERT INTO `users` (`userName`, `userPassword`)
  VALUES ('root', 'cf9f67e405c1fbe7dab153d0d1b03fc8ad75ab5de4fc39178358de9e2c95c386');
  
- INSERT INTO `permissions` (`userID`, `createUser`, `editUser`, `deleteUser`, `changePassword`, `assignRole`, `createBillboard`, `editBillboard`, `viewBillboard`, `viewSchedule`, `editSchedule`)
- VALUES (100000, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+ INSERT INTO `permissions` (`userID`, `createBillboard`, `editAllBillboards`, `scheduleBillboard`, `editUsers`) VALUES (100000, 1, 1, 1, 1);

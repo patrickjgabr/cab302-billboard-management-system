@@ -158,7 +158,6 @@ public class MessageHandler {
             //Sets return data to the ArrayList<User> returned by the database.
             returnMessage.setData(requestedUsers);
         } catch (Exception e) {
-
             //Sets the return data to 500 if the Select is unsuccessful.
             returnMessage.setData(500);
         }
