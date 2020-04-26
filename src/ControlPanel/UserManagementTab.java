@@ -10,7 +10,7 @@ import static ControlPanel.CustomFont.lightGray;
 
 public class UserManagementTab {
     private JPanel pane;
-    public UserManagementTab(JTabbedPane mainPane, boolean[]permissions){
+    public UserManagementTab(JTabbedPane mainPane, ArrayList<Integer> permissions){
         this.pane = new JPanel();
         mainPane.addTab("User Management", pane);
     }

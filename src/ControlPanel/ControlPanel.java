@@ -7,16 +7,14 @@ import static ControlPanel.CustomFont.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.AreaAveragingScaleFilter;
 import java.util.ArrayList;
 
 public class ControlPanel {
-    private static void ShowControlPanel(boolean[] permissions) {
-
-
-        if (permissions[0]) {
-            System.out.println("true");
-        }
-        ArrayList<Billboard> billboards = TestCase.billboards();
+    private static void ShowControlPanel(ArrayList<Integer> permissions) {
+        Client client = new Client();
+        Message reply = client.sendMessage(new Message().requestBillboards());
+        ArrayList<Billboard> billboards = (ArrayList<Billboard>) reply.getData();
         JFrame frame = GUI.SetupFrame();
         JTabbedPane pane = new JTabbedPane();
         BillboardTab billboardsPane = new BillboardTab(pane, permissions, billboards);
@@ -39,10 +37,10 @@ public class ControlPanel {
                 System.out.println("Logged in via server");
                 Message reply = client.sendMessage(login);
                 session.getFrame().setVisible(false);
-                boolean[] permissions = {true,true,true,true};
+                ArrayList<Integer> permissions = (ArrayList<Integer>) reply.getData();
                 ShowControlPanel(permissions);
             } catch (Exception error) {
-                System.out.println("login failed");
+                error.printStackTrace();
             }
         });
 
