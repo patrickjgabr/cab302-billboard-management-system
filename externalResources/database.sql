@@ -1,34 +1,19 @@
 CREATE TABLE `users` (
  	`userID` INT NOT NULL AUTO_INCREMENT,
  	`userName` VARCHAR(64) NOT NULL UNIQUE,
- 	`userPassword` VARCHAR(64) NOT NULL,
- 	
+ 	`userObject` LONGBLOB NOT NULL,
+
  	PRIMARY KEY (`userID`)
 );
- 
+
 CREATE TABLE `billboards` (
   `billboardID` INT NOT NULL AUTO_INCREMENT,
-  `creatorName` VARCHAR(64) NOT NULL,
-  `name` VARCHAR(64) NOT NULL,
-  `imageUrl` VARCHAR(64),
-  `messageText` VARCHAR(64),
-  `messageTextColour` VARCHAR(64),
-  `backgroundColour` VARCHAR(64),
-  `informationText` VARCHAR(64),
-  `informationTextColour` VARCHAR(64),
-  
+  `billboardName` VARCHAR(64) NOT NULL UNIQUE,
+  `billboardObject` LONGBLOB NOT NULL,
+
   PRIMARY KEY (`billboardID`)
 );
- 
-CREATE TABLE `permissions` (
-  `userID` INT NOT NULL,
-  `createBillboard` INT NOT NULL,
-  `editAllBillboards` INT NOT NULL,
-  `scheduleBillboard` INT NOT NULL,
-  `editUsers` INT NOT NULL,
-  FOREIGN KEY (`userID`) REFERENCES `users` (`userID`),
-  PRIMARY KEY (`userID`)
-);
+
 
 CREATE TABLE `schedule` (
   `eventID` INT NOT NULL AUTO_INCREMENT,
@@ -54,8 +39,3 @@ CREATE TABLE `sessions` (
  ALTER TABLE `users` AUTO_INCREMENT = 100000;
  ALTER TABLE `billboards` AUTO_INCREMENT = 100000;
  ALTER TABLE `schedule` AUTO_INCREMENT = 100000;
- 
- INSERT INTO `users` (`userName`, `userPassword`)
- VALUES ('root', 'cf9f67e405c1fbe7dab153d0d1b03fc8ad75ab5de4fc39178358de9e2c95c386');
- 
- INSERT INTO `permissions` (`userID`, `createBillboard`, `editAllBillboards`, `scheduleBillboard`, `editUsers`) VALUES (100000, 1, 1, 1, 1);

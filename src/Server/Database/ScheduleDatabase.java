@@ -1,5 +1,7 @@
-package Server;
+package Server.Database;
 
+import Server.Database.Database;
+import Server.Server;
 import Shared.*;
 
 import java.sql.ResultSet;
@@ -13,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class ScheduleDatabase extends Database{
+public class ScheduleDatabase extends Database {
 
     private ResultSet resultSet;
     private LocalDate localDate;

@@ -113,18 +113,18 @@ public class User implements Serializable {
 
     /**
      * Returns byte array for a user object which can be sent and stored in the database
-     * @param user user object to be converted to byte array.
      * @return Byte array
      */
-    public static byte[] userToByte(User user) {
+    public byte[] getByteArray() {
         ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
         ObjectOutputStream objOutput = null;
         byte[] data;
         try {
             objOutput = new ObjectOutputStream(byteOutput);
-            objOutput.writeObject(user);
+            objOutput.writeObject(this);
             data = byteOutput.toByteArray();
         } catch (IOException e) {
+            e.printStackTrace();
             data = new byte[]{0};
         }
         return data;

@@ -1,5 +1,7 @@
 package Server;
 
+import Server.ClientHandler.ClientHandler;
+import Server.Database.Database;
 import Shared.Properties;
 
 import java.io.FileNotFoundException;
@@ -35,7 +37,7 @@ public class Server {
             //Database object is created to check that the database specified in the properties object contains the
             // tables required for the server to handle the client requests. If these tables don't exist they are created.
             Database database = new Database(properties);
-            database.checkDatabase();
+            database.checkConfiguration();
             try {
                 //Attempts to setup the ServerSocket on the port specified by the properties object and initialises the socket
                 // variable to be null for further use.
