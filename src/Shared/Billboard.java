@@ -11,7 +11,7 @@ import java.util.TreeMap;
 public class Billboard implements Serializable {
 
     private String name;
-    private Integer billboardID = 0;
+    private Integer billboardID;
     private String creatorName;
     private String imageUrl;
     private String messageText;
@@ -48,6 +48,7 @@ public class Billboard implements Serializable {
             this.backgroundColour = billboard.backgroundColour;
             this.informationText = billboard.informationText;
             this.informationTextColour = billboard.informationTextColour;
+            this.billboardID = billboard.billboardID;
 
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -144,13 +145,13 @@ public class Billboard implements Serializable {
 
     //public TreeMap<String, String> getBillboardExport() { return billboardExport; }
 
-    public static byte [] BillboardToByte(Billboard billboard){
+    public byte [] getByteArray(){
         ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
         ObjectOutputStream objOutput = null;
         byte [] data;
         try {
             objOutput = new ObjectOutputStream(byteOutput);
-            objOutput.writeObject(billboard);
+            objOutput.writeObject(this);
             data = byteOutput.toByteArray();
         } catch (IOException e) {
             e.printStackTrace();

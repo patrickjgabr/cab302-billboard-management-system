@@ -1,4 +1,7 @@
-package Server;
+package Server.ClientHandler;
+import Server.Database.BillboardDatabase;
+import Server.Database.UserDatabase;
+import Server.Server;
 import Shared.*;
 
 import java.util.ArrayList;
@@ -70,7 +73,8 @@ public class MessageHandler {
             //Instantiates a new UserDatabase object connecting to the database specified by the Properties Object.
             //  Uses the getUser method to get a User Object from the database.
             UserDatabase userDB = new UserDatabase(properties);
-            User requestedUser = userDB.getUser(false, (String[]) sentMessage.getData());
+            String[] loginDetails = (String[]) sentMessage.getData();
+            User requestedUser = userDB.getUser(loginDetails[0]);
             String token = generateToken();
 
             //Sets return data to the User object returned by the database.
@@ -158,7 +162,6 @@ public class MessageHandler {
             //Sets return data to the ArrayList<User> returned by the database.
             returnMessage.setData(requestedUsers);
         } catch (Exception e) {
-
             //Sets the return data to 500 if the Select is unsuccessful.
             returnMessage.setData(500);
         }
