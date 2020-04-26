@@ -4,6 +4,7 @@ import Server.ClientHandler.ClientHandler;
 import Server.Database.Database;
 import Shared.Properties;
 
+import javax.xml.crypto.Data;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -61,6 +62,14 @@ public class Server {
     public void run() {
         //Run server is set to true initially and while it remains true the server will accept new connections
         while(runServer) {
+            Database db = new Database(properties);
+            db.startConnection();
+            if(!db.checkConfiguration()) {
+                db.closeConnection();
+                break;
+            }
+            db.closeConnection();
+
             try {
                 //serverSocket.accept() blocks until a new connection is made.
                 // A message is written to the console when a new connection is started.
