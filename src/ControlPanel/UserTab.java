@@ -1,5 +1,5 @@
 package ControlPanel;
-
+import Shared.Billboard;
 import Shared.User;
 
 import javax.swing.*;
@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import static ControlPanel.CustomFont.lightGray;
 
 public class UserTab {
+
     public static JPanel SetupUserPane() {
         JPanel panel = new JPanel();                                                           //first tab
         panel.setBorder(BorderFactory.createEmptyBorder(30,20,15,20));
