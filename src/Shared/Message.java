@@ -68,6 +68,10 @@ public class Message implements Serializable {
         this.communicationID = 40;
         return this;
     }
+    public Message logout() {
+        this.communicationID = 50;
+        return this;
+    }
 
     /**
     need to decide how to schedule a billboard
