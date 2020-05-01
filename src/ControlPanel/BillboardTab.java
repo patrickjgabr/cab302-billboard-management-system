@@ -10,6 +10,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -28,7 +29,7 @@ public class BillboardTab{
     private ArrayList<Billboard> billboards;
     private JPanel pane;
 
-    public BillboardTab(JTabbedPane mainPane, boolean[]permissions, ArrayList<Billboard> billboards){
+    public BillboardTab(JTabbedPane mainPane, ArrayList<Integer> permissions, ArrayList<Billboard> billboards){
         this.billboards = billboards;
         this.pane = new JPanel();                                                           //first tab
         pane.setLayout(new GridBagLayout());
@@ -74,7 +75,6 @@ public class BillboardTab{
         table.setSelectionBackground(new Color(0,74,127));
         table.setRowSelectionAllowed(true);
         table.setColumnSelectionAllowed(false);
-        table.getColumnModel().getColumn(0).setMaxWidth(35);    //set column 0 to max 35 wide (doesn't need to be big)
         table.setIntercellSpacing(new Dimension(10, 20));
         table.setFont(tableContentsF);                                      //table contents font (16px Comic sans)
         table.getTableHeader().setBackground(softBlue);                     //set table header colour
@@ -84,21 +84,19 @@ public class BillboardTab{
     }
 
     public void updateTable(){
-        int i = 0;
         DefaultTableModel model = (DefaultTableModel) table.getModel();
-        model.setRowCount(0);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         for (Billboard billboard : billboards) {
             model.addRow(new Object[]{
-                    Integer.toString(i),
+                    billboard.getBillboardID(),
                     billboard.getName(),
-                    "TBA",
+                    billboard.getCreatorName(),
                     billboard.getPictureLink(),
                     billboard.getMessageText(),
                     billboard.getMessageTextColour(),
                     billboard.getBackgroundColour(),
                     billboard.getInformationText(),
                     billboard.getBackgroundColour()});
-            i++;
         }
     }
 
