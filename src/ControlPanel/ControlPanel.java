@@ -3,6 +3,8 @@ package ControlPanel;
 import Shared.Billboard;
 import Shared.Message;
 import Shared.TestCase;
+import Shared.User;
+
 import static ControlPanel.CustomFont.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -15,11 +17,14 @@ public class ControlPanel {
         Client client = new Client();
         Message reply = client.sendMessage(new Message().requestBillboards());
         ArrayList<Billboard> billboards = (ArrayList<Billboard>) reply.getData();
+        client = new Client();
+        reply = client.sendMessage(new Message().requestBillboards());
+        ArrayList<User> users = (ArrayList<User>) reply.getData();
         JFrame frame = GUI.SetupFrame();
         JTabbedPane pane = new JTabbedPane();
         BillboardTab billboardsPane = new BillboardTab(pane, permissions, billboards);
         ScheduleTab userManagementPane = new ScheduleTab(pane, permissions);
-        UserManagementTab schedulePane = new UserManagementTab(pane, permissions);
+        UserManagementTab schedulePane = new UserManagementTab(pane, permissions, users);
         pane.setFont(tabs);
         frame.getContentPane().add(pane);
         frame.pack();
