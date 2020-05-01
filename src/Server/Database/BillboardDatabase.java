@@ -19,7 +19,7 @@ public class BillboardDatabase extends Database {
     public boolean isInTable(Billboard billboard) {
         boolean returnValue = false;
         try {
-            String sqlSelect = "select billboardID from billboards where billboardID = " + billboard.getBillboardID();
+            String sqlSelect = "select billboardID from billboards where billboardName = \"" + billboard.getName() + "\"";
             results = super.runSelectQuery(sqlSelect);
             returnValue = results.first();
             results.close();

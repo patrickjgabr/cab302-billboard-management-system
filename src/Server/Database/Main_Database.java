@@ -46,10 +46,13 @@ public class Main_Database {
              */
 
             BillboardDatabase billboardDB = new BillboardDatabase(properties);
-            Billboard billboard = new Billboard("WhoDunnett", "Test", "test", "test", "test", "test", "test", "test");
-            billboardDB.addToDatabase(billboard);
-            Billboard pleaseDontWork = billboardDB.getBillboard(100006);
-            System.out.println(pleaseDontWork.getBillboardID());
+            Billboard billboard = new Billboard("WhoDunnett", "Test", "TEST", "test", "test", "test", "test", "test");
+
+            billboardDB.updateDatabase(billboard);
+
+            //billboardDB.addToDatabase(billboard);
+            //Billboard pleaseDontWork = billboardDB.getBillboard(100006);
+            //System.out.println(pleaseDontWork.getBillboardID());
 
 
         } catch (FileNotFoundException e) {
