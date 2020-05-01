@@ -1,5 +1,6 @@
 package ControlPanel;
 import Shared.Billboard;
+import Shared.Message;
 import Viewer.BillboardToImage;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -85,6 +86,13 @@ public class BillboardTab{
 
     public void updateTable(){
         DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+
+        Client client = new Client();
+        Message reply = client.sendMessage(new Message().requestBillboards());
+        this.billboards = (ArrayList<Billboard>) reply.getData();
+
+        //DefaultTableModel model = (DefaultTableModel) table.getModel();
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         for (Billboard billboard : billboards) {
             model.addRow(new Object[]{
@@ -153,7 +161,8 @@ public class BillboardTab{
                 int selected = rowSelected.getMinSelectionIndex();
                 Billboard created = BillboardOptions.BillboardEditor(billboards.get(selected));
                 if(created != null) {
-                    billboards.add(created); //replace with send to server
+                    Client client = new Client();
+                    Message reply = client.sendMessage(new Message().updateBillboard(created));
                     updateTable();
                 }
             }
@@ -163,7 +172,9 @@ public class BillboardTab{
         createButton.addActionListener(e -> {
             Billboard created = BillboardOptions.BillboardEditor();
             if(created != null) {
-                billboards.add(created); //replace with send to server
+                Client client = new Client();
+                Message reply = client.sendMessage(new Message().createBillboard(created));
+                Integer successful = (Integer) reply.getData();
                 updateTable();
             }
         });
