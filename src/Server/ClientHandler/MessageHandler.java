@@ -43,6 +43,7 @@ public class MessageHandler {
     public Message getReturnMessage() {
         //Prints a message to the console indicating that a new message handler is opened.
         System.out.println("Message Handler opened... ");
+        System.out.println(sentMessage.getCommunicationID());
         SessionDatabase sessionDatabase = new SessionDatabase(properties);
 
         //Group of if statements which directs the class to return a specific Message object based off the communicationID

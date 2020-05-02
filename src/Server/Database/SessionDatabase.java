@@ -59,10 +59,10 @@ public class SessionDatabase extends Database {
         String select = "SELECT * FROM sessions WHERE sessionToken = \"" + token + "\"";
         try {
             ResultSet result = super.runSelectQuery(select);
-            result.next();
+
 
             super.closeConnection();
-            return true;
+            return result.next();
 
         } catch (Throwable throwable) {
             super.closeConnection();
