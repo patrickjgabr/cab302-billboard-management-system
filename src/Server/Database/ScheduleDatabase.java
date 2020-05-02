@@ -28,12 +28,12 @@ public class ScheduleDatabase extends Database {
 
     }
 
-    public ArrayList<Event> getSchedule() {
+    public ArrayList<Event> getSchedule() throws Throwable {
         getDatabaseData();
         return formatSchedule();
     }
 
-    private void getDatabaseData() {
+    private void getDatabaseData() throws Throwable {
         String currentDate = DateTimeFormatter.ofPattern("yyyy/MM/dd").format(localDate);
         String weekDate = DateTimeFormatter.ofPattern("yyyy/MM/dd").format(localDate.plus(1, ChronoUnit.WEEKS));
         String sqlSelect = "select * from schedule where date >= \"" + currentDate + "\" and date <= \"" + weekDate + "\" ORDER BY date, inputDate DESC, startTime";

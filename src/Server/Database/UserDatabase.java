@@ -18,7 +18,7 @@ public class UserDatabase extends Database {
         super(properties);
     }
 
-    public User getUser(String value) {
+    public User getUser(String value) throws Throwable {
         super.startConnection();
         User returnValue = new User();
 
@@ -33,7 +33,7 @@ public class UserDatabase extends Database {
         return returnValue;
     }
 
-    public ArrayList<User> getUsers() {
+    public ArrayList<User> getUsers() throws Throwable {
         super.startConnection();
         ArrayList<User> allUser = new ArrayList<>();
 
@@ -62,12 +62,14 @@ public class UserDatabase extends Database {
                 results = super.runSelectQuery(sqlSelect);
                 returnValue = results.next();
                 results.close();
-            } catch (SQLException e) { }
+            } catch (SQLException e) { } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
         }
         return returnValue;
     }
 
-    public void updateDatabase(User user) {
+    public void updateDatabase(User user) throws Throwable {
         if(!super.getConnectionStatus()) {
             super.startConnection();
         }
@@ -79,7 +81,7 @@ public class UserDatabase extends Database {
         super.closeConnection();
     }
 
-    public void addToDatabase(User user) {
+    public void addToDatabase(User user) throws Throwable {
         super.startConnection();
         if (!isInTable(user)) {
             String sqlInsert = "INSERT INTO users (userName, userObject) VALUES (?, ?)";
@@ -93,7 +95,7 @@ public class UserDatabase extends Database {
         }
     }
 
-    public void updateUserID(User user) {
+    public void updateUserID(User user) throws Throwable {
         String sqlSelect = "SELECT userID FROM users WHERE userName = \"" + user.getUserName() + "\"";
         ResultSet result = super.runSelectQuery(sqlSelect);
 

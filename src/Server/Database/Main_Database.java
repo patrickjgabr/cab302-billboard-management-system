@@ -45,14 +45,16 @@ public class Main_Database {
 
              */
 
-            BillboardDatabase billboardDB = new BillboardDatabase(properties);
-            Billboard billboard = new Billboard("WhoDunnett", "Test", "TEST", "test", "test", "test", "test", "test");
-
-            billboardDB.updateDatabase(billboard);
+            //BillboardDatabase billboardDB = new BillboardDatabase(properties);
+            //Billboard billboard = new Billboard("WhoDunnett", "Test", "TEST", "test", "test", "test", "test", "test");
+            //billboardDB.updateDatabase(billboard);
 
             //billboardDB.addToDatabase(billboard);
             //Billboard pleaseDontWork = billboardDB.getBillboard(100006);
             //System.out.println(pleaseDontWork.getBillboardID());
+
+            //SessionDatabase sessionDatabase = new SessionDatabase(properties);
+            //sessionDatabase.setSession("root");
 
 
         } catch (FileNotFoundException e) {

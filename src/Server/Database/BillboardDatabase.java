@@ -16,7 +16,7 @@ public class BillboardDatabase extends Database {
         super(properties);
     }
 
-    public boolean isInTable(Billboard billboard) {
+    public boolean isInTable(Billboard billboard) throws Throwable {
         boolean returnValue = false;
         try {
             String sqlSelect = "select billboardID from billboards where billboardName = \"" + billboard.getName() + "\"";
@@ -27,7 +27,7 @@ public class BillboardDatabase extends Database {
         return returnValue;
     }
 
-    public ArrayList<Billboard> getBillboards() {
+    public ArrayList<Billboard> getBillboards() throws Throwable {
         super.startConnection();
         ArrayList<Billboard> billboards = new ArrayList<>();
         try {
@@ -44,7 +44,7 @@ public class BillboardDatabase extends Database {
         return billboards;
     }
 
-    public Billboard getBillboard(Integer billboardID) {
+    public Billboard getBillboard(Integer billboardID) throws Throwable {
         super.startConnection();
         Billboard returnValue = new Billboard();
 
@@ -59,7 +59,7 @@ public class BillboardDatabase extends Database {
         return returnValue;
     }
 
-    public void updateDatabase(Billboard billboard) {
+    public void updateDatabase(Billboard billboard) throws Throwable {
         if(!super.getConnectionStatus()) {
             super.startConnection();
         }
@@ -71,7 +71,7 @@ public class BillboardDatabase extends Database {
         super.closeConnection();
     }
 
-    public void addToDatabase(Billboard billboard) {
+    public void addToDatabase(Billboard billboard) throws Throwable {
         super.startConnection();
         if(!isInTable(billboard)) {
             String sqlInsert = "INSERT INTO billboards (billboardName, billboardObject) VALUES (?, ?)";
@@ -84,7 +84,7 @@ public class BillboardDatabase extends Database {
         }
     }
 
-    public void updateBillboardID(Billboard billboard) {
+    public void updateBillboardID(Billboard billboard) throws Throwable {
         String sqlSelect = "SELECT billboardID FROM billboards WHERE billboardName = \"" + billboard.getName() + "\"";
         ResultSet result = super.runSelectQuery(sqlSelect);
 

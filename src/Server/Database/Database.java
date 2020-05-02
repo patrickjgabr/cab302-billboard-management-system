@@ -21,6 +21,7 @@ public class Database {
     public DatabaseMessage databaseMessage;
     private boolean connectionStatus;
     private ArrayList<String> tables;
+    private Object Exception;
 
     public Database(Properties properties) {
         this.databaseMessage = new DatabaseMessage();
@@ -192,7 +193,7 @@ public class Database {
     }
 
 
-    public void runInsertUpdateQuery(String query, Object[] values, String type) {
+    public void runInsertUpdateQuery(String query, Object[] values, String type) throws Throwable {
         if(connectionStatus) {
             try {
                 PreparedStatement insertQuery = connection.prepareStatement(query);
@@ -218,13 +219,14 @@ public class Database {
                 databaseMessage.printGeneral("DATABASE", type + " was successful", 50);
             } catch (SQLException e) {
                 databaseMessage.printWarning("Database " + type + " statement failed", 50);
+                throw (Throwable) Exception;
             }
         } else {
             databaseMessage.printError1003();
         }
     }
 
-    public ResultSet runSelectQuery(String query) {
+    public ResultSet runSelectQuery(String query) throws Throwable {
         if(connectionStatus) {
             try {
                 results = statement.executeQuery(query);
@@ -232,12 +234,28 @@ public class Database {
                 databaseMessage.printGeneral("DATABASE", "SELECT Successful", 50);
             } catch (SQLException e) {
                 databaseMessage.printWarning("Database \"SELECT\" failed", 50);
+                throw (Throwable) Exception;
+            }
+        } else {
+            databaseMessage.printError1003();
+            throw (Throwable) Exception;
+        }
+
+        return results;
+    }
+
+    public void runDelete(String query) throws Throwable {
+        if(connectionStatus) {
+            try {
+                statement.executeQuery(query);
+                databaseMessage.printGeneral("DATABASE", "DELETE Successful", 50);
+            } catch (Throwable throwable) {
+                databaseMessage.printWarning("Database \"DELETE\" failed", 50);
+                throw (Throwable) Exception;
             }
         } else {
             databaseMessage.printError1003();
         }
-
-        return results;
     }
 
 

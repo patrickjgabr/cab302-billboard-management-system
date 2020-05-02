@@ -1,9 +1,11 @@
 package Server.ClientHandler;
 import Server.Database.BillboardDatabase;
+import Server.Database.SessionDatabase;
 import Server.Database.UserDatabase;
 import Server.Server;
 import Shared.*;
 
+import java.security.MessageDigest;
 import java.util.ArrayList;
 
 /**
@@ -72,40 +74,64 @@ public class MessageHandler {
         try {
             //Instantiates a new UserDatabase object connecting to the database specified by the Properties Object.
             //  Uses the getUser method to get a User Object from the database.
-            UserDatabase userDB = new UserDatabase(properties);
-            String[] loginDetails = (String[]) sentMessage.getData();
-            User requestedUser = userDB.getUser(loginDetails[0]);
-            String token = generateToken();
 
-            //Sets return data to the User object returned by the database.
-            returnMessage.setData(requestedUser.getPermission());
-            returnMessage.setSession(token);
+            String[] loginDetails = (String[]) sentMessage.getData();
+
+            if(checkCredentials(loginDetails)) {
+                SessionDatabase sessionDatabase = new SessionDatabase(properties);
+                String token = sessionDatabase.setSession(loginDetails[0]);
+                returnMessage.setData(token);
+            } else {
+                returnMessage.setData(500);
+            }
 
             //NEED TO ADD PUTTING TOKEN INTO DATABASE
-        } catch (Exception e) {
-
+        } catch (Throwable throwable) {
             //Sets the return data to 500 if the Select is unsuccessful.
             returnMessage.setData(500);
         }
     }
 
     private void handleUserLogout() {
+        try {
+            String token = (String) sentMessage.getData();
+            SessionDatabase sessionDatabase = new SessionDatabase(properties);
 
+            if (sessionDatabase.removeSession(token)) {
+                returnMessage.setData(200);
+            } else {
+                returnMessage.setData(500);
+            }
+
+        } catch (Throwable throwable) {
+            //Sets the return data to 500 if the Select is unsuccessful.
+            returnMessage.setData(500);
+        }
     }
 
+    private boolean checkCredentials(String[] loginDetails) {
+        UserDatabase userDB = new UserDatabase(properties);
 
-    private String generateToken() {
+        try {
+            User user = userDB.getUser(loginDetails[0]);
 
-        StringBuilder tokenBuilder = new StringBuilder(64);
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvxyz!@#$%^&*()_+-={}[]:<>?,./";
+            if(user.getUserID() != null) {
+                MessageDigest passwordHash = MessageDigest.getInstance("SHA-256");
+                passwordHash.digest((user.getSalt() + loginDetails[1]).getBytes());
+                String password = String.valueOf(passwordHash);
+                System.out.println(password);
 
-        for (int i = 0; i < 64; i++) {
-            int index = (int)(characters.length()* Math.random());
-            tokenBuilder.append(characters.charAt(index));
+                if(password.equals(user.getUserPassword())){
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } catch (Throwable throwable) {
+            return false;
         }
-
-        System.out.println(tokenBuilder.toString());
-        return tokenBuilder.toString();
     }
 
     /**
@@ -121,8 +147,8 @@ public class MessageHandler {
 
             //Sets return data to 200 if the Update is successful.
             returnMessage.setData(200);
-        } catch (Exception e) {
 
+        } catch (Throwable throwable) {
             //Sets return data to 500 if the Update is unsuccessful.
             returnMessage.setData(500);
         }
@@ -141,7 +167,7 @@ public class MessageHandler {
 
             //Sets return data to 200 if the Add is successful.
             returnMessage.setData(200);
-        } catch (Exception e) {
+        } catch (Throwable throwable) {
 
             //Sets return data to 500 if the Add is unsuccessful.
             returnMessage.setData(500);
@@ -161,7 +187,7 @@ public class MessageHandler {
 
             //Sets return data to the ArrayList<User> returned by the database.
             returnMessage.setData(requestedUsers);
-        } catch (Exception e) {
+        } catch (Throwable throwable) {
             //Sets the return data to 500 if the Select is unsuccessful.
             returnMessage.setData(500);
         }
@@ -180,7 +206,7 @@ public class MessageHandler {
 
             //Sets the return data to 200 if the update is successful
             returnMessage.setData(200);
-        } catch (Exception e) {
+        } catch (Throwable throwable) {
 
             //Sets the return data to 500 if the update is unsuccessful
             returnMessage.setData(500);
@@ -200,7 +226,7 @@ public class MessageHandler {
 
             //Sets the return data to 200 if the add is successful
             returnMessage.setData(200);
-        } catch (Exception e) {
+        } catch (Throwable throwable) {
 
             //Sets the return data to 500 if the add is unsuccessful
             returnMessage.setData(500);
@@ -220,7 +246,7 @@ public class MessageHandler {
 
             //Sets the return data to the Arraylist<Billboard> returned from the database.
             returnMessage.setData(requestedBillboards);
-        } catch (Exception e) {
+        } catch (Throwable throwable) {
 
             //Sets the return data to 500 if the select is unsuccessful
             returnMessage.setData(500);
