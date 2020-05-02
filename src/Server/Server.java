@@ -35,10 +35,11 @@ public class Server {
             //Properties object contains all of the information the server needs to run and connect to the database.
             this.properties = new Properties();
 
-            //Database object is created to check that the database specified in the properties object contains the
-            // tables required for the server to handle the client requests. If these tables don't exist they are created.
-            Database database = new Database(properties);
-            database.checkConfiguration();
+            Database db = new Database(properties);
+            db.startConnection();
+            runServer = db.checkConfiguration();
+            db.closeConnection();
+
             try {
                 //Attempts to setup the ServerSocket on the port specified by the properties object and initialises the socket
                 // variable to be null for further use.
@@ -62,13 +63,6 @@ public class Server {
     public void run() {
         //Run server is set to true initially and while it remains true the server will accept new connections
         while(runServer) {
-            Database db = new Database(properties);
-            db.startConnection();
-            if(!db.checkConfiguration()) {
-                db.closeConnection();
-                break;
-            }
-            db.closeConnection();
 
             try {
                 //serverSocket.accept() blocks until a new connection is made.
