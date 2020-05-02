@@ -32,11 +32,11 @@ public class User implements Serializable {
             ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(bytes));
             Object user = inputStream.readObject();
             User createdUser = (User) user;
-            this.userName = createdUser.userName;
-            this.userPassword = createdUser.userPassword;
-            this.permission = createdUser.permission;
-            this.userID = createdUser.userID;
-            this.salt = createdUser.salt;
+            this.userName = createdUser.getUserName();
+            this.userPassword = createdUser.getUserPassword();
+            this.permission = createdUser.getPermission();
+            this.userID = createdUser.getUserID();
+            this.salt = createdUser.getSalt();
 
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

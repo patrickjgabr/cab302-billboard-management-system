@@ -7,6 +7,7 @@ import Shared.*;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLSyntaxErrorException;
 import java.util.ArrayList;
 
 /**
@@ -80,7 +81,7 @@ public class MessageHandler {
             //  Uses the getUser method to get a User Object from the database.
 
             String[] loginDetails = (String[]) sentMessage.getData();
-
+            System.out.println(checkCredentials(loginDetails));
             if(checkCredentials(loginDetails)) {
                 SessionDatabase sessionDatabase = new SessionDatabase(properties);
                 String token = sessionDatabase.setSession(loginDetails[0]);
@@ -122,7 +123,8 @@ public class MessageHandler {
         UserDatabase userDB = new UserDatabase(properties);
         try {
             User user = userDB.getUser(loginDetails[0]);
-
+            System.out.println(user.getUserID());
+            System.out.println(user.getUserPassword());
             MessageDigest passwordHash = null;
             try {
                 String hashed = "jeff";
@@ -137,7 +139,7 @@ public class MessageHandler {
                 }
                 hashed = sb.toString();
                 System.out.println(hashed);
-                if (user.getUserPassword() == hashed){
+                if (user.getUserPassword().equals(hashed)){
                     return true;
                 }
                 else return false;
