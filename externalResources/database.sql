@@ -30,7 +30,7 @@ CREATE TABLE `schedule` (
 
 
 CREATE TABLE `sessions` (
-	`sessionToken` INT NOT NULL,
+	`sessionToken` VARCHAR(64) NOT NULL,
 	`userID` INT NOT NULL UNIQUE,
 	FOREIGN KEY (`userID`) REFERENCES `users` (`userID`),
 	PRIMARY KEY (`sessionToken`)

@@ -32,7 +32,7 @@ public class SessionDatabase extends Database {
             return token;
 
         } catch (Throwable throwable) {
-            databaseMessage.printWarning("Database failed to set session. User " + userName + "already has a session", 50);
+            databaseMessage.printWarning("Database failed to set session. User " + userName + " already has a session", 50);
             super.closeConnection();
             return "";
         }

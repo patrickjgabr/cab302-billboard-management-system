@@ -53,8 +53,8 @@ public class Main_Database {
             //Billboard pleaseDontWork = billboardDB.getBillboard(100006);
             //System.out.println(pleaseDontWork.getBillboardID());
 
-            //SessionDatabase sessionDatabase = new SessionDatabase(properties);
-            //sessionDatabase.setSession("root");
+            SessionDatabase sessionDatabase = new SessionDatabase(properties);
+            sessionDatabase.setSession("root");
 
 
         } catch (FileNotFoundException e) {
