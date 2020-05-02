@@ -83,7 +83,12 @@ public class MessageHandler {
             if(checkCredentials(loginDetails)) {
                 SessionDatabase sessionDatabase = new SessionDatabase(properties);
                 String token = sessionDatabase.setSession(loginDetails[0]);
-                returnMessage.setData(token);
+                returnMessage.setSession(token);
+
+                UserDatabase userDatabase = new UserDatabase(properties);
+                User user = userDatabase.getUser(loginDetails[0]);
+                returnMessage.setData(user.getPermission());
+
             } else {
                 returnMessage.setData(500);
             }
