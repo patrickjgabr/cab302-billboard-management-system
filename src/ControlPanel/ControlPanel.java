@@ -63,6 +63,7 @@ public class ControlPanel {
                 Message reply = client.sendMessage(login);
                 session.getFrame().setVisible(false);
                 ArrayList<Integer> permissions = (ArrayList<Integer>) reply.getData();
+
                 String token = (String) reply.getSession();
                 ShowControlPanel(permissions, token);
             } catch (Exception error) {
