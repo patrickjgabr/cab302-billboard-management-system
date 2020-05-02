@@ -41,24 +41,27 @@ public class MessageHandler {
     public Message getReturnMessage() {
         //Prints a message to the console indicating that a new message handler is opened.
         System.out.println("Message Handler opened... ");
+        SessionDatabase sessionDatabase = new SessionDatabase(properties);
 
         //Group of if statements which directs the class to return a specific Message object based off the communicationID
         if (sentMessage.getCommunicationID() == 10) {
             handleUserLogin();
         } else if (sentMessage.getCommunicationID() == 11) {
             handleUserLogout();
-        } else if (sentMessage.getCommunicationID() == 20) {
+        } else if (sentMessage.getCommunicationID() == 20 && sessionDatabase.checkSession(sentMessage.getSession())) {
             handleGetBillboards();
-        } else if (sentMessage.getCommunicationID() == 21) {
+        } else if (sentMessage.getCommunicationID() == 21 && sessionDatabase.checkSession(sentMessage.getSession())) {
             handleAddBillboard();
-        } else if (sentMessage.getCommunicationID() == 22) {
+        } else if (sentMessage.getCommunicationID() == 22 && sessionDatabase.checkSession(sentMessage.getSession())) {
             handleUpdateBillboard();
-        } else if (sentMessage.getCommunicationID() == 30) {
+        } else if (sentMessage.getCommunicationID() == 30 && sessionDatabase.checkSession(sentMessage.getSession())) {
             handleGetUsers();
-        } else if (sentMessage.getCommunicationID() == 31) {
+        } else if (sentMessage.getCommunicationID() == 31 && sessionDatabase.checkSession(sentMessage.getSession())) {
             handleCreateUser();
-        } else if (sentMessage.getCommunicationID() == 32) {
+        } else if (sentMessage.getCommunicationID() == 32 && sessionDatabase.checkSession(sentMessage.getSession())) {
             handleUpdateUser();
+        } else {
+            returnMessage.setData(500);
         }
 
         //Prints a message to the console indicating that the message handler object is closed.
