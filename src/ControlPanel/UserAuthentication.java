@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 public class UserAuthentication extends JFrame {
@@ -44,8 +46,21 @@ public class UserAuthentication extends JFrame {
         return username.getText();
     }
     public String getPassword() {
-        return password.getText();
+        MessageDigest passwordHash = null;
+        try {
+            String hashed = "jeff";
+            passwordHash = MessageDigest.getInstance("SHA-256");
+            byte [] byteArray = passwordHash.digest(password.getText().getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (int i=0; i< byteArray.length; i++){
+                sb.append(Integer.toString(byteArray[i]));
+                sb.append(Integer.toString((byteArray[i] & 0xff) + 0x100, 16).substring(1));
+            }
+            hashed = sb.toString();
+            return hashed;
+        } catch (NoSuchAlgorithmException e) {return "";}
     }
+
     public JButton getSubmit() {
         return submit;
     }

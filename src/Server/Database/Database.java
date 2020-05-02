@@ -175,7 +175,7 @@ public class Database {
 
     private boolean createRootUser() {
         ArrayList<Integer> permissions = new ArrayList<>(Arrays.asList(1, 1, 1, 1));
-        User rootUser = new User("root", "c13866ce9e42e90d3cf50ded2dc9e00194ffc4ad4e15865cd1b368f168944646", permissions, 100000,"y6WOb24rUAINN6KoUQ7lWNeniyTpsxPaZqzEhvAMzSqE5MrIx2kJS9TaTm0rl96n");
+        User rootUser = new User("root", "-84ac65418454-109938252-39d95133-29e3130d64405234-8f869455537422a281c0001227a-81af505-1138f-24e8291d-68bc11270-32e0-12088-36dc-94a211371-3fd-12f4", permissions, 100000,"y6WOb24rUAINN6KoUQ7lWNeniyTpsxPaZqzEhvAMzSqE5MrIx2kJS9TaTm0rl96n");
 
         try {
             PreparedStatement statement = connection.prepareStatement("INSERT INTO users VALUES (?,?,?)");

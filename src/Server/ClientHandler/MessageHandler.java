@@ -6,6 +6,7 @@ import Server.Server;
 import Shared.*;
 
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 /**
@@ -119,24 +120,29 @@ public class MessageHandler {
 
     private boolean checkCredentials(String[] loginDetails) {
         UserDatabase userDB = new UserDatabase(properties);
-
         try {
             User user = userDB.getUser(loginDetails[0]);
 
-            if(user.getUserID() != null) {
-                MessageDigest passwordHash = MessageDigest.getInstance("SHA-256");
-                passwordHash.digest((user.getSalt() + loginDetails[1]).getBytes());
-                String password = String.valueOf(passwordHash);
-                System.out.println(password);
+            MessageDigest passwordHash = null;
+            try {
+                String hashed = "jeff";
+                passwordHash = MessageDigest.getInstance("SHA-256");
 
-                if(password.equals(user.getUserPassword())){
-                    return true;
-                } else {
-                    return false;
+                byte [] byteArray = passwordHash.digest((user.getSalt() + loginDetails[0]).getBytes());
+
+                StringBuilder sb = new StringBuilder();
+                for (int i=0; i< byteArray.length; i++){
+                    sb.append(Integer.toString(byteArray[i]));
+                    sb.append(Integer.toString((byteArray[i] & 0xff) + 0x100, 16).substring(1));
                 }
-            } else {
-                return false;
-            }
+                hashed = sb.toString();
+                System.out.println(hashed);
+                if (user.getUserPassword() == hashed){
+                    return true;
+                }
+                else return false;
+            } catch (NoSuchAlgorithmException e) {return false;}
+
         } catch (Throwable throwable) {
             return false;
         }
