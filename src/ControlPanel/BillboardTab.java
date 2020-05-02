@@ -29,8 +29,12 @@ public class BillboardTab{
     private JTable table;
     private ArrayList<Billboard> billboards;
     private JPanel pane;
+    private Client client;
+    private String token;
 
-    public BillboardTab(JTabbedPane mainPane, ArrayList<Integer> permissions, ArrayList<Billboard> billboards){
+    public BillboardTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client, String token){
+        this.client = client;
+        this.token = token;
         this.billboards = billboards;
         this.pane = new JPanel();                                                           //first tab
         pane.setLayout(new GridBagLayout());
@@ -88,9 +92,7 @@ public class BillboardTab{
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
 
-        Client client = new Client();
-        Message reply = client.sendMessage(new Message().requestBillboards());
-        this.billboards = (ArrayList<Billboard>) reply.getData();
+        this.billboards = (ArrayList<Billboard>) client.sendMessage(new Message(token).requestBillboards()).getData();
 
         //DefaultTableModel model = (DefaultTableModel) table.getModel();
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -161,8 +163,7 @@ public class BillboardTab{
                 int selected = rowSelected.getMinSelectionIndex();
                 Billboard created = BillboardOptions.BillboardEditor(billboards.get(selected));
                 if(created != null) {
-                    Client client = new Client();
-                    Message reply = client.sendMessage(new Message().updateBillboard(created));
+                    client.sendMessage(new Message(token).updateBillboard(created));
                     updateTable();
                 }
             }
@@ -172,9 +173,7 @@ public class BillboardTab{
         createButton.addActionListener(e -> {
             Billboard created = BillboardOptions.BillboardEditor();
             if(created != null) {
-                Client client = new Client();
-                Message reply = client.sendMessage(new Message().createBillboard(created));
-                Integer successful = (Integer) reply.getData();
+                client.sendMessage(new Message(token).createBillboard(created));
                 updateTable();
             }
         });

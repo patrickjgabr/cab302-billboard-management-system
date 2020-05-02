@@ -15,18 +15,12 @@ import java.awt.image.AreaAveragingScaleFilter;
 import java.util.ArrayList;
 
 public class ControlPanel {
-    private static void ShowControlPanel(ArrayList<Integer> permissions, String token) {
-        Client client = new Client();
-        Message reply = client.sendMessage(new Message().requestBillboards());
-        ArrayList<Billboard> billboards = (ArrayList<Billboard>) reply.getData();
-        client = new Client();
-        reply = client.sendMessage(new Message().requestBillboards());
-        ArrayList<User> users = (ArrayList<User>) reply.getData();
+    private static void ShowControlPanel(ArrayList<Integer> permissions, String token, Client client) {
         JFrame frame = GUI.SetupFrame();
         JTabbedPane pane = new JTabbedPane();
-        BillboardTab billboardsPane = new BillboardTab(pane, permissions, billboards);
-        ScheduleTab userManagementPane = new ScheduleTab(pane, permissions);
-        UserManagementTab schedulePane = new UserManagementTab(pane, permissions, users);
+        BillboardTab billboardsPane = new BillboardTab(pane, permissions, client, token);
+        ScheduleTab userManagementPane = new ScheduleTab(pane, permissions, client, token);
+        UserManagementTab schedulePane = new UserManagementTab(pane, permissions, client, token);
         pane.setFont(tabs);
         frame.getContentPane().add(pane);
         frame.pack();
@@ -59,16 +53,14 @@ public class ControlPanel {
             try {
                 Client client = new Client();
                 Message login = new Message().loginUser(session.getUsername(), session.getPassword());
-
                 System.out.println("Logged in via server");
                 System.out.println(login.getData());
                 System.out.println(session.getPassword());
-
                 Message reply = client.sendMessage(login);
                 session.getFrame().setVisible(false);
                 ArrayList<Integer> permissions = (ArrayList<Integer>) reply.getData();
                 String token = (String) reply.getSession();
-                ShowControlPanel(permissions, token);
+                ShowControlPanel(permissions, token, client);
             } catch (Exception error) {
                 error.printStackTrace();
             }

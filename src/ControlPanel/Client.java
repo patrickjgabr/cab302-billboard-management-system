@@ -19,9 +19,7 @@ public class Client {
 
         try {
             properties = new Properties();
-            setSocket();
-            setOutputStream();
-            setInputStream();
+
         } catch (FileNotFoundException e) {
             System.out.println("Properties file failed to be read. Please ensure file named \"Properties.txt\" is in \"externalResources\" folder");
         }
@@ -29,6 +27,9 @@ public class Client {
     }
 
     public Message sendMessage(Message message) {
+        setSocket();
+        setOutputStream();
+        setInputStream();
         Message returnMessage = new Message();
 
         try {

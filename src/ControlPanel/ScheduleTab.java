@@ -10,7 +10,7 @@ import static ControlPanel.CustomFont.lightGray;
 
 public class ScheduleTab {
     private JPanel pane;
-    public ScheduleTab(JTabbedPane mainPane, ArrayList<Integer> permissions){
+    public ScheduleTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client,  String Token){
         this.pane = new JPanel();
         mainPane.addTab("Schedule", pane);
     }

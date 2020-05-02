@@ -19,9 +19,12 @@ public class UserManagementTab {
     private JTable table;
     private ArrayList<User> users;
     private JPanel pane;
+    private Client client;
+    private String token;
 
-    public UserManagementTab(JTabbedPane mainPane, ArrayList<Integer> permissions, ArrayList<User> users) {
-        this.users = users;
+    public UserManagementTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client,  String Token) {
+        this.client = client;
+        this.token = token;
         this.pane = new JPanel();
         pane.setLayout(new GridBagLayout());
         setupUserManagementTable();
