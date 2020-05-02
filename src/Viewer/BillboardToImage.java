@@ -11,10 +11,10 @@ import java.util.Iterator;
 
 public class BillboardToImage {
     public static void main(String[] args) {
-        //int fn = 10;
-        //File xml = new File("C:/Users/harry/OneDrive - Queensland University of Technology/Documents/Year2/CAB302 - Software Development/Assignment1/ExampleBillboards/" + fn + ".xml");
-        //Billboard test = GenerateBillboardFromXML.XMLToBillboard(xml, "HARRY");
-        //Generate(test);
+        int fn = 10;
+        File xml = new File("C:/Users/harry/OneDrive - Queensland University of Technology/Documents/Year2/CAB302 - Software Development/Assignment1/ExampleBillboards/" + fn + ".xml");
+        Billboard test = GenerateBillboardFromXML.XMLToBillboard(xml, "HARRY");
+        Generate(test);
     }
 
     public static JPanel Generate(Billboard billboard) {
