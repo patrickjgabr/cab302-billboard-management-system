@@ -24,7 +24,7 @@ public class GenerateBillboardFromXML{
         String info = "";
         String msgColour = "";
         String infoColour = "";
-        String URL = "Not done yet";
+        String url = "";
         try {
             File input = XMLFile;
             DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
@@ -39,7 +39,11 @@ public class GenerateBillboardFromXML{
                 if (el.hasAttribute("background")) {
                     background = el.getAttribute("background");
                 }
-
+                if(el.getElementsByTagName("picture").item(0) != null){
+                    if(el.getElementsByTagName("picture").item(0).hasAttributes()){
+                        url = el.getElementsByTagName("picture").item(0).getAttributes().getNamedItem("url").getNodeValue();
+                    }
+                };
                 if(el.getElementsByTagName("message").item(0) != null){                         //message and colour
                     message = el.getElementsByTagName("message").item(0).getTextContent();
                     if (el.getElementsByTagName("message").item(0).hasAttributes()){
@@ -55,10 +59,11 @@ public class GenerateBillboardFromXML{
                 if(el.getElementsByTagName("picture").item(0) != null){
                     ;//URL = el.getElementsByTagName("picture").item(0).getAttributes().getNamedItem("URL").getNodeValue();
                 }
+
             }
         }catch (Exception e){
             e.printStackTrace();
         }
-        return new Billboard("Test Creator Name", name, URL, message, msgColour, background, info, infoColour);
+        return new Billboard("Test Creator Name", name, url, message, msgColour, background, info, infoColour);
     }
 }
