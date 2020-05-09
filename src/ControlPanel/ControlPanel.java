@@ -39,7 +39,7 @@ public class ControlPanel {
                     Message signout = client.sendMessage(new Message().logoutUser(token));
                     System.out.println("Logged out Safely");
                     System.out.println("Session ID: "+ token);
-                    System.out.println("Server Response: "+ signout.getData());
+                    System.out.println("Server Response: "+ signout.getCommunicationID());
                     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 }
             }

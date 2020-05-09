@@ -30,7 +30,7 @@ public class Message implements Serializable {
 
     public Message logoutUser(String token) {
         this.communicationID = 11;
-        this.session = token;
+        this.data = token;
         return this;
     }
 

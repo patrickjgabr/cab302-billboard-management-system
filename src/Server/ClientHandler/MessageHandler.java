@@ -42,7 +42,7 @@ public class MessageHandler {
     
     public Message getReturnMessage() {
         //Prints a message to the console indicating that a new message handler is opened.
-     Messages(SafetyBranch)
+
         ClientHandlerMessage clientHandlerMessage = new ClientHandlerMessage();
         clientHandlerMessage.messageHandlerStart(sentMessage.getCommunicationID(), sentMessage.getSession());
 
