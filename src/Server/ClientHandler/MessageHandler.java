@@ -42,8 +42,11 @@ public class MessageHandler {
     
     public Message getReturnMessage() {
         //Prints a message to the console indicating that a new message handler is opened.
+     Messages(SafetyBranch)
         ClientHandlerMessage clientHandlerMessage = new ClientHandlerMessage();
         clientHandlerMessage.messageHandlerStart(sentMessage.getCommunicationID(), sentMessage.getSession());
+
+    
         SessionDatabase sessionDatabase = new SessionDatabase(properties);
 
         //Group of if statements which directs the class to return a specific Message object based off the communicationID
