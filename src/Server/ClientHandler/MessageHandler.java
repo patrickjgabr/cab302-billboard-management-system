@@ -42,8 +42,11 @@ public class MessageHandler {
     
     public Message getReturnMessage() {
         //Prints a message to the console indicating that a new message handler is opened.
-        System.out.println("Message Handler opened... ");
-        System.out.println(sentMessage.getCommunicationID());
+     Messages(SafetyBranch)
+        ClientHandlerMessage clientHandlerMessage = new ClientHandlerMessage();
+        clientHandlerMessage.messageHandlerStart(sentMessage.getCommunicationID(), sentMessage.getSession());
+
+    
         SessionDatabase sessionDatabase = new SessionDatabase(properties);
 
         //Group of if statements which directs the class to return a specific Message object based off the communicationID
@@ -64,11 +67,11 @@ public class MessageHandler {
         } else if (sentMessage.getCommunicationID() == 32 && sessionDatabase.checkSession(sentMessage.getSession())) {
             handleUpdateUser();
         } else {
-            returnMessage.setData(500);
+            returnMessage.setCommunicationID(500);
         }
 
         //Prints a message to the console indicating that the message handler object is closed.
-        System.out.println("Message Handler closed...");
+        clientHandlerMessage.messageHandlerClose(returnMessage.getCommunicationID());
         return  returnMessage;
     }
 
@@ -90,15 +93,16 @@ public class MessageHandler {
                 UserDatabase userDatabase = new UserDatabase(properties);
                 User user = userDatabase.getUser(loginDetails[0]);
                 returnMessage.setData(user.getPermission());
+                returnMessage.setCommunicationID(200);
 
             } else {
-                returnMessage.setData(500);
+                returnMessage.setCommunicationID(500);
             }
 
             //NEED TO ADD PUTTING TOKEN INTO DATABASE
         } catch (Throwable throwable) {
             //Sets the return data to 500 if the Select is unsuccessful.
-            returnMessage.setData(500);
+            returnMessage.setCommunicationID(500);
         }
     }
 
@@ -108,14 +112,14 @@ public class MessageHandler {
             SessionDatabase sessionDatabase = new SessionDatabase(properties);
 
             if (sessionDatabase.removeSession(token)) {
-                returnMessage.setData(200);
+                returnMessage.setCommunicationID(200);
             } else {
-                returnMessage.setData(500);
+                returnMessage.setCommunicationID(500);
             }
 
         } catch (Throwable throwable) {
             //Sets the return data to 500 if the Select is unsuccessful.
-            returnMessage.setData(500);
+            returnMessage.setCommunicationID(500);
         }
     }
 
@@ -159,11 +163,11 @@ public class MessageHandler {
             userDB.updateDatabase((User)sentMessage.getData());
 
             //Sets return data to 200 if the Update is successful.
-            returnMessage.setData(200);
+            returnMessage.setCommunicationID(200);
 
         } catch (Throwable throwable) {
             //Sets return data to 500 if the Update is unsuccessful.
-            returnMessage.setData(500);
+            returnMessage.setCommunicationID(500);
         }
     }
 
@@ -179,11 +183,11 @@ public class MessageHandler {
             userDB.addToDatabase((User)sentMessage.getData());
 
             //Sets return data to 200 if the Add is successful.
-            returnMessage.setData(200);
+            returnMessage.setCommunicationID(200);
         } catch (Throwable throwable) {
 
             //Sets return data to 500 if the Add is unsuccessful.
-            returnMessage.setData(500);
+            returnMessage.setCommunicationID(500);
         }
     }
 
@@ -200,9 +204,10 @@ public class MessageHandler {
 
             //Sets return data to the ArrayList<User> returned by the database.
             returnMessage.setData(requestedUsers);
+            returnMessage.setCommunicationID(200);
         } catch (Throwable throwable) {
             //Sets the return data to 500 if the Select is unsuccessful.
-            returnMessage.setData(500);
+            returnMessage.setCommunicationID(500);
         }
     }
 
@@ -218,11 +223,11 @@ public class MessageHandler {
             billboardDB.updateDatabase((Billboard)sentMessage.getData());
 
             //Sets the return data to 200 if the update is successful
-            returnMessage.setData(200);
+            returnMessage.setCommunicationID(200);
         } catch (Throwable throwable) {
 
             //Sets the return data to 500 if the update is unsuccessful
-            returnMessage.setData(500);
+            returnMessage.setCommunicationID(500);
         }
     }
 
@@ -238,11 +243,11 @@ public class MessageHandler {
             billboardDB.addToDatabase((Billboard)sentMessage.getData());
 
             //Sets the return data to 200 if the add is successful
-            returnMessage.setData(200);
+            returnMessage.setCommunicationID(200);
         } catch (Throwable throwable) {
 
             //Sets the return data to 500 if the add is unsuccessful
-            returnMessage.setData(500);
+            returnMessage.setCommunicationID(500);
         }
     }
 
@@ -259,10 +264,11 @@ public class MessageHandler {
 
             //Sets the return data to the Arraylist<Billboard> returned from the database.
             returnMessage.setData(requestedBillboards);
+            returnMessage.setCommunicationID(200);
         } catch (Throwable throwable) {
 
             //Sets the return data to 500 if the select is unsuccessful
-            returnMessage.setData(500);
+            returnMessage.setCommunicationID(500);
         }
     }
 }

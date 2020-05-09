@@ -18,6 +18,7 @@ public class ClientHandler extends Thread {
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
     private Properties properties;
+    private Integer ID;
 
     /**
      * Method which instantiates a ClientHandler object from four inputs.
@@ -26,11 +27,12 @@ public class ClientHandler extends Thread {
      * @param outputStream ObjectOutputStream created by the server which will be used to send information from the server to the client.
      * @param properties Properties object which contains all of the client, server and database information.
      */
-    public ClientHandler(Socket socket, ObjectInputStream inputStream, ObjectOutputStream outputStream, Properties properties) {
+    public ClientHandler(Socket socket, ObjectInputStream inputStream, ObjectOutputStream outputStream, Properties properties, Integer ID) {
         this.socket = socket;
         this.inputStream = inputStream;
         this.outputStream = outputStream;
         this.properties = properties;
+        this.ID = ID;
     }
 
     /**
@@ -39,7 +41,8 @@ public class ClientHandler extends Thread {
     @Override
     public void run() {
         //Prints a message to the console indicating that a new client handler has been opened.
-        System.out.println("Client handler socket open...");
+        ClientHandlerMessage clientHandlerMessage = new ClientHandlerMessage();
+        clientHandlerMessage.clientHandlerStart(ID);
 
         try {
             //Receives a message of type Message from the inputStream and gives that message to
@@ -56,6 +59,6 @@ public class ClientHandler extends Thread {
         }
 
         //Prints a message to the console indicating that the new client handler has been closed
-        System.out.println("Client handler socket closed...");
+        clientHandlerMessage.clientHandlerClose(ID);
     }
 }

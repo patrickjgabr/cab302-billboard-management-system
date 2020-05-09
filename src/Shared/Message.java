@@ -37,8 +37,8 @@ public class Message implements Serializable {
     public Message requestBillboards() {
         this.communicationID = 20;
         return this;
-
     }
+
     public Message createBillboard(Billboard billboard) {
         this.communicationID = 21;
         this.data = billboard;
@@ -119,4 +119,6 @@ public class Message implements Serializable {
     public Integer getCommunicationID() {
         return communicationID;
     }
+
+    public void setCommunicationID(Integer communicationID) {this.communicationID = communicationID;}
 }
