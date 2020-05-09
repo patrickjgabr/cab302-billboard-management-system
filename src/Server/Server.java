@@ -62,13 +62,13 @@ public class Server {
      */
     public void run() {
         //Run server is set to true initially and while it remains true the server will accept new connections
+        Integer clientID = 100;
         while(runServer) {
 
             try {
                 //serverSocket.accept() blocks until a new connection is made.
                 // A message is written to the console when a new connection is started.
                 socket = serverSocket.accept();
-                System.out.println("New client connected: " + socket.getLocalAddress().toString());
 
                 //Sets the output and input streams based off the new connection accepted by the socket
                 setOutputStream();
@@ -77,8 +77,9 @@ public class Server {
                 //Instantiates and starts a new ClientHandler thread and passes the socket, output and input streams
                 // to the ClientHandler object so it can continue to communicate with the connection.
                 // Start method runs the ClientHandler thread using its overloaded run() method.
-                Thread thread = new ClientHandler(socket, inputStream, outputStream, this.properties);
+                Thread thread = new ClientHandler(socket, inputStream, outputStream, this.properties, clientID);
                 thread.start();
+                clientID += 1;
             }
 
             //Prints any errors which occur during the above process and attempts to close the socket.
@@ -91,6 +92,7 @@ public class Server {
                     ex.printStackTrace();
                 }
             }
+
         }
     }
 

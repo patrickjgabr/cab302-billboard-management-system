@@ -1,14 +1,19 @@
 package ControlPanel;
-import Shared.Billboard;
 import Shared.User;
-import Viewer.BillboardToImage;
+import Shared.Message;
+import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import static ControlPanel.CustomFont.*;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.io.IOException;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -22,14 +27,14 @@ public class UserManagementTab {
     private Client client;
     private String token;
 
-    public UserManagementTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client,  String Token) {
+    public UserManagementTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client,  String token) {
         this.client = client;
         this.token = token;
         this.pane = new JPanel();
         pane.setLayout(new GridBagLayout());
         setupUserManagementTable();
         setTableFeatures();
-
+        updateTable();
 
         mainPane.addTab("User Management", pane);
     }
@@ -41,13 +46,8 @@ public class UserManagementTab {
         model.addColumn("Password");
         model.addColumn("Create User");
         model.addColumn("Delete User");
-        model.addColumn("Change Password");
-        model.addColumn("Assign Role");
-        model.addColumn("Create Billboard");
-        model.addColumn("Edit Billboard");
-        model.addColumn("View Billboard");
-        model.addColumn("View Schedule");
-        model.addColumn("Edit Schedule");
+        model.addColumn("Schedule Billboard");
+        model.addColumn("Edit Users");
 
         this.table = new JTable(model);
         GridBagConstraints c = new GridBagConstraints();
@@ -79,8 +79,12 @@ public class UserManagementTab {
         table.setDefaultEditor(Object.class, null);
     }
 
-/*    public void updateTable(){
+    public void updateTable(){
         DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+
+        this.users = (ArrayList<User>) client.sendMessage(new Message(token).requestUsers()).getData();
+
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         for (User users : users) {
             model.addRow(new Object[]{
@@ -90,14 +94,13 @@ public class UserManagementTab {
                     users.getPermission().get(0),
                     users.getPermission().get(1),
                     users.getPermission().get(2),
-                    users.getPermission().get(3),
-                    users.getPermission().get(4),
-                    users.getPermission().get(5),
-                    users.getPermission().get(6),
-                    users.getPermission().get(7),
-                    users.getPermission().get(8)});
+                    users.getPermission().get(3)});
         }
-    }*/
+    }
+
+    //-----------------------------------------------------------------
+    //Buttons still need to be implemented but works with everything else
+    //-----------------------------------------------------------------
 
 /*    public void setupButtons() {
         //button to be placed at grid space (0,1)
