@@ -111,9 +111,7 @@ public class BillboardToImage {
             drawScaledImage(gr, image, info, message);
         }
 
-
         //ImageIO.write(bi, "png", new File("."));
-
         JLabel l = new JLabel(new ImageIcon(bi));
         JPanel panel = new JPanel();
         panel.add(l);
@@ -189,10 +187,6 @@ public class BillboardToImage {
             }
         }
         g.drawImage(newImage, x, y, null);
-
-        //else if(messageText && infoText){
-        //    ;;
-        //}
     }
     /**
      * A very basic method to draw centred text to the provided
