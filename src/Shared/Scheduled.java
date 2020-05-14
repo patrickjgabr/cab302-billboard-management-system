@@ -1,47 +1,87 @@
 package Shared;
 
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Array;
+import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class Scheduled {
-    private int id;
-    private String name;
-    private String creator;
-    private Calendar startTime;
-    private Calendar endTime;
-    private int duration;
-    //private BufferedImage preview; Preview image later
+    private int ID;
+    private Integer billboardID;
+    private Integer creatorID;
+    private Time startTime;
+    private Time endTime;
+    private Time duration;
+    private int[] interval;
 
-    public Scheduled(int id, String name, String creator, Calendar startTime, Calendar endTime, int duration){
-        this.id = id;
-        this.name = name;
-        this.creator = creator;
+    public Scheduled(int ID, Integer creatorID, Integer billboardID, Time startTime, Time endTime, Time duration, int[] interval){
+        this.ID = ID;
+        this.billboardID = billboardID;
+        this.creatorID = creatorID;
         this.startTime = startTime;
         this.endTime = endTime;
         this.duration = duration;
+        this.interval = interval;
     }
 
-    public int getId() {
-        return id;
+    public int getID() {
+        return ID;
     }
 
-    public String getName() {
-        return name;
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
-    public String getCreator() {
-        return creator;
+    public Integer getBillboardID() {
+        return billboardID;
     }
 
-    public Calendar getStartTime() {
+    public void setBillboardID(Integer billboardID) {
+        this.billboardID = billboardID;
+    }
+
+    public Integer getCreatorID() {
+        return creatorID;
+    }
+
+    public void setCreatorID(Integer creatorID) {
+        this.creatorID = creatorID;
+    }
+
+    public int[] getInterval() {
+        return interval;
+    }
+
+    public void setInterval(int[] interval) {
+        this.interval = interval;
+    }
+
+    public Time getStartTime() {
         return startTime;
     }
 
-    public Calendar getEndTime() {
+    public void setStartTime(Time startTime) {
+        this.startTime = startTime;
+    }
+
+    public Time getEndTime() {
         return endTime;
     }
 
-    public int getDuration() {
+    public void setEndTime(Time endTime) {
+        this.endTime = endTime;
+    }
+
+    public Time getDuration() {
         return duration;
     }
+
+    public void setDuration(Time duration) {
+        this.duration = duration;
+    }
 }
+
+
+

@@ -1,16 +1,17 @@
 package Shared;
 
+import java.sql.Time;
 import java.util.Date;
 
 public class Event {
 
-    private Billboard billboard;
-    private Integer billboardID;
-    private Date startTime;
-    private Date endTime;
+    private int eventID;
+    private Time startTime;
+    private Time endTime;
+    private int day;
 
-    public Event (Integer billboardID, Date startTime, Date endTime) {
-        this.billboardID = billboardID;
+    public Event (int eventID, Time startTime, Time endTime) {
+        this.eventID = eventID;
         this.startTime = startTime;
         this.endTime = endTime;
     }
@@ -19,35 +20,27 @@ public class Event {
 
     }
 
-    public Billboard getBillboard() {
-        return billboard;
+    public int getEventID() {
+        return eventID;
     }
 
-    public void setBillboard(Billboard billboard) {
-        this.billboard = billboard;
+    public void setEventID(int eventID) {
+        this.eventID = eventID;
     }
 
-    public Integer getBillboardID() {
-        return billboardID;
-    }
-
-    public void setBillboardID(Integer billboardID) {
-        this.billboardID = billboardID;
-    }
-
-    public Date getStartTime() {
+    public Time getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(Time startTime) {
         this.startTime = startTime;
     }
 
-    public Date getEndTime() {
+    public Time getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Date endTime) {
+    public void setEndTime(Time endTime) {
         this.endTime = endTime;
     }
 }
