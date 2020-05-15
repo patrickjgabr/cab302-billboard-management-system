@@ -1,27 +1,20 @@
 package ControlPanel;
 import Shared.Billboard;
 import Shared.Message;
-import Viewer.BillboardToImage;
+import Shared.BillboardToImage;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import static ControlPanel.CustomFont.*;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
-import java.security.cert.Extension;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -142,7 +135,7 @@ public class BillboardTab{
 
 
         previewButton.addActionListener(e -> {
-            JOptionPane.showMessageDialog(null, BillboardToImage.Generate(billboards.get(rowSelected.getMinSelectionIndex())), "Preview: ", JOptionPane.INFORMATION_MESSAGE);
+            //JOptionPane.showMessageDialog(null, BillboardToImage.Generate(billboards.get(rowSelected.getMinSelectionIndex())), "Preview: ", JOptionPane.INFORMATION_MESSAGE);
         });
 
 

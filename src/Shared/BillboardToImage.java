@@ -1,5 +1,6 @@
-package Viewer;
+package Shared;
 import Shared.Billboard;
+import Viewer.GenerateBillboardFromXML;
 import org.w3c.dom.css.Rect;
 
 import javax.imageio.ImageIO;
@@ -16,21 +17,22 @@ import java.util.List;
 import java.util.Iterator;
 
 public class BillboardToImage {
-    /*
-    public static void main(String[] args) {            //main for testing, fn == filenumber
-        int fn = 2;
-        File xml = new File("C:/Users/harry/OneDrive - Queensland University of Technology/Documents/Year2/CAB302 - Software Development/Assignment1/ExampleBillboards/" + fn + ".xml");
-        Billboard test = GenerateBillboardFromXML.XMLToBillboard(xml, "HARRY");
-        Generate(test);
-    }*/
-    public static JPanel Generate(Billboard billboard) {
+    private Billboard billboard;
+    private Integer resolutionx, resolutiony;
+
+    public BillboardToImage(Billboard billboard, Integer resolutionx, Integer resolutiony){
+        this.billboard = billboard;
+        this.resolutionx = resolutionx;
+        this.resolutiony = resolutiony;
+    }
+    public JPanel Generate() {
         //setting defaults
         Color bg = Color.white, mt = Color.black, it = Color.black;                            //bg = background colour, mt = message text colour, it = info text colour
         Boolean picture = !billboard.getPictureLink().equals("");
         Boolean info = !billboard.getInformationText().equals(""), message = !billboard.getMessageText().equals("");    //boolean determining whether text is present.
 
         JFrame f = new JFrame();
-        BufferedImage bi = new BufferedImage(1280, 720, BufferedImage.TYPE_INT_RGB);
+        BufferedImage bi = new BufferedImage(resolutionx, resolutiony, BufferedImage.TYPE_INT_RGB);
         Rectangle screen = new Rectangle(bi.getWidth(),bi.getHeight());
         Graphics gr = bi.getGraphics();
         Font text = gr.getFont();
@@ -52,7 +54,7 @@ public class BillboardToImage {
         int imageWidth = bi.getWidth();
         double messageWidthRatio = (double) imageWidth / (double)txtWidth;
         int newMessageFontSize = (int) (text.getSize() * messageWidthRatio);
-
+        if (newMessageFontSize >= 170){newMessageFontSize = 170;};
         gr.setFont(new Font("Dialogue", Font.PLAIN, newMessageFontSize));
         if (info && !picture){drawCenteredText(gr, billboard.getMessageText(), new Rectangle(bi.getWidth(), bi.getHeight() / 2));}          //position and draw centred text
         else if(picture || info){
@@ -126,9 +128,9 @@ public class BillboardToImage {
         //f.pack();
         //f.setVisible(true);
     }
-    public static void drawScaledImage(Graphics g, BufferedImage image, Boolean infoText, Boolean messageText){
+    public void drawScaledImage(Graphics g, BufferedImage image, Boolean infoText, Boolean messageText){
         double imgHeight = image.getHeight(null), imgWidth = image.getWidth(null);
-        int w = 1280, h = 720, x=0, y=0, thirdY = h/3;
+        int w = resolutionx, h = resolutiony, x=0, y=0, thirdY = h/3;
         double windowAspect=h/w, imageAspect = imgHeight / imgWidth, newHeight, newWidth;
         Rectangle bounds = new Rectangle(0,0,w,h);
         BufferedImage newImage = image;
