@@ -58,7 +58,6 @@ public class MessageHandler {
             handleUserLogin();
         } else if (sentMessage.getCommunicationID() == 11) {
             handleUserLogout();
-
         } else if(sessionDatabase.checkSession(sentMessage.getSession())) {
 
             User user = sessionDatabase.getUserFromSession(sentMessage.getSession());
@@ -95,7 +94,7 @@ public class MessageHandler {
                 returnMessage.setCommunicationID(500);
             }
         } else {
-            returnMessage.setCommunicationID(500);
+            returnMessage.setCommunicationID(501);
             consoleMessage.printWarning("Invalid session", 75);
         }
 
@@ -142,8 +141,8 @@ public class MessageHandler {
                 returnMessage.setCommunicationID(200);
                 consoleMessage.printGeneral("REQUEST ACCEPTED", "Login successful for username [" + loginDetails[0] + "]", 75);
             } else {
-                returnMessage.setCommunicationID(500);
-                consoleMessage.printWarning("Login Request Rejected for username [" + loginDetails[0] + "]                      Reason: Invalid Credentials", 75);
+                returnMessage.setCommunicationID(502);
+                consoleMessage.printWarning("Login Request Rejected for username [" + loginDetails[0] + "]                           Reason: Invalid Credentials", 75);
             }
 
         } catch (Throwable throwable) {
@@ -159,10 +158,10 @@ public class MessageHandler {
 
         if (sessionDatabase.removeSession(token, true)) {
             returnMessage.setCommunicationID(200);
-            consoleMessage.printGeneral("REQUEST ACCEPTED", "Logout Successful for token [" + sentMessage.getData().toString().substring(0, 10) + "... ]", 75);
+            consoleMessage.printGeneral("REQUEST ACCEPTED", "Logout Successful for token", 75);
         } else {
-            returnMessage.setCommunicationID(500);
-            consoleMessage.printWarning("Logout Request Rejected for token [" + sentMessage.getData().toString().substring(0, 10) + "... ] Reason: DATABASE ERROR", 75);
+            returnMessage.setCommunicationID(503);
+            consoleMessage.printWarning("Logout Request Rejected  Reason: Invalid Token", 75);
         }
     }
 
@@ -173,13 +172,12 @@ public class MessageHandler {
             MessageDigest passwordHash;
             try {
                 passwordHash = MessageDigest.getInstance("SHA-256");
-
-                byte [] byteArray = passwordHash.digest((user.getSalt() + loginDetails[0]).getBytes());
+                passwordHash.update((user.getSalt() + loginDetails[1]).getBytes());
+                byte [] byteArray = passwordHash.digest();
 
                 StringBuilder sb = new StringBuilder();
                 for (byte b : byteArray) {
-                    sb.append(Integer.toString(b));
-                    sb.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
+                    sb.append(String.format("%02x", b & 0xFF));
                 }
                 String hashed = sb.toString();
                 return user.getUserPassword().equals(hashed);
@@ -221,17 +219,60 @@ public class MessageHandler {
             //Instantiates a new UserDatabase object connecting to the database specified by the Properties Object.
             // Uses the addToDatabase method to add the information contained in the User Object to the users and permissions table.
             UserDatabase userDB = new UserDatabase(properties);
-            userDB.addToDatabase((User)sentMessage.getData());
+            User user = (User)sentMessage.getData();
+            user.setSalt(generateSalt());
+            user.setUserPassword(generateNewPassword(user));
 
-            //Sets return data to 200 if the Add is successful.
-            returnMessage.setCommunicationID(200);
-            consoleMessage.printGeneral("REQUEST ACCEPTED", "User add   |   userID [" + ((User) sentMessage.getData()).getUserID() + "]", 75);
+            if(user.getUserPassword() != "") {
+                userDB.addToDatabase(user);
+                //Sets return data to 200 if the Add is successful.
+                returnMessage.setCommunicationID(200);
+                consoleMessage.printGeneral("REQUEST ACCEPTED", "User add   |   userID [" + ((User) sentMessage.getData()).getUserID() + "]", 75);
+            } else {
+                //Sets return data to 500 if the Add is unsuccessful.
+                returnMessage.setCommunicationID(500);
+                consoleMessage.printWarning("Database failed to add user",75);
+            }
+
+
         } catch (Throwable throwable) {
 
             //Sets return data to 500 if the Add is unsuccessful.
             returnMessage.setCommunicationID(500);
             consoleMessage.printWarning("Database failed to add user",75);
         }
+    }
+
+    private String generateSalt() {
+
+        StringBuilder tokenBuilder = new StringBuilder(64);
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvxyz!@#$%^&*()_+-={}[]:<>?,./";
+
+        for (int i = 0; i < 64; i++) {
+            int index = (int)(characters.length()* Math.random());
+            tokenBuilder.append(characters.charAt(index));
+        }
+
+        return tokenBuilder.toString();
+    }
+
+    private String generateNewPassword(User user) {
+        try {
+            MessageDigest passwordHash = MessageDigest.getInstance("SHA-256");
+            passwordHash.update((user.getSalt() + user.getUserPassword()).getBytes());
+            byte [] byteArray = passwordHash.digest();
+
+            StringBuilder sb = new StringBuilder();
+            for (byte b : byteArray) {
+                sb.append(String.format("%02x", b & 0xFF));
+            }
+            String hashed = sb.toString();
+            return hashed;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        return "";
     }
 
     /**

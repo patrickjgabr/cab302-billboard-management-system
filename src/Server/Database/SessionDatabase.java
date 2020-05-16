@@ -131,23 +131,23 @@ public class SessionDatabase extends Database {
 
         try {
             super.startConnection();
-            super.runDelete(deleteSQL);
-            super.closeConnection();
-            return true;
-        } catch (Throwable throwable) {
-            super.closeConnection();
-            return false;
-        }
+            if(super.runDelete(deleteSQL) == 1) {
+                super.closeConnection();
+                return true;
+            }
+        } catch (Throwable throwable) { }
+
+        super.closeConnection();
+        return false;
     }
 
     public User getUserFromSession(String session) {
         String sqlSelect = "SELECT * FROM sessions WHERE sessionToken = \"" + session + "\"";
         try {
+            super.startConnection();
             ResultSet resultSet = super.runSelectQuery(sqlSelect);
-
+            super.closeConnection();
             UserDatabase userDatabase = new UserDatabase(properties);
-
-
             User user = userDatabase.getUser(resultSet.getString("userID"), false);
             return user;
 

@@ -35,6 +35,8 @@ public class Properties {
         return databaseURL;
     }
 
+    public void setDatabaseURL(String url) {this.databaseURL = url;}
+
     public String getDatabaseUser() {
         return databaseUser;
     }
@@ -51,7 +53,5 @@ public class Properties {
         return serverPort;
     }
 
-    public String getDatabaseName() {
-        return databaseName;
-    }
+    public String getDatabaseName() { return databaseName; }
 }

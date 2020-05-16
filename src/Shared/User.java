@@ -133,5 +133,7 @@ public class User implements Serializable {
     public String getSalt() {
         return salt;
     }
+
+    public void setSalt(String salt) {this.salt = salt;}
 }
 

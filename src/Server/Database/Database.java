@@ -1,9 +1,6 @@
 package Server.Database;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -172,7 +169,7 @@ public class Database {
 
     private boolean createRootUser() {
         ArrayList<Integer> permissions = new ArrayList<>(Arrays.asList(1, 1, 1, 1));
-        User rootUser = new User("root", "-84ac65418454-109938252-39d95133-29e3130d64405234-8f869455537422a281c0001227a-81af505-1138f-24e8291d-68bc11270-32e0-12088-36dc-94a211371-3fd-12f4", permissions, 100000,"y6WOb24rUAINN6KoUQ7lWNeniyTpsxPaZqzEhvAMzSqE5MrIx2kJS9TaTm0rl96n");
+        User rootUser = new User("root", "c13866ce9e42e90d3cf50ded2dc9e00194ffc4ad4e15865cd1b368f168944646", permissions, 100000,"y6WOb24rUAINN6KoUQ7lWNeniyTpsxPaZqzEhvAMzSqE5MrIx2kJS9TaTm0rl96n");
 
         try {
             PreparedStatement statement = connection.prepareStatement("INSERT INTO users VALUES (?,?,?)");
@@ -199,7 +196,7 @@ public class Database {
                 int index = 1;
                 for (Object value: values) {
                     if (value instanceof String) {
-                        insertQuery.setString(index, (String) value);
+                        insertQuery.setString(index, (String)value);
                     } else if (value instanceof Integer) {
                         insertQuery.setInt(index, (Integer) value);
                     } else if (value instanceof User) {
@@ -214,6 +211,7 @@ public class Database {
                 }
                 insertQuery.executeUpdate();
             } catch (SQLException e) {
+                e.printStackTrace();
                 throw (Throwable) Exception;
             }
         } else {
@@ -236,16 +234,19 @@ public class Database {
         return results;
     }
 
-    public void runDelete(String query) throws Throwable {
+    public int runDelete(String query) throws Throwable {
         if(connectionStatus) {
             try {
                 statement.executeQuery(query);
+                return statement.getUpdateCount();
             } catch (Throwable throwable) {
                 throw (Throwable) Exception;
             }
         } else {
             databaseMessage.printError1003();
         }
+
+        return 0;
     }
 
 

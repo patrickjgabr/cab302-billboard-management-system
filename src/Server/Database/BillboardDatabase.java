@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public class BillboardDatabase extends Database {
 
     private ResultSet results;
+    private Object Exception;
 
     public BillboardDatabase(Properties properties) {
         super(properties);
@@ -27,11 +28,13 @@ public class BillboardDatabase extends Database {
     }
 
     public ArrayList<Billboard> getBillboards() throws Throwable {
-        super.startConnection();
+
         ArrayList<Billboard> billboards = new ArrayList<>();
         try {
             String sqlSelect = "SELECT * FROM billboards";
+            super.startConnection();
             results = super.runSelectQuery(sqlSelect);
+            super.closeConnection();
 
             while(results.next()) {
                 Billboard billboard = new Billboard(results.getBytes("billboardObject"));
@@ -39,8 +42,10 @@ public class BillboardDatabase extends Database {
                 billboards.add(billboard);
             }
             results.close();
-        } catch (SQLException ignored) { }
-        super.startConnection();
+        } catch (Throwable throwable) {
+            throw (Throwable) Exception;
+        }
+
         return billboards;
     }
 
