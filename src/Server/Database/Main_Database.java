@@ -54,7 +54,7 @@ public class Main_Database {
             //System.out.println(pleaseDontWork.getBillboardID());
 
             SessionDatabase sessionDatabase = new SessionDatabase(properties);
-            System.out.println(sessionDatabase.checkSession("}Y2V6cc.*=vIh.TA&?p9FM8qy]z!izNH{C^&Bn+F}@<XNGffk]/Yd{-)r5s&8($K"));
+            String session = sessionDatabase.setSession("root");
 
 
         } catch (FileNotFoundException e) {

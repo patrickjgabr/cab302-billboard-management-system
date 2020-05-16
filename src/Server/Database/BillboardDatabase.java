@@ -1,12 +1,11 @@
 package Server.Database;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
+import Shared.Billboard;
+import Shared.Properties;
 
-import Server.Database.Database;
-import Server.Server;
-import Shared.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class BillboardDatabase extends Database {
 
@@ -23,7 +22,7 @@ public class BillboardDatabase extends Database {
             results = super.runSelectQuery(sqlSelect);
             returnValue = results.first();
             results.close();
-        } catch (SQLException e) {}
+        } catch (SQLException ignored) {}
         return returnValue;
     }
 
@@ -36,10 +35,11 @@ public class BillboardDatabase extends Database {
 
             while(results.next()) {
                 Billboard billboard = new Billboard(results.getBytes("billboardObject"));
+                billboard.setScheduled(results.getInt("scheduled"));
                 billboards.add(billboard);
             }
             results.close();
-        } catch (SQLException e) {}
+        } catch (SQLException ignored) { }
         super.startConnection();
         return billboards;
     }
@@ -53,8 +53,9 @@ public class BillboardDatabase extends Database {
             results = super.runSelectQuery(sqlSelect);
             results.next();
             returnValue = new Billboard(results.getBytes("billboardObject"));
+            returnValue.setScheduled(results.getInt("scheduled"));
             results.close();
-        } catch (SQLException e) {}
+        } catch (SQLException ignored) { }
         super.closeConnection();
         return returnValue;
     }

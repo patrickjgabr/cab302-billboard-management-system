@@ -19,6 +19,7 @@ public class Billboard implements Serializable {
     private String backgroundColour;
     private String informationText;
     private String informationTextColour;
+    private Integer scheduled;
 
     /**
      * Constructs and initalizes a Billboard object
@@ -49,6 +50,7 @@ public class Billboard implements Serializable {
             this.informationText = billboard.informationText;
             this.informationTextColour = billboard.informationTextColour;
             this.billboardID = billboard.billboardID;
+            this.scheduled = billboard.getScheduled();
 
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -161,4 +163,11 @@ public class Billboard implements Serializable {
         return data;
     }
 
+    public Integer getScheduled() {
+        return scheduled;
+    }
+
+    public void setScheduled(Integer scheduled) {
+        this.scheduled = scheduled;
+    }
 }

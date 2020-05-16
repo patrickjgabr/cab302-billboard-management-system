@@ -32,7 +32,6 @@ public class Database {
     //Check database
 
     public boolean checkConfiguration() {
-        databaseMessage.printGeneral("DATABASE", "Configuration test started", 75);
         if(connectionStatus) {
             if(tableExist()) {
                 databaseMessage.printGeneral("DATABASE", "Configuration test passed", 75);
@@ -65,10 +64,8 @@ public class Database {
             while(resultSet.next()) {
                 tables.add(resultSet.getString("Tables_in_" + properties.getDatabaseName()));
             }
-            databaseMessage.printGeneral("DATABASE", "SHOW TABLES Successful", 50);
             resultSet.close();
         } catch (SQLException e) {
-            databaseMessage.printWarning("Database command \"SHOW TABLES\" Failed", 50);
         }
 
         return tables;
@@ -216,9 +213,7 @@ public class Database {
                     index++;
                 }
                 insertQuery.executeUpdate();
-                databaseMessage.printGeneral("DATABASE", type + " was successful", 50);
             } catch (SQLException e) {
-                databaseMessage.printWarning("Database " + type + " statement failed", 50);
                 throw (Throwable) Exception;
             }
         } else {
@@ -230,10 +225,7 @@ public class Database {
         if(connectionStatus) {
             try {
                 results = statement.executeQuery(query);
-
-                databaseMessage.printGeneral("DATABASE", "SELECT Successful", 50);
             } catch (SQLException e) {
-                databaseMessage.printWarning("Database \"SELECT\" failed", 50);
                 throw (Throwable) Exception;
             }
         } else {
@@ -248,9 +240,7 @@ public class Database {
         if(connectionStatus) {
             try {
                 statement.executeQuery(query);
-                databaseMessage.printGeneral("DATABASE", "DELETE Successful", 50);
             } catch (Throwable throwable) {
-                databaseMessage.printWarning("Database \"DELETE\" failed", 50);
                 throw (Throwable) Exception;
             }
         } else {
@@ -265,7 +255,6 @@ public class Database {
         try {
             connection = DriverManager.getConnection(properties.getDatabaseURL(), properties.getDatabaseUser(), properties.getDatabasePassword());
             statement = connection.createStatement();
-            databaseMessage.printGeneral("DATABASE", "Connection started with " + properties.getDatabaseURL() , 100);
             connectionStatus = true;
         } catch (SQLException e) {
             databaseMessage.printError1000(properties.getDatabaseURL());
@@ -278,7 +267,6 @@ public class Database {
                 statement.close();
                 connection.close();
                 connectionStatus = false;
-                databaseMessage.printGeneral("DATABASE", "Connection closed with " + properties.getDatabaseURL() , 100);
             } catch (SQLException e) {
                 databaseMessage.printError1001();
             }

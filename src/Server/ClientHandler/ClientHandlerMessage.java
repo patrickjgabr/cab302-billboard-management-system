@@ -22,7 +22,7 @@ public class ClientHandlerMessage extends ConsoleMessage {
     }
 
     public void messageHandlerStart(Integer ID, String token) {
-        super.printGeneral("MESSAGE HANDLER", "Message handler started     |     CommunicationID: ["+ID+"]     |     Token: " + token, 125);
+        super.printGeneral("MESSAGE HANDLER", "Message handler started     |     CommunicationID: ["+ID+"]                                                   Token: " + token, 125);
     }
 
     public void messageHandlerClose(Integer returnStatus) {
