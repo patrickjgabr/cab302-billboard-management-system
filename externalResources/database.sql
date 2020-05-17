@@ -8,9 +8,12 @@ CREATE TABLE `users` (
 
 CREATE TABLE `billboards` (
   `billboardID` INT NOT NULL AUTO_INCREMENT,
+  `creatorID` INT NOT NULL,
   `billboardName` VARCHAR(64) NOT NULL UNIQUE,
   `billboardObject` LONGBLOB NOT NULL,
   `scheduled` INT NOT NULL DEFAULT 0,
+
+  FOREIGN KEY (`creatorID`) REFERENCES `users` (`userID`),
   PRIMARY KEY (`billboardID`)
 );
 

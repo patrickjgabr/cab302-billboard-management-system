@@ -66,10 +66,10 @@ public class MessageHandler {
                 handleGetBillboards();
             } else if (sentMessage.getCommunicationID() == 21) {
                 if(user.getPermission().get(0) == 1) {
-                    handleAddBillboard();
+                    handleAddBillboard(user);
                 } else {
                     consoleMessage.printWarning("User not authorised to add Billboards", 75);
-                    returnMessage.setCommunicationID(501);
+                    returnMessage.setCommunicationID(504);
                 }
             } else if (sentMessage.getCommunicationID() == 22) {
                 handleUpdateBillboard(user);
@@ -223,7 +223,7 @@ public class MessageHandler {
             user.setSalt(generateSalt());
             user.setUserPassword(generateNewPassword(user));
 
-            if(user.getUserPassword() != "") {
+            if(!user.getUserPassword().equals("")) {
                 userDB.addToDatabase(user);
                 //Sets return data to 200 if the Add is successful.
                 returnMessage.setCommunicationID(200);
@@ -344,16 +344,29 @@ public class MessageHandler {
      * Method which handles a Message object containing communicationID 21. This indicates that the Billboard Object contained within
      * the Message packet needs to be added to the billboard database.
      */
-    private void handleAddBillboard() {
+    private void handleAddBillboard(User user) {
         try {
-            //Instantiates a new BillboardDatabase object connecting to the database specified by the Properties Object.
-            //  Uses the addToDatabase method to add the information contained within the Message object to the database.
-            BillboardDatabase billboardDB = new BillboardDatabase(properties);
-            billboardDB.addToDatabase((Billboard)sentMessage.getData());
+            Billboard billboard = (Billboard)sentMessage.getData();
+            if(user.getUserName().equals(billboard.getCreatorName())) {
+                //Instantiates a new BillboardDatabase object connecting to the database specified by the Properties Object.
+                //  Uses the addToDatabase method to add the information contained within the Message object to the database.
+                BillboardDatabase billboardDB = new BillboardDatabase(properties);
+                boolean unique = billboardDB.addToDatabase(billboard, user.getUserID());
 
-            //Sets the return data to 200 if the add is successful
-            returnMessage.setCommunicationID(200);
-            consoleMessage.printGeneral("REQUEST ACCEPTED", "Billboard Added   |   billboardID [" + ((Billboard) sentMessage.getData()).getBillboardID() + "]", 75);
+                if(unique) {
+                    //Sets the return data to 200 if the add is successful
+                    returnMessage.setCommunicationID(200);
+                    consoleMessage.printGeneral("REQUEST ACCEPTED", "Billboard Added   |   billboardID [" + ((Billboard) sentMessage.getData()).getBillboardID() + "]", 75);
+                } else  {
+                    //Sets the return data to 506 if billboard name already exists
+                    returnMessage.setCommunicationID(506);
+                    consoleMessage.printWarning("Billboard name not unique",75);
+                }
+            } else {
+                //Sets the return data to 505 if the add is unsuccessful due to non matching session and creator
+                returnMessage.setCommunicationID(505);
+                consoleMessage.printWarning("Billboard creator doesn't match token",75);
+            }
         } catch (Throwable throwable) {
 
             //Sets the return data to 500 if the add is unsuccessful

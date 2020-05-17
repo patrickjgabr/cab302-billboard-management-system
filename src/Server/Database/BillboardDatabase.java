@@ -77,16 +77,18 @@ public class BillboardDatabase extends Database {
         super.closeConnection();
     }
 
-    public void addToDatabase(Billboard billboard) throws Throwable {
+    public boolean addToDatabase(Billboard billboard, Integer userID) throws Throwable {
         super.startConnection();
         if(!isInTable(billboard)) {
-            String sqlInsert = "INSERT INTO billboards (billboardName, billboardObject) VALUES (?, ?)";
-            Object[] parameters = new Object[]{billboard.getName(), billboard};
+            String sqlInsert = "INSERT INTO billboards (creatorID, billboardName, billboardObject) VALUES (?, ?, ?)";
+            Object[] parameters = new Object[]{userID, billboard.getName(), billboard};
             super.runInsertUpdateQuery(sqlInsert, parameters, "INSERT");
             updateBillboardID(billboard);
-        }
-        if(super.getConnectionStatus()) {
             super.closeConnection();
+            return true;
+        } else {
+            super.closeConnection();
+            return false;
         }
     }
 

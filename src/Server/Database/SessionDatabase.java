@@ -147,6 +147,7 @@ public class SessionDatabase extends Database {
             super.startConnection();
             ResultSet resultSet = super.runSelectQuery(sqlSelect);
             super.closeConnection();
+            resultSet.next();
             UserDatabase userDatabase = new UserDatabase(properties);
             User user = userDatabase.getUser(resultSet.getString("userID"), false);
             return user;

@@ -26,7 +26,7 @@ public class UserDatabase extends Database {
         if(userName) {
             sqlSelect = "SELECT * FROM users WHERE userName = \"" + value + "\"";
         } else {
-            sqlSelect = "SELECT * FROM users WHERE userName = " + value;
+            sqlSelect = "SELECT * FROM users WHERE userID = " + value;
         }
 
         try {
