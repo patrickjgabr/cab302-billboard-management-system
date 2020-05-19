@@ -15,7 +15,7 @@ public class Message implements Serializable {
      * Blank constuctor which can be used to create a blank CommunicationPacket
      */
     public Message() {
-
+        this.communicationID = 0;
     }
 
     public Message(String session) {

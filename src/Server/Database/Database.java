@@ -1,9 +1,6 @@
 package Server.Database;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +29,6 @@ public class Database {
     //Check database
 
     public boolean checkConfiguration() {
-        databaseMessage.printGeneral("DATABASE", "Configuration test started", 75);
         if(connectionStatus) {
             if(tableExist()) {
                 databaseMessage.printGeneral("DATABASE", "Configuration test passed", 75);
@@ -65,10 +61,8 @@ public class Database {
             while(resultSet.next()) {
                 tables.add(resultSet.getString("Tables_in_" + properties.getDatabaseName()));
             }
-            databaseMessage.printGeneral("DATABASE", "SHOW TABLES Successful", 50);
             resultSet.close();
         } catch (SQLException e) {
-            databaseMessage.printWarning("Database command \"SHOW TABLES\" Failed", 50);
         }
 
         return tables;
@@ -175,7 +169,7 @@ public class Database {
 
     private boolean createRootUser() {
         ArrayList<Integer> permissions = new ArrayList<>(Arrays.asList(1, 1, 1, 1));
-        User rootUser = new User("root", "-84ac65418454-109938252-39d95133-29e3130d64405234-8f869455537422a281c0001227a-81af505-1138f-24e8291d-68bc11270-32e0-12088-36dc-94a211371-3fd-12f4", permissions, 100000,"y6WOb24rUAINN6KoUQ7lWNeniyTpsxPaZqzEhvAMzSqE5MrIx2kJS9TaTm0rl96n");
+        User rootUser = new User("root", "c13866ce9e42e90d3cf50ded2dc9e00194ffc4ad4e15865cd1b368f168944646", permissions, 100000,"y6WOb24rUAINN6KoUQ7lWNeniyTpsxPaZqzEhvAMzSqE5MrIx2kJS9TaTm0rl96n");
 
         try {
             PreparedStatement statement = connection.prepareStatement("INSERT INTO users VALUES (?,?,?)");
@@ -202,7 +196,7 @@ public class Database {
                 int index = 1;
                 for (Object value: values) {
                     if (value instanceof String) {
-                        insertQuery.setString(index, (String) value);
+                        insertQuery.setString(index, (String)value);
                     } else if (value instanceof Integer) {
                         insertQuery.setInt(index, (Integer) value);
                     } else if (value instanceof User) {
@@ -216,9 +210,8 @@ public class Database {
                     index++;
                 }
                 insertQuery.executeUpdate();
-                databaseMessage.printGeneral("DATABASE", type + " was successful", 50);
             } catch (SQLException e) {
-                databaseMessage.printWarning("Database " + type + " statement failed", 50);
+                e.printStackTrace();
                 throw (Throwable) Exception;
             }
         } else {
@@ -230,10 +223,7 @@ public class Database {
         if(connectionStatus) {
             try {
                 results = statement.executeQuery(query);
-
-                databaseMessage.printGeneral("DATABASE", "SELECT Successful", 50);
             } catch (SQLException e) {
-                databaseMessage.printWarning("Database \"SELECT\" failed", 50);
                 throw (Throwable) Exception;
             }
         } else {
@@ -244,18 +234,19 @@ public class Database {
         return results;
     }
 
-    public void runDelete(String query) throws Throwable {
+    public int runDelete(String query) throws Throwable {
         if(connectionStatus) {
             try {
                 statement.executeQuery(query);
-                databaseMessage.printGeneral("DATABASE", "DELETE Successful", 50);
+                return statement.getUpdateCount();
             } catch (Throwable throwable) {
-                databaseMessage.printWarning("Database \"DELETE\" failed", 50);
                 throw (Throwable) Exception;
             }
         } else {
             databaseMessage.printError1003();
         }
+
+        return 0;
     }
 
 
@@ -265,7 +256,6 @@ public class Database {
         try {
             connection = DriverManager.getConnection(properties.getDatabaseURL(), properties.getDatabaseUser(), properties.getDatabasePassword());
             statement = connection.createStatement();
-            databaseMessage.printGeneral("DATABASE", "Connection started with " + properties.getDatabaseURL() , 100);
             connectionStatus = true;
         } catch (SQLException e) {
             databaseMessage.printError1000(properties.getDatabaseURL());
@@ -278,7 +268,6 @@ public class Database {
                 statement.close();
                 connection.close();
                 connectionStatus = false;
-                databaseMessage.printGeneral("DATABASE", "Connection closed with " + properties.getDatabaseURL() , 100);
             } catch (SQLException e) {
                 databaseMessage.printError1001();
             }

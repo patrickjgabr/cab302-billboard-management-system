@@ -8,30 +8,31 @@ CREATE TABLE `users` (
 
 CREATE TABLE `billboards` (
   `billboardID` INT NOT NULL AUTO_INCREMENT,
+  `creatorID` INT NOT NULL,
   `billboardName` VARCHAR(64) NOT NULL UNIQUE,
   `billboardObject` LONGBLOB NOT NULL,
+  `scheduled` INT NOT NULL DEFAULT 0,
 
+  FOREIGN KEY (`creatorID`) REFERENCES `users` (`userID`),
   PRIMARY KEY (`billboardID`)
 );
 
 
 CREATE TABLE `schedule` (
-  `eventID` INT NOT NULL AUTO_INCREMENT,
-  `billboardID` INT NOT NULL,
-  `startTime` time NOT NULL,
-  `endTime` time NOT NULL,
-  `duration` time NOT NULL,
-  `interval` time NOT NULL,
-  `date` date NOT NULL,
+  `scheduleID` INT NOT NULL AUTO_INCREMENT,
+  `creatorID` INT NOT NULL,
+  `scheduleObject` LONGBLOB NOT NULL,
   `inputDate` date NOT NULL,
-  FOREIGN KEY (`billboardID`) REFERENCES `billboards` (`billboardID`),
-  PRIMARY KEY (`eventID`)
+  FOREIGN KEY (`creatorID`) REFERENCES `users` (`userID`),
+  PRIMARY KEY (`scheduleID`)
 );
 
 
 CREATE TABLE `sessions` (
 	`sessionToken` VARCHAR(64) NOT NULL,
 	`userID` INT NOT NULL UNIQUE,
+	`expireDate` DATE NOT NULL,
+	`expireTime` TIME NOT NULL,
 	FOREIGN KEY (`userID`) REFERENCES `users` (`userID`),
 	PRIMARY KEY (`sessionToken`)
 );

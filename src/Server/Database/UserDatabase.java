@@ -18,12 +18,18 @@ public class UserDatabase extends Database {
         super(properties);
     }
 
-    public User getUser(String value) throws Throwable {
+    public User getUser(String value, boolean userName) throws Throwable {
         super.startConnection();
         User returnValue = new User();
 
+        String sqlSelect;
+        if(userName) {
+            sqlSelect = "SELECT * FROM users WHERE userName = \"" + value + "\"";
+        } else {
+            sqlSelect = "SELECT * FROM users WHERE userID = " + value;
+        }
+
         try {
-            String sqlSelect = "SELECT * FROM users WHERE userName = \"" + value + "\"";
             results = super.runSelectQuery(sqlSelect);
             results.next();
             returnValue = new User(results.getBytes("userObject"));
