@@ -11,19 +11,22 @@ public class Scheduled {
     private int ID;
     private Integer billboardID;
     private Integer creatorID;
-    private Time startTime;
-    private Time endTime;
-    private Time duration;
+    private Calendar startTime;
+    private Calendar endTime;
+    private int duration;
     private int[] interval;
 
-    public Scheduled(int ID, Integer creatorID, Integer billboardID, Time startTime, Time endTime, Time duration, int[] interval){
-        this.ID = ID;
+    public Scheduled(Integer creatorID, Integer billboardID, Calendar startTime, Calendar endTime, int duration, int[] interval){
         this.billboardID = billboardID;
         this.creatorID = creatorID;
         this.startTime = startTime;
         this.endTime = endTime;
         this.duration = duration;
         this.interval = interval;
+    }
+
+    public Scheduled() {
+
     }
 
     public int getID() {
