@@ -53,9 +53,6 @@ public class ControlPanel {
             try {
                 Client client = new Client();
                 Message login = new Message().loginUser(session.getUsername(), session.getPassword());
-                System.out.println("Logged in via server");
-                System.out.println(login.getData());
-                System.out.println(session.getPassword());
                 Message reply = client.sendMessage(login);
                 session.getFrame().setVisible(false);
                 ArrayList<Integer> permissions = (ArrayList<Integer>) reply.getData();

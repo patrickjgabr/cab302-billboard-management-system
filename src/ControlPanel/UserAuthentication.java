@@ -46,17 +46,17 @@ public class UserAuthentication extends JFrame {
         return username.getText();
     }
     public String getPassword() {
-        MessageDigest passwordHash = null;
-        try {
-            String hashed = "jeff";
-            passwordHash = MessageDigest.getInstance("SHA-256");
-            byte [] byteArray = passwordHash.digest(password.getText().getBytes());
-            StringBuilder sb = new StringBuilder();
-            for (int i=0; i< byteArray.length; i++){
-                sb.append(Integer.toString(byteArray[i]));
-                sb.append(Integer.toString((byteArray[i] & 0xff) + 0x100, 16).substring(1));
-            }
-            hashed = sb.toString();
+            MessageDigest passwordHash;
+            try {
+                passwordHash = MessageDigest.getInstance("SHA-256");
+                passwordHash.update(password.getText().getBytes());
+                byte [] byteArray = passwordHash.digest();
+                StringBuilder sb = new StringBuilder();
+                for (byte b : byteArray) {
+                    sb.append(String.format("%02x", b & 0xFF));
+                }
+                String hashed = sb.toString();
+                System.out.println("hashed" + hashed);
             return hashed;
         } catch (NoSuchAlgorithmException e) {return "";}
     }
