@@ -15,10 +15,10 @@ import java.awt.image.AreaAveragingScaleFilter;
 import java.util.ArrayList;
 
 public class ControlPanel {
-    private static void ShowControlPanel(ArrayList<Integer> permissions, String token, Client client) {
+    private static void ShowControlPanel(ArrayList<Integer> permissions, String token, Client client, String username) {
         JFrame frame = GUI.SetupFrame();
         JTabbedPane pane = new JTabbedPane();
-        BillboardTab billboardsPane = new BillboardTab(pane, permissions, client, token);
+        BillboardTab billboardsPane = new BillboardTab(pane, permissions, client, token, username);
         ScheduleTab userManagementPane = new ScheduleTab(pane, permissions, client, token);
         UserManagementTab schedulePane = new UserManagementTab(pane, permissions, client, token);
         pane.setFont(tabs);
@@ -53,14 +53,11 @@ public class ControlPanel {
             try {
                 Client client = new Client();
                 Message login = new Message().loginUser(session.getUsername(), session.getPassword());
-                System.out.println("Logged in via server");
-                System.out.println(login.getData());
-                System.out.println(session.getPassword());
                 Message reply = client.sendMessage(login);
                 session.getFrame().setVisible(false);
                 ArrayList<Integer> permissions = (ArrayList<Integer>) reply.getData();
                 String token = (String) reply.getSession();
-                ShowControlPanel(permissions, token, client);
+                ShowControlPanel(permissions, token, client, session.getUsername());
             } catch (Exception error) {
                 error.printStackTrace();
             }
