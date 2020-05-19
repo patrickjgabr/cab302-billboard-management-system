@@ -21,9 +21,11 @@ CREATE TABLE `billboards` (
 CREATE TABLE `schedule` (
   `scheduleID` INT NOT NULL AUTO_INCREMENT,
   `creatorID` INT NOT NULL,
+  `billboardID` INT NOT NULL,
   `scheduleObject` LONGBLOB NOT NULL,
   `inputDate` date NOT NULL,
   FOREIGN KEY (`creatorID`) REFERENCES `users` (`userID`),
+  FOREIGN KEY (`billboardID`) REFERENCES `billboards` (`billboardID`),
   PRIMARY KEY (`scheduleID`)
 );
 

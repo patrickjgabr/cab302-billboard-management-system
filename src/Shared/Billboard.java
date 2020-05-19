@@ -50,7 +50,7 @@ public class Billboard implements Serializable {
             this.informationText = billboard.informationText;
             this.informationTextColour = billboard.informationTextColour;
             this.billboardID = billboard.billboardID;
-            this.scheduled = billboard.getScheduled();
+            this.scheduled = billboard.scheduled;
 
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

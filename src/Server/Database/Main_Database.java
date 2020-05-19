@@ -19,38 +19,22 @@ public class Main_Database {
             Properties properties = new Properties();
 
             ArrayList<Integer> permissions = new ArrayList<>(Arrays.asList(1, 1, 1, 1));
-            User rootUser = new User("root", "c13866ce9e42e90d3cf50ded2dc9e00194ffc4ad4e15865cd1b368f168944646", permissions, 100000,"y6WOb24rUAINN6KoUQ7lWNeniyTpsxPaZqzEhvAMzSqE5MrIx2kJS9TaTm0rl96n");
+            User rootUser = new User("root", "c13866ce9e42e90d3cf50ded2dc9e00194ffc4ad4e15865cd1b368f168944646", permissions, 100000, "y6WOb24rUAINN6KoUQ7lWNeniyTpsxPaZqzEhvAMzSqE5MrIx2kJS9TaTm0rl96n");
+            Billboard billboard = new Billboard("root", "TEST", "imageUrl", "msgText", "", "#000FFF", "infoText", "");
+            billboard.setBillboardID(100000);
+            Scheduled scheduled = new Scheduled(rootUser.getUserID(), billboard.getBillboardID(), ScheduleHelper.DateTime(0,0,0,0), ScheduleHelper.DateTime(0,1,0,0), 60, new int[]{0,0,0});
 
-            Connection connection = DriverManager.getConnection(properties.getDatabaseURL(), properties.getDatabaseUser(), properties.getDatabasePassword());
+            ScheduleDatabase scheduleDatabase = new ScheduleDatabase(properties);
+            scheduleDatabase.addToDatabase(scheduled, rootUser.getUserID());
+            ArrayList<Scheduled> schedule = scheduleDatabase.getSchedule();
 
-            try {
-                PreparedStatement statement = connection.prepareStatement("INSERT INTO users VALUES (?,?,?)");
-                statement.clearParameters();
-                statement.setInt(1, 100000);
-                statement.setString(2, "root");
-                statement.setBinaryStream(3, new ByteArrayInputStream(rootUser.getByteArray()));
-                statement.executeUpdate();
-
-            } catch (SQLException e) {
-
+            for (Scheduled s: schedule) {
+                System.out.println(s.getID());
             }
-
-            MessageDigest passwordHash = MessageDigest.getInstance("SHA-256");
-            passwordHash.update((rootUser.getSalt() +"5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8").getBytes());
-            byte [] byteArray = passwordHash.digest();
-
-            StringBuilder sb = new StringBuilder();
-            for (byte b : byteArray) {
-                sb.append(String.format("%02x", b & 0xFF));
-            }
-            String hashed = sb.toString();
-            System.out.println(hashed);
 
         } catch (Throwable e) {
             e.printStackTrace();
         }
-
-
     }
 }
 

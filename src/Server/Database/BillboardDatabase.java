@@ -16,7 +16,7 @@ public class BillboardDatabase extends Database {
         super(properties);
     }
 
-    public boolean isInTable(Billboard billboard) throws Throwable {
+    private boolean isInTable(Billboard billboard) throws Throwable {
         boolean returnValue = false;
         try {
             String sqlSelect = "select billboardID from billboards where billboardName = \"" + billboard.getName() + "\"";
@@ -39,6 +39,7 @@ public class BillboardDatabase extends Database {
             while(results.next()) {
                 Billboard billboard = new Billboard(results.getBytes("billboardObject"));
                 billboard.setScheduled(results.getInt("scheduled"));
+                billboard.setBillboardID(results.getInt("billboardID"));
                 billboards.add(billboard);
             }
             results.close();
@@ -58,6 +59,7 @@ public class BillboardDatabase extends Database {
             results = super.runSelectQuery(sqlSelect);
             results.next();
             returnValue = new Billboard(results.getBytes("billboardObject"));
+            returnValue.setBillboardID(results.getInt("billboardID"));
             returnValue.setScheduled(results.getInt("scheduled"));
             results.close();
         } catch (SQLException ignored) { }
@@ -83,29 +85,11 @@ public class BillboardDatabase extends Database {
             String sqlInsert = "INSERT INTO billboards (creatorID, billboardName, billboardObject) VALUES (?, ?, ?)";
             Object[] parameters = new Object[]{userID, billboard.getName(), billboard};
             super.runInsertUpdateQuery(sqlInsert, parameters, "INSERT");
-            updateBillboardID(billboard);
             super.closeConnection();
             return true;
         } else {
             super.closeConnection();
             return false;
-        }
-    }
-
-    public void updateBillboardID(Billboard billboard) throws Throwable {
-        String sqlSelect = "SELECT billboardID FROM billboards WHERE billboardName = \"" + billboard.getName() + "\"";
-        ResultSet result = super.runSelectQuery(sqlSelect);
-
-        try {
-            result.next();
-            billboard.setBillboardID(result.getInt("billboardID"));
-            result.close();
-            updateDatabase(billboard);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        if(super.getConnectionStatus()) {
-            super.closeConnection();
         }
     }
 }

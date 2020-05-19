@@ -1,46 +1,95 @@
 package Server.Database;
 
-import Server.Database.Database;
-import Server.Server;
 import Shared.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
+import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 public class ScheduleDatabase extends Database {
 
-    private ResultSet resultSet;
-    private LocalDate localDate;
-    private SimpleDateFormat dateFormatHourMinSec = new SimpleDateFormat("HH:mm:ss");
-    private SimpleDateFormat dateFormatAll = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private ResultSet results;
+    private Object Exception;
 
     public ScheduleDatabase(Properties properties) {
         super(properties);
-        localDate = LocalDate.now();
+    }
 
+    public boolean isInTable(Scheduled scheduled) throws Throwable {
+        boolean returnValue = false;
+        try {
+            String sqlSelect = "select scheduleID from schedule where scheduleID = " + scheduled.getID();
+            results = super.runSelectQuery(sqlSelect);
+            returnValue = results.next();
+            results.close();
+        } catch (SQLException ignored) {}
+        return returnValue;
     }
 
     public ArrayList<Scheduled> getSchedule() throws Throwable {
-        getDatabaseData();
 
-        ArrayList<Scheduled> returnList = new ArrayList<Scheduled>();
-        return  returnList;
+        ArrayList<Scheduled> schedule = new ArrayList<>();
+
+        try{
+            String sqlSelect = "SELECT * FROM schedule";
+            super.startConnection();
+            results = super.runSelectQuery(sqlSelect);
+            super.closeConnection();
+
+            while (results.next()) {
+                Scheduled scheduled = new Scheduled(results.getBytes("scheduleObject"));
+                scheduled.setID(results.getInt("scheduleID"));
+                scheduled.setCreatorID(results.getInt("creatorID"));
+                scheduled.setBillboardID(results.getInt("billboardID"));
+                schedule.add(scheduled);
+            }
+            results.close();
+        } catch (Throwable throwable) {
+            throw (Throwable) Exception;
+        }
+
+        return schedule;
     }
 
-    private void getDatabaseData() throws Throwable {
-        String currentDate = DateTimeFormatter.ofPattern("yyyy/MM/dd").format(localDate);
-        String weekDate = DateTimeFormatter.ofPattern("yyyy/MM/dd").format(localDate.plus(1, ChronoUnit.WEEKS));
-        String sqlSelect = "select * from schedule ORDER BY scheduleID, inputDate DESC";
-        resultSet = super.runSelectQuery(sqlSelect);
+    public Scheduled getScheduled(String scheduleID) throws Throwable {
+        Scheduled scheduled = new Scheduled();
+
+        try {
+            String sqlSelect = "SELECT * FROM schedule WHERE scheduleID = " + scheduleID;
+            super.startConnection();
+            results = super.runSelectQuery(sqlSelect);
+            super.closeConnection();
+
+            results.next();
+            scheduled = new Scheduled(results.getBytes("scheduleObject"));
+            scheduled.setID(results.getInt("scheduleID"));
+            scheduled.setCreatorID(results.getInt("creatorID"));
+            scheduled.setBillboardID(results.getInt("billboardID"));
+            results.close();
+        } catch (Throwable throwable) {
+            throw (Throwable) Exception;
+        }
+        return scheduled;
     }
 
+    public boolean addToDatabase(Scheduled scheduled, Integer userID) throws Throwable {
+        super.startConnection();
+        if(!isInTable(scheduled)) {
+            scheduled.setCreatorID(userID);
+            String sqlInsert = "INSERT INTO schedule (creatorID, billboardID, scheduleObject, inputDate) VALUES (?, ?, ?, ?)";
+            Object[] parameters = new Object[]{userID, scheduled.getBillboardID(), scheduled, LocalDate.now().toString()};
+            super.runInsertUpdateQuery(sqlInsert, parameters, "INSERT");
 
+            String sqlUpdate = "UPDATE billboards SET scheduled = ? where billboardID = ?";
+            parameters = new Object[]{1, scheduled.getBillboardID()};
+            super.runInsertUpdateQuery(sqlUpdate, parameters, "UPDATE");
+            super.closeConnection();
+            return true;
+        } else {
+            super.closeConnection();
+            return false;
+        }
+    }
 }

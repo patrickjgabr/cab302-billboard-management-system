@@ -1,13 +1,14 @@
 package Shared;
 
 import java.awt.image.BufferedImage;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class Scheduled {
+public class Scheduled implements Serializable{
     private int ID;
     private Integer billboardID;
     private Integer creatorID;
@@ -23,6 +24,25 @@ public class Scheduled {
         this.endTime = endTime;
         this.duration = duration;
         this.interval = interval;
+    }
+
+    public Scheduled(byte[] bytes) {
+        try {
+            ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(bytes));
+            Object s = inputStream.readObject();
+            Scheduled schedule = (Scheduled) s;
+
+            this.billboardID = schedule.billboardID;
+            this.creatorID = schedule.creatorID;
+            this.startTime = schedule.startTime;
+            this.endTime = schedule.endTime;
+            this.duration = schedule.duration;
+            this.interval = schedule.interval;
+            this.ID = schedule.ID;
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public Scheduled() {
@@ -87,6 +107,22 @@ public class Scheduled {
 
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public byte [] getByteArray(){
+        ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
+        ObjectOutputStream objOutput = null;
+        byte [] data;
+        try {
+            objOutput = new ObjectOutputStream(byteOutput);
+            objOutput.writeObject(this);
+            data = byteOutput.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+            data = new byte[]{0};
+        }
+
+        return data;
     }
 }
 

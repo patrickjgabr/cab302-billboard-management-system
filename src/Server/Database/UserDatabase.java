@@ -33,6 +33,7 @@ public class UserDatabase extends Database {
             results = super.runSelectQuery(sqlSelect);
             results.next();
             returnValue = new User(results.getBytes("userObject"));
+            returnValue.setUserID(results.getInt("userID"));
             results.close();
         } catch (SQLException e) {}
         super.closeConnection();
@@ -49,6 +50,7 @@ public class UserDatabase extends Database {
 
             while(results.next()) {
                 User user = new User(results.getBytes("userObject"));
+                user.setUserID(results.getInt("userID"));
                 allUser.add(user);
             }
             results.close();
@@ -60,7 +62,7 @@ public class UserDatabase extends Database {
         return allUser;
    }
 
-    public boolean isInTable(User user) {
+    private boolean isInTable(User user) {
         boolean returnValue = false;
         if(user != null) {
             try {

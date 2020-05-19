@@ -205,6 +205,9 @@ public class Database {
                     } else if (value instanceof Billboard) {
                         Billboard billboard = (Billboard)value;
                         insertQuery.setBinaryStream(index, new ByteArrayInputStream(billboard.getByteArray()), billboard.getByteArray().length);
+                    } else if (value instanceof Scheduled) {
+                        Scheduled scheduled = (Scheduled)value;
+                        insertQuery.setBinaryStream(index, new ByteArrayInputStream(scheduled.getByteArray()), scheduled.getByteArray().length);
                     }
 
                     index++;
