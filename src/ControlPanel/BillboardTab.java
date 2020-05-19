@@ -1,24 +1,20 @@
 package ControlPanel;
 import Shared.Billboard;
+import Shared.Message;
+import Shared.BillboardToImage;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import static ControlPanel.CustomFont.*;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
-import java.security.cert.Extension;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -26,10 +22,16 @@ public class BillboardTab{
     private JTable table;
     private ArrayList<Billboard> billboards;
     private JPanel pane;
+    private Client client;
+    private String token;
+    private String username;
 
-    public BillboardTab(JTabbedPane mainPane, boolean[]permissions, ArrayList<Billboard> billboards){
+    public BillboardTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client, String token, String username){
+        this.client = client;
+        this.username = username;
+        this.token = token;
         this.billboards = billboards;
-        this.pane = new JPanel();                                                           //first tab
+        this.pane = new JPanel();                                                      //first tab
         pane.setLayout(new GridBagLayout());
         setupBillboardsTable();
         setTableFeatures();
@@ -73,7 +75,6 @@ public class BillboardTab{
         table.setSelectionBackground(new Color(0,74,127));
         table.setRowSelectionAllowed(true);
         table.setColumnSelectionAllowed(false);
-        table.getColumnModel().getColumn(0).setMaxWidth(35);    //set column 0 to max 35 wide (doesn't need to be big)
         table.setIntercellSpacing(new Dimension(10, 20));
         table.setFont(tableContentsF);                                      //table contents font (16px Comic sans)
         table.getTableHeader().setBackground(softBlue);                     //set table header colour
@@ -83,21 +84,24 @@ public class BillboardTab{
     }
 
     public void updateTable(){
-        int i = 0;
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
+
+        this.billboards = (ArrayList<Billboard>) client.sendMessage(new Message(token).requestBillboards()).getData();
+
+        //DefaultTableModel model = (DefaultTableModel) table.getModel();
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         for (Billboard billboard : billboards) {
             model.addRow(new Object[]{
-                    Integer.toString(i),
+                    billboard.getBillboardID(),
                     billboard.getName(),
-                    "TBA",
+                    billboard.getCreatorName(),
                     billboard.getPictureLink(),
                     billboard.getMessageText(),
                     billboard.getMessageTextColour(),
                     billboard.getBackgroundColour(),
                     billboard.getInformationText(),
                     billboard.getBackgroundColour()});
-            i++;
         }
     }
 
@@ -131,9 +135,11 @@ public class BillboardTab{
             }
         });
 
-        previewButton.addActionListener(e -> JOptionPane.showMessageDialog(null, "Not yet implemented."));
 
-
+        previewButton.addActionListener(e -> {
+            new BillboardToImage(billboards.get(rowSelected.getMinSelectionIndex()), 1280,720).Generate();
+            //JOptionPane.showMessageDialog(null, BillboardToImage.Generate(billboards.get(rowSelected.getMinSelectionIndex())), "Preview: ", JOptionPane.INFORMATION_MESSAGE);
+        });
 
 
         importButton.addActionListener(e -> {
@@ -151,9 +157,9 @@ public class BillboardTab{
         editButton.addActionListener(e -> {
             if (!Objects.equals(editButton.getText(), "")){
                 int selected = rowSelected.getMinSelectionIndex();
-                Billboard created = BillboardOptions.BillboardEditor(billboards.get(selected));
+                Billboard created = BillboardOptions.BillboardEditor(username, billboards.get(selected));
                 if(created != null) {
-                    billboards.add(created); //replace with send to server
+                    client.sendMessage(new Message(token).updateBillboard(created));
                     updateTable();
                 }
             }
@@ -161,9 +167,9 @@ public class BillboardTab{
         });
 
         createButton.addActionListener(e -> {
-            Billboard created = BillboardOptions.BillboardEditor();
+            Billboard created = BillboardOptions.BillboardEditor(username);
             if(created != null) {
-                billboards.add(created); //replace with send to server
+                client.sendMessage(new Message(token).createBillboard(created));
                 updateTable();
             }
         });

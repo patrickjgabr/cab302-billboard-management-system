@@ -1,6 +1,6 @@
 package Shared;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.TreeMap;
 
 /**
@@ -11,7 +11,7 @@ import java.util.TreeMap;
 public class Billboard implements Serializable {
 
     private String name;
-    private Integer billboardID = 0;
+    private Integer billboardID;
     private String creatorName;
     private String imageUrl;
     private String messageText;
@@ -19,6 +19,7 @@ public class Billboard implements Serializable {
     private String backgroundColour;
     private String informationText;
     private String informationTextColour;
+    private Integer scheduled;
 
     /**
      * Constructs and initalizes a Billboard object
@@ -32,6 +33,28 @@ public class Billboard implements Serializable {
         this.backgroundColour = bgColour;
         this.informationText = infoText;
         this.informationTextColour = infoColour;
+    }
+
+    public Billboard(byte[] bytes){
+        try {
+            ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(bytes));
+            Object bb = inputStream.readObject();
+            Billboard billboard = (Billboard) bb;
+
+            this.creatorName = billboard.creatorName;
+            this.name = billboard.name;
+            this.imageUrl = billboard.imageUrl;
+            this.messageText = billboard.messageText;
+            this.messageTextColour = billboard.messageTextColour;
+            this.backgroundColour = billboard.backgroundColour;
+            this.informationText = billboard.informationText;
+            this.informationTextColour = billboard.informationTextColour;
+            this.billboardID = billboard.billboardID;
+            this.scheduled = billboard.getScheduled();
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public Billboard() {
@@ -123,4 +146,28 @@ public class Billboard implements Serializable {
     public void setBillboardID(Integer billboardID) { this.billboardID = billboardID; }
 
     //public TreeMap<String, String> getBillboardExport() { return billboardExport; }
+
+    public byte [] getByteArray(){
+        ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
+        ObjectOutputStream objOutput = null;
+        byte [] data;
+        try {
+            objOutput = new ObjectOutputStream(byteOutput);
+            objOutput.writeObject(this);
+            data = byteOutput.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+            data = new byte[]{0};
+        }
+
+        return data;
+    }
+
+    public Integer getScheduled() {
+        return scheduled;
+    }
+
+    public void setScheduled(Integer scheduled) {
+        this.scheduled = scheduled;
+    }
 }

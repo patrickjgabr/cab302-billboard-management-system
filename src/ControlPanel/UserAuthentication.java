@@ -1,11 +1,13 @@
 package ControlPanel;
 
-import Shared.Session;
+
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 public class UserAuthentication extends JFrame {
@@ -44,8 +46,21 @@ public class UserAuthentication extends JFrame {
         return username.getText();
     }
     public String getPassword() {
-        return password.getText();
+            MessageDigest passwordHash;
+            try {
+                passwordHash = MessageDigest.getInstance("SHA-256");
+                passwordHash.update(password.getText().getBytes());
+                byte [] byteArray = passwordHash.digest();
+                StringBuilder sb = new StringBuilder();
+                for (byte b : byteArray) {
+                    sb.append(String.format("%02x", b & 0xFF));
+                }
+                String hashed = sb.toString();
+                System.out.println("hashed" + hashed);
+            return hashed;
+        } catch (NoSuchAlgorithmException e) {return "";}
     }
+
     public JButton getSubmit() {
         return submit;
     }

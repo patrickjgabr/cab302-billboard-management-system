@@ -14,8 +14,7 @@ import static ControlPanel.CustomFont.tableHeader;
 
 public class ScheduleTab {
     private JPanel pane;
-    private JTable table;
-    public ScheduleTab(JTabbedPane mainPane, boolean[]permissions){
+    public ScheduleTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client,  String Token){
         this.pane = new JPanel();
         scheduleView();
         mainPane.addTab("Schedule", pane);
