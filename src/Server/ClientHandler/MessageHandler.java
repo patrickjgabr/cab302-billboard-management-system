@@ -81,14 +81,14 @@ public class MessageHandler {
                     handleCreateUser();
                 } else {
                     consoleMessage.printWarning("User not authorised to add User", 75);
-                    returnMessage.setCommunicationID(501);
+                    returnMessage.setCommunicationID(504);
                 }
             } else if (sentMessage.getCommunicationID() == 32) {
                 if (user.getPermission().get(3) == 1) {
                     handleUpdateUser();
                 } else {
                     consoleMessage.printWarning("User not authorised to update User", 75);
-                    returnMessage.setCommunicationID(501);
+                    returnMessage.setCommunicationID(504);
                 }
             } else if(sentMessage.getCommunicationID() == 40) {
                 handleRequestSchedule();
@@ -97,15 +97,15 @@ public class MessageHandler {
                     handleAddToSchedule(user.getUserID());
                 } else {
                     consoleMessage.printWarning("User not authorised to add to schedule", 75);
-                    returnMessage.setCommunicationID(501);
+                    returnMessage.setCommunicationID(504);
                 }
 
             } else {
                 consoleMessage.printWarning("Invalid communicationID", 75);
-                returnMessage.setCommunicationID(500);
+                returnMessage.setCommunicationID(501);
             }
         } else {
-            returnMessage.setCommunicationID(501);
+            returnMessage.setCommunicationID(503);
             consoleMessage.printWarning("Invalid session", 75);
         }
 
@@ -208,6 +208,8 @@ public class MessageHandler {
             //Instantiates a new UserDatabase object connecting to the database specified by the Properties Object.
             //  Uses the updateDatabase method to update the database using the information contained in the given User Object.
             UserDatabase userDB = new UserDatabase(properties);
+            User user = (User) sentMessage.getData();
+            user.setUserPassword(generateNewPassword(user));
             userDB.updateDatabase((User)sentMessage.getData());
 
             //Sets return data to 200 if the Update is successful.
@@ -235,13 +237,20 @@ public class MessageHandler {
             user.setUserPassword(generateNewPassword(user));
 
             if(!user.getUserPassword().equals("")) {
-                userDB.addToDatabase(user);
-                //Sets return data to 200 if the Add is successful.
-                returnMessage.setCommunicationID(200);
-                consoleMessage.printGeneral("REQUEST ACCEPTED", "User add   |   userID [" + ((User) sentMessage.getData()).getUserID() + "]", 75);
+                try {
+                    userDB.addToDatabase(user);
+                    //Sets return data to 200 if the Add is successful.
+                    returnMessage.setCommunicationID(200);
+                    consoleMessage.printGeneral("REQUEST ACCEPTED", "User add   |   userID [" + ((User) sentMessage.getData()).getUserID() + "]", 75);
+                } catch (Throwable throwable) {
+                    //Sets return data to 500 if the Add is unsuccessful.
+                    returnMessage.setCommunicationID(500);
+                    consoleMessage.printWarning("Database failed to add user",75);
+                }
+
             } else {
-                //Sets return data to 500 if the Add is unsuccessful.
-                returnMessage.setCommunicationID(500);
+                //Sets return data to 508 if the Add is unsuccessful due to password being null.
+                returnMessage.setCommunicationID(508);
                 consoleMessage.printWarning("Database failed to add user",75);
             }
 
@@ -326,6 +335,7 @@ public class MessageHandler {
                 consoleMessage.printGeneral("REQUEST ACCEPTED", "Billboard updated   |   billboardID [" + ((Billboard) sentMessage.getData()).getBillboardID() + "]", 75);
             } else {
                 consoleMessage.printWarning("User not authorised to update billboard [" + ((Billboard)sentMessage.getData()).getBillboardID() +"]", 75);
+                returnMessage.setCommunicationID(504);
             }
         } catch (Throwable throwable) {
 
@@ -338,7 +348,7 @@ public class MessageHandler {
     private boolean checkEditPermission(User user) throws Throwable {
         BillboardDatabase billboardDatabase = new BillboardDatabase(properties);
         Billboard billboard = (Billboard)sentMessage.getData();
-        billboardDatabase.getBillboard(billboard.getBillboardID());
+        billboardDatabase.getBillboard(billboard.getBillboardID().toString(), true);
 
         if(user.getPermission().get(1) == 1) {
             return true;
@@ -451,6 +461,5 @@ public class MessageHandler {
             returnMessage.setCommunicationID(500);
             consoleMessage.printWarning("Database failed to select billboard",75);
         }
-
     }
 }

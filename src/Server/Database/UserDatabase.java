@@ -13,6 +13,7 @@ import Shared.*;
 public class UserDatabase extends Database {
 
     private ResultSet results;
+    private Object Exception;
 
     public UserDatabase(Properties properties) {
         super(properties);
@@ -95,11 +96,15 @@ public class UserDatabase extends Database {
             String sqlInsert = "INSERT INTO users (userName, userObject) VALUES (?, ?)";
             Object[] parameters = new Object[]{user.getUserName(), user};
             super.runInsertUpdateQuery(sqlInsert, parameters, "INSERT");
+        } else {
+            super.closeConnection();
+            throw (Throwable) Exception;
         }
 
         updateUserID(user);
         if(super.getConnectionStatus()) {
             super.closeConnection();
+            throw (Throwable) Exception;
         }
     }
 

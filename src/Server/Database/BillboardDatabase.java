@@ -50,12 +50,18 @@ public class BillboardDatabase extends Database {
         return billboards;
     }
 
-    public Billboard getBillboard(Integer billboardID) throws Throwable {
+    public Billboard getBillboard(String value, boolean id) throws Throwable {
         super.startConnection();
         Billboard returnValue = new Billboard();
 
         try {
-            String sqlSelect = "SELECT * FROM billboards WHERE billboardID = " + billboardID;
+            String sqlSelect;
+            if(id) {
+                sqlSelect = "SELECT * FROM billboards WHERE billboardID = " + value;
+            } else {
+                sqlSelect = "SELECT * FROM billboards WHERE billboardName = \"" + value + "\"";
+            }
+
             results = super.runSelectQuery(sqlSelect);
             results.next();
             returnValue = new Billboard(results.getBytes("billboardObject"));
