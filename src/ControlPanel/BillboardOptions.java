@@ -9,7 +9,7 @@ public class BillboardOptions {
     //public static void main (String[]args){
     //   MultiInputOptionPane();
     //}
-    public static Billboard BillboardEditor() {
+    public static Billboard BillboardEditor(String username) {
 
         JTextField billboardName = new JTextField();
         JTextField imgSRC = new JTextField();
@@ -18,10 +18,10 @@ public class BillboardOptions {
         JTextField backgroundColour = new JTextField();
         JTextField infoText = new JTextField();
         JTextField infoColour = new JTextField();
-        return BillboardEditorGUI(billboardName,imgSRC,messageText,messageColour,backgroundColour,infoText,infoColour);
+        return BillboardEditorGUI(username, billboardName,imgSRC,messageText,messageColour,backgroundColour,infoText,infoColour);
     }
 
-    public static Billboard BillboardEditor(Billboard billboard) {
+    public static Billboard BillboardEditor(String username, Billboard billboard) {
         JTextField billboardName = new JTextField(billboard.getName());
         JTextField imgSRC = new JTextField(billboard.getPictureLink());
         JTextField messageText = new JTextField(billboard.getMessageText());
@@ -29,10 +29,11 @@ public class BillboardOptions {
         JTextField backgroundColour = new JTextField(billboard.getBackgroundColour());
         JTextField infoText = new JTextField(billboard.getInformationText());
         JTextField infoColour = new JTextField(billboard.getInformationTextColour());
-        return BillboardEditorGUI(billboardName,imgSRC,messageText,messageColour,backgroundColour,infoText,infoColour);
+        return BillboardEditorGUI(username,billboardName,imgSRC,messageText,messageColour,backgroundColour,infoText,infoColour);
     }
 
-    private static Billboard BillboardEditorGUI(JTextField billboardName,
+    private static Billboard BillboardEditorGUI(String username,
+                                                JTextField billboardName,
                                                 JTextField imgSRC,
                                                 JTextField messageText,
                                                 JTextField messageColour,
@@ -66,7 +67,7 @@ public class BillboardOptions {
         int result = JOptionPane.showConfirmDialog(null, myPanel, "Please Enter Billboard options", JOptionPane.YES_NO_CANCEL_OPTION);
 
         if (result == JOptionPane.YES_OPTION) {
-            return new Billboard("Test Creator",billboardName.getText(), imgSRC.getText(), messageText.getText(), messageColour.getText(), backgroundColour.getText(), infoText.getText(), infoColour.getText());
+            return new Billboard(username,billboardName.getText(), imgSRC.getText(), messageText.getText(), messageColour.getText(), backgroundColour.getText(), infoText.getText(), infoColour.getText());
         }
         return null;
     }

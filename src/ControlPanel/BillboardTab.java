@@ -24,12 +24,14 @@ public class BillboardTab{
     private JPanel pane;
     private Client client;
     private String token;
+    private String username;
 
-    public BillboardTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client, String token){
+    public BillboardTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client, String token, String username){
         this.client = client;
+        this.username = username;
         this.token = token;
         this.billboards = billboards;
-        this.pane = new JPanel();                                                           //first tab
+        this.pane = new JPanel();                                                      //first tab
         pane.setLayout(new GridBagLayout());
         setupBillboardsTable();
         setTableFeatures();
@@ -135,6 +137,7 @@ public class BillboardTab{
 
 
         previewButton.addActionListener(e -> {
+            new BillboardToImage(billboards.get(rowSelected.getMinSelectionIndex()), 1280,720).Generate();
             //JOptionPane.showMessageDialog(null, BillboardToImage.Generate(billboards.get(rowSelected.getMinSelectionIndex())), "Preview: ", JOptionPane.INFORMATION_MESSAGE);
         });
 
@@ -154,7 +157,7 @@ public class BillboardTab{
         editButton.addActionListener(e -> {
             if (!Objects.equals(editButton.getText(), "")){
                 int selected = rowSelected.getMinSelectionIndex();
-                Billboard created = BillboardOptions.BillboardEditor(billboards.get(selected));
+                Billboard created = BillboardOptions.BillboardEditor(username, billboards.get(selected));
                 if(created != null) {
                     client.sendMessage(new Message(token).updateBillboard(created));
                     updateTable();
@@ -164,7 +167,7 @@ public class BillboardTab{
         });
 
         createButton.addActionListener(e -> {
-            Billboard created = BillboardOptions.BillboardEditor();
+            Billboard created = BillboardOptions.BillboardEditor(username);
             if(created != null) {
                 client.sendMessage(new Message(token).createBillboard(created));
                 updateTable();
