@@ -268,10 +268,4 @@ public class MessageHandlerTest {
         assertEquals(506, returnMessage1.getCommunicationID());
     }
 
-
-
-
-
-
-
 }
