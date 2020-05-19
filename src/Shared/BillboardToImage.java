@@ -1,6 +1,5 @@
 package Shared;
 import Shared.Billboard;
-import Viewer.GenerateBillboardFromXML;
 import org.w3c.dom.css.Rect;
 
 import javax.imageio.ImageIO;
@@ -25,7 +24,7 @@ public class BillboardToImage {
         this.resolutionx = resolutionx;
         this.resolutiony = resolutiony;
     }
-    public JPanel Generate() {
+    public ImageIcon Generate() {
         //setting defaults
         Color bg = Color.white, mt = Color.black, it = Color.black;                            //bg = background colour, mt = message text colour, it = info text colour
         Boolean picture = !billboard.getPictureLink().equals("");
@@ -114,13 +113,8 @@ public class BillboardToImage {
         }
 
         //ImageIO.write(bi, "png", new File("."));
-        JLabel l = new JLabel(new ImageIcon(bi));
-        JPanel panel = new JPanel();
-        panel.add(l);
-        f.getContentPane().add(l);
-        f.pack();
-        f.setVisible(true);
-        return panel;
+
+        return new ImageIcon(bi);
 
         //.setSize(f.getWidth(), f.getHeight());
 

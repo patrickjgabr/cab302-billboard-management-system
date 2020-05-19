@@ -13,6 +13,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,13 +27,17 @@ public class BillboardTab{
     private Client client;
     private String token;
     private String username;
+    private JLabel preview;
+    private int selected;
+
 
     public BillboardTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client, String token, String username){
         this.client = client;
         this.username = username;
         this.token = token;
         this.billboards = billboards;
-        this.pane = new JPanel();                                                      //first tab
+        this.pane = new JPanel();
+        this.selected = -1;
         pane.setLayout(new GridBagLayout());
         setupTopButtons();
         setupBillboardsTable();
@@ -113,24 +119,36 @@ public class BillboardTab{
         pane.add(scrollPane, gbc);
     }
     public void setupDetails() {
-
-        JLabel test = new JLabel("Select a Billboard");
+        this.preview = new JLabel("Choose a billboard.");
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.weightx = 1;
         gbc.gridheight= 2;
         gbc.fill = GridBagConstraints.VERTICAL;
-        pane.add(test, gbc);
+        pane.add(preview, gbc);
 
 
 
         ListSelectionModel rowSelected = table.getSelectionModel();             //setup list selection model to listen for a selection of the table
         rowSelected.addListSelectionListener(e -> {
             if (!rowSelected.isSelectionEmpty()){
-                int selected = rowSelected.getMinSelectionIndex();
+                this.selected = rowSelected.getMinSelectionIndex();
+                this.preview.setIcon(new BillboardToImage(billboards.get(selected),pane.getWidth()-350,(int)((pane.getWidth()-350)/1.77)).Generate()); ;
+                this.preview.setText("");
+                pane.validate();
+                pane.repaint();
+            }
+        });
 
-                test.setText(billboards.get(selected).getName());
+        pane.addComponentListener(new ComponentAdapter()
+        {
+            public void componentResized(ComponentEvent evt) {
+                if(selected >-1) {
+                    preview.setIcon(new BillboardToImage(billboards.get(selected),pane.getWidth()-350,(int)((pane.getWidth()-350)/1.77)).Generate());
+                    pane.validate();
+                    pane.repaint();
+                }
             }
         });
 
