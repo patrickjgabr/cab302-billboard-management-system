@@ -57,31 +57,35 @@ public class Scheduled {
         return interval;
     }
 
+    public int getInterval(int type) {
+        return interval[type];
+    }
+
     public void setInterval(int[] interval) {
         this.interval = interval;
     }
 
-    public Time getStartTime() {
+    public Calendar getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Time startTime) {
+    public void setStartTime(Calendar startTime) {
         this.startTime = startTime;
     }
 
-    public Time getEndTime() {
+    public Calendar getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Time endTime) {
+    public void setEndTime(Calendar endTime) {
         this.endTime = endTime;
     }
 
-    public Time getDuration() {
+    public int getDuration() {
         return duration;
     }
 
-    public void setDuration(Time duration) {
+    public void setDuration(int duration) {
         this.duration = duration;
     }
 }

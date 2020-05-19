@@ -34,18 +34,21 @@ class TestScheduleHelper {
 
     @Test
     public void TestGenerateEvents() {
-        ArrayList<Integer> permissions = new ArrayList<>();
-        permissions.add(1);
-        permissions.add(1);
-        permissions.add(1);
-        permissions.add(1);
-        ArrayList<Billboard> billboards = new ArrayList<>();
-        User user = new User("test", "password", permissions, 1, "testsalt" );
-        billboards.add(new Billboard("creatorName", "name", "imageUrl", "msgText", "", "#000FFF", "infoText", ""));
-        ArrayList<Scheduled> schedule = new ArrayList<>();
-        schedule.add(new Scheduled(user.getUserID(), billboards.get(0).getBillboardID(), ScheduleHelper.DateTime(0,0,0,0), ScheduleHelper.DateTime(0,1,0,0), 60, new int[]{0,0,0}));
-        schedule.add(new Scheduled(user.getUserID(), billboards.get(0).getBillboardID(), ScheduleHelper.DateTime(1,0,0,0), ScheduleHelper.DateTime(1,1,0,0), 60, new int[]{1,3,30}));
-        ScheduleHelper.GenerateEvents(schedule);
+        assertThrows(Exception.class, () -> {
+            ArrayList<Integer> permissions = new ArrayList<>();
+            permissions.add(1);
+            permissions.add(1);
+            permissions.add(1);
+            permissions.add(1);
+            ArrayList<Billboard> billboards = new ArrayList<>();
+            User user = new User("test", "password", permissions, 1, "testsalt" );
+            billboards.add(new Billboard("creatorName", "name", "imageUrl", "msgText", "", "#000FFF", "infoText", ""));
+            ArrayList<Scheduled> schedule = new ArrayList<>();
+            schedule.add(new Scheduled(user.getUserID(), billboards.get(0).getBillboardID(), ScheduleHelper.DateTime(0,0,0,0), ScheduleHelper.DateTime(0,1,0,0), 60, new int[]{0,0,0}));
+            schedule.add(new Scheduled(user.getUserID(), billboards.get(0).getBillboardID(), ScheduleHelper.DateTime(1,0,0,0), ScheduleHelper.DateTime(1,1,0,0), 60, new int[]{1,3,30}));
+            ScheduleHelper.GenerateEvents(schedule);
+        });
+
     }
 
     @Test
