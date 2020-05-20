@@ -24,7 +24,9 @@ public class GenerateBillboardFromXML{
         String info = "";
         String msgColour = "";
         String infoColour = "";
-        String url = "";
+        String picture="";
+        String link = "";
+        String data = "";
         try {
             File input = XMLFile;
             DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
@@ -41,7 +43,14 @@ public class GenerateBillboardFromXML{
                 }
                 if(el.getElementsByTagName("picture").item(0) != null){
                     if(el.getElementsByTagName("picture").item(0).hasAttributes()){
-                        url = el.getElementsByTagName("picture").item(0).getAttributes().getNamedItem("url").getNodeValue();
+                        try{
+                            link = el.getElementsByTagName("picture").item(0).getAttributes().getNamedItem("url").getNodeValue();
+                        }catch (Exception e){
+                            try{
+                                data = el.getElementsByTagName("picture").item(0).getAttributes().getNamedItem("data").getNodeValue();
+                            }catch (Exception j){e.printStackTrace();}
+                        }
+
                     }
                 };
                 if(el.getElementsByTagName("message").item(0) != null){                         //message and colour
@@ -56,14 +65,14 @@ public class GenerateBillboardFromXML{
                         infoColour = el.getElementsByTagName("information").item(0).getAttributes().getNamedItem("colour").getNodeValue();
                     }
                 }
-                if(el.getElementsByTagName("picture").item(0) != null){
-                    ;//URL = el.getElementsByTagName("picture").item(0).getAttributes().getNamedItem("URL").getNodeValue();
-                }
-
             }
+
         }catch (Exception e){
             e.printStackTrace();
         }
-        return new Billboard("Test Creator Name", name, url, message, msgColour, background, info, infoColour);
+        if(!link.equals("")){picture=link;}
+        else if(!data.equals("")){ picture=data; }
+
+        return new Billboard("Test Creator Name", name, picture, message, msgColour, background, info, infoColour);
     }
 }

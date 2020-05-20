@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.tools.Tool;
 import java.awt.*;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -25,6 +26,10 @@ public class BillboardToImage {
         this.resolutionx = resolutionx;
         this.resolutiony = resolutiony;
     }
+
+    /**
+     * @return Jpanel containing message text, info text and picture where applicable.
+     */
     public JPanel Generate() {
         //setting defaults
         Color bg = Color.white, mt = Color.black, it = Color.black;                            //bg = background colour, mt = message text colour, it = info text colour
@@ -94,7 +99,7 @@ public class BillboardToImage {
             }
             else if(picture || (message && picture)){
                 for (String line : wrapped.split("\n")){
-                    drawCenteredText(gr, line, new Rectangle(bi.getWidth(), ((imageHeight += lineHeight)*2) - 450 ));}
+                    drawCenteredText(gr, line, new Rectangle(bi.getWidth(), ((imageHeight += lineHeight)*2) - 550 ));}
             }
             else {
                 for (String line : wrapped.split("\n")){
@@ -105,28 +110,26 @@ public class BillboardToImage {
         if (picture){
             BufferedImage image = null;
             try{
-                URL source = new URL(billboard.getPictureLink());
+                URL source = new URL(billboard.getPictureLink());                   //image display from URL
                 image = ImageIO.read(source);
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException e){
+                try{
+                    String data = billboard.getPictureLink();
+                    byte[] decoded = Base64.getDecoder().decode(data);
+                    image = ImageIO.read(new ByteArrayInputStream(decoded));                //image displayed from picture data
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
+            assert image != null;
             drawScaledImage(gr, image, info, message);
         }
 
-        //ImageIO.write(bi, "png", new File("."));
         JLabel l = new JLabel(new ImageIcon(bi));
         JPanel panel = new JPanel();
         panel.add(l);
-        f.getContentPane().add(l);
-        f.pack();
-        f.setVisible(true);
+
         return panel;
-
-        //.setSize(f.getWidth(), f.getHeight());
-
-        //f.getContentPane().add(l);
-        //f.pack();
-        //f.setVisible(true);
     }
     public void drawScaledImage(Graphics g, BufferedImage image, Boolean infoText, Boolean messageText){
         double imgHeight = image.getHeight(null), imgWidth = image.getWidth(null);
