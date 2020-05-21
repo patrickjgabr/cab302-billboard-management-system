@@ -1,8 +1,14 @@
 package Server;
 
 import Server.ClientHandler.ClientHandler;
+import Server.ClientHandler.ClientHandlerMessage;
+import Server.ClientHandler.MessageHandler;
 import Server.Database.Database;
+import Server.Database.ScheduleDatabase;
+import Shared.Event;
+import Shared.Message;
 import Shared.Properties;
+import Shared.Scheduled;
 
 import javax.xml.crypto.Data;
 import java.io.FileNotFoundException;
@@ -11,6 +17,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.stream.IntStream;
+
+import static Shared.ScheduleHelper.GenerateEvents;
 
 /**
  *Server class handles all of the server side components. This class runs constantly on the server machine.
@@ -25,6 +39,9 @@ public class Server {
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
     private Properties properties;
+    private ExecutorService threads;
+    private ArrayList<Object> futureStateList;
+    private ArrayList<Event> schedule;
     public boolean runServer = true;
 
     /**
@@ -40,6 +57,9 @@ public class Server {
             runServer = db.checkConfiguration();
             db.closeConnection();
 
+            this.threads = Executors.newFixedThreadPool(50);
+
+            schedule = generateSchedule();
             try {
                 //Attempts to setup the ServerSocket on the port specified by the properties object and initialises the socket
                 // variable to be null for further use.
@@ -63,7 +83,19 @@ public class Server {
     public void run() {
         //Run server is set to true initially and while it remains true the server will accept new connections
         Integer clientID = 100;
+
+        futureStateList = new ArrayList<>();
+        IntStream.rangeClosed(0, 49).forEach(x -> {
+            futureStateList.add(new Object());
+        });
+
         while(runServer) {
+
+            boolean updateRequired = checkFutureState();
+
+            if(updateRequired) {
+                this.schedule = generateSchedule();
+            }
 
             try {
                 //serverSocket.accept() blocks until a new connection is made.
@@ -74,12 +106,7 @@ public class Server {
                 setOutputStream();
                 setInputStream();
 
-                //Instantiates and starts a new ClientHandler thread and passes the socket, output and input streams
-                // to the ClientHandler object so it can continue to communicate with the connection.
-                // Start method runs the ClientHandler thread using its overloaded run() method.
-                Thread thread = new ClientHandler(socket, inputStream, outputStream, this.properties, clientID);
-                thread.start();
-                clientID += 1;
+                createFutureState(clientID);
             }
 
             //Prints any errors which occur during the above process and attempts to close the socket.
@@ -87,13 +114,101 @@ public class Server {
             catch(Exception e) {
                 try {
                     socket.close();
-                    e.printStackTrace();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+                } catch (IOException ex) {}
             }
 
+                //Iterate clientID
+                clientID += 1;
+            }
+
+            threads.shutdown();
+    }
+
+    private ArrayList<Event> generateSchedule() {
+        ClientHandlerMessage clientHandlerMessage = new ClientHandlerMessage();
+        ScheduleDatabase scheduleDatabase = new ScheduleDatabase(properties);
+        ArrayList<Event> returnArray = new ArrayList<>();
+        try {
+            clientHandlerMessage.printGeneral("SERVER", "Updating Schedule", 75);
+            ArrayList<Scheduled> scheduled = scheduleDatabase.getSchedule();
+            returnArray = GenerateEvents(scheduled);
+        } catch (Throwable throwable) {}
+
+        return returnArray;
+    }
+
+
+    private boolean checkFutureState() {
+        boolean updateRequired = false;
+
+        for (int x = 0; x<futureStateList.size(); x++) {
+            try {
+                if(futureStateList.get(x) instanceof Future) {
+                    Future<Boolean> futureObject = (Future<Boolean>) futureStateList.get(x);
+                    if(futureObject.isDone() && futureObject.get()) {
+                        futureStateList.set(futureStateList.indexOf(futureObject), new Object());
+                        updateRequired = true;
+                    }
+                }
+            } catch (Exception e) {}
         }
+
+        return updateRequired;
+    }
+
+    private void createFutureState(Integer ID) {
+        for (int x = 0; x< futureStateList.size(); x++) {
+            if (!(futureStateList.get(x) instanceof Future)) {
+                futureStateList.set(x, createNewThread(ID));
+                break;
+            }
+        }
+    }
+
+    private Future<Boolean> createNewThread(Integer ID) {
+        Future<Boolean> future = threads.submit(addClient(ID));
+        return  future;
+    }
+
+    private Callable<Boolean> addClient(Integer ID) {
+
+        return new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                //Prints a message to the console indicating that a new client handler has been opened.
+                ClientHandlerMessage clientHandlerMessage = new ClientHandlerMessage();
+                clientHandlerMessage.clientHandlerStart(ID);
+
+                //Return true if edits are made to the schedule
+                boolean scheduleEdited = false;
+
+                try {
+                    //Receives a message of type Message from the inputStream and gives that message to
+                    //  a new MessageHandler object. This returns the appropriate message. This message
+                    //  is then written to the outputStream and sent back to the client.
+                    Message receivedMessage = (Message)inputStream.readObject();
+                    MessageHandler messageHandler = new MessageHandler(receivedMessage, properties);
+                    Message returnMessage = messageHandler.getReturnMessage();
+
+                    if((receivedMessage.getCommunicationID() == 41 || receivedMessage.getCommunicationID() == 42) && returnMessage.getCommunicationID() == 200) {
+                        scheduleEdited = true;
+                    }
+
+                    outputStream.writeObject(returnMessage);
+
+                    //Prints error messages is anything happens to inputStream reading and outputStream witting.
+                } catch (IOException | ClassNotFoundException e) {
+                    Message notValidMessage = new Message();
+                    notValidMessage.setCommunicationID(509);
+                    outputStream.writeObject(notValidMessage);
+                }
+
+                //Prints a message to the console indicating that the new client handler has been closed
+                clientHandlerMessage.clientHandlerClose(ID);
+
+                return scheduleEdited;
+            }
+        };
     }
 
     /**

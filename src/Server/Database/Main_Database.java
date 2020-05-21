@@ -18,19 +18,14 @@ public class Main_Database {
         try {
             Properties properties = new Properties();
 
-            ArrayList<Integer> permissions = new ArrayList<>(Arrays.asList(1, 1, 1, 1));
-            User rootUser = new User("root", "c13866ce9e42e90d3cf50ded2dc9e00194ffc4ad4e15865cd1b368f168944646", permissions, 100000, "y6WOb24rUAINN6KoUQ7lWNeniyTpsxPaZqzEhvAMzSqE5MrIx2kJS9TaTm0rl96n");
-            Billboard billboard = new Billboard("root", "TEST", "imageUrl", "msgText", "", "#000FFF", "infoText", "");
+            Billboard billboard = new Billboard("root", "Test", "NEWNEWNEW", "msgText", "", "#000FFF", "infoText", "");
             billboard.setBillboardID(100000);
-            Scheduled scheduled = new Scheduled(rootUser.getUserID(), billboard.getBillboardID(), ScheduleHelper.DateTime(0,0,0,0), ScheduleHelper.DateTime(0,1,0,0), 60, new int[]{0,0,0});
 
-            ScheduleDatabase scheduleDatabase = new ScheduleDatabase(properties);
-            scheduleDatabase.addToDatabase(scheduled, rootUser.getUserID());
-            ArrayList<Scheduled> schedule = scheduleDatabase.getSchedule();
+            BillboardDatabase billboardDatabase = new BillboardDatabase(properties);
+            billboardDatabase.updateDatabase(billboard);
 
-            for (Scheduled s: schedule) {
-                System.out.println(s.getID());
-            }
+            Billboard billboardNew = billboardDatabase.getBillboard(billboard.getName(), false);
+            System.out.println(billboardNew.getPictureLink());
 
         } catch (Throwable e) {
             e.printStackTrace();
