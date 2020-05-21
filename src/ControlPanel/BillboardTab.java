@@ -7,16 +7,20 @@ import org.xml.sax.SAXException;
 
 import static ControlPanel.CustomFont.*;
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.concurrent.Flow;
 
 public class BillboardTab{
     private JTable table;
@@ -25,122 +29,71 @@ public class BillboardTab{
     private Client client;
     private String token;
     private String username;
+    private JLabel preview;
+    private int selected;
+    private JPanel information;
+
 
     public BillboardTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client, String token, String username){
         this.client = client;
         this.username = username;
         this.token = token;
         this.billboards = billboards;
-        this.pane = new JPanel();                                                      //first tab
+        this.pane = new JPanel();
+        this.selected = -1;
         pane.setLayout(new GridBagLayout());
         setupBillboardsTable();
-        setTableFeatures();
+        setupDetails();
         updateTable();
-        setupButtons();
         mainPane.addTab("Billboard", pane);
-    }
-
-
-
-    public void setupBillboardsTable() {
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("ID");
-        model.addColumn("Billboard");
-        model.addColumn("Author");
-        model.addColumn("Image URL");
-        model.addColumn("Message Text");
-        model.addColumn("Message Colour");
-        model.addColumn("Background Colour");
-        model.addColumn("Info Text");
-        model.addColumn("Info Colour");
-        this.table = new JTable(model);
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 1;
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTH;
-        c.weightx = 1;
-        c.weighty = 1;
-        c.gridwidth = 8;
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.getViewport().setBackground(lightGray);
-        pane.add(scrollPane, c);                   //add table to pane - 1st row out of 2 in the grid layout.
-        //------------------------------------Table Created --------------------------------------------------------//
-    }
-
-    private void setTableFeatures(){
-        table.setRowSelectionAllowed(true);
-        table.setCellSelectionEnabled(false);
-        table.setRowHeight(40);
-        table.setSelectionBackground(new Color(0,74,127));
-        table.setRowSelectionAllowed(true);
-        table.setColumnSelectionAllowed(false);
-        table.setIntercellSpacing(new Dimension(10, 20));
-        table.setFont(tableContentsF);                                      //table contents font (16px Comic sans)
-        table.getTableHeader().setBackground(softBlue);                     //set table header colour
-        table.getTableHeader().setOpaque(false);
-        table.getTableHeader().setFont(tableHeader);
-        table.setDefaultEditor(Object.class, null);
     }
 
     public void updateTable(){
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
-
         this.billboards = (ArrayList<Billboard>) client.sendMessage(new Message(token).requestBillboards()).getData();
-
-        //DefaultTableModel model = (DefaultTableModel) table.getModel();
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         for (Billboard billboard : billboards) {
             model.addRow(new Object[]{
-                    billboard.getBillboardID(),
-                    billboard.getName(),
-                    billboard.getCreatorName(),
-                    billboard.getPictureLink(),
-                    billboard.getMessageText(),
-                    billboard.getMessageTextColour(),
-                    billboard.getBackgroundColour(),
-                    billboard.getInformationText(),
-                    billboard.getBackgroundColour()});
+                    "<html><b>" + billboard.getName() + "</b><br>ID: " + billboard.getBillboardID() + "<br>Created by: " + billboard.getCreatorName() + "</html>"});
         }
     }
 
-    public void setupButtons() {
-        JButton previewButton = new JButton("Preview Billboard");                    //button to be placed at grid space (0,1)
-        JButton createButton = new JButton("New Billboard");                        //button to be placed at grid space (2,1)
-        JButton editButton = new JButton();                  //button to be placed at grid space (3,1)
-        JButton importButton = new JButton("Import XML");
-        JButton exportButton = new JButton("Export XML");
-        JLabel selectedRow = new JLabel();
-        previewButton.setFont(buttons);
-        createButton.setFont(buttons);
-        importButton.setFont(buttons);
-        exportButton.setFont(buttons);
-        editButton.setFont(buttons);
-        editButton.setVisible(false);
-        previewButton.setVisible(false);
-        exportButton.setVisible(false);
-        selectedRow.setFont(tableContentsF);
-
-        ListSelectionModel rowSelected = table.getSelectionModel();             //setup list selection model to listen for a selection of the table
-        rowSelected.addListSelectionListener(e -> {
-            if (!rowSelected.isSelectionEmpty()){
-                int selected = rowSelected.getMinSelectionIndex();
-                editButton.setVisible(true);
-                previewButton.setVisible(true);
-                exportButton.setVisible(true);
-                exportButton.setText("Export " + billboards.get(selected).getName());
-                editButton.setText("Edit " + billboards.get(selected).getName());
-                previewButton.setText("Preview " + billboards.get(selected).getName());
+    public void setupBillboardsTable() {
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("Billboard");
+        this.table = new JTable(model);
+        table.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        table.setAutoResizeMode( JTable.AUTO_RESIZE_OFF );
+        table.setRowHeight(90);
+        table.setTableHeader(null);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = GridBagConstraints.VERTICAL;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weighty =1;
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setPreferredSize(new Dimension(300,0));
+        pane.add(scrollPane, gbc);
+    }
+    public void setupDetails() {
+        Button createButton = new Button("Create");
+        Button importButton = new Button("Import");
+        Button editButton = new Button("Edit");
+        Button deleteButton = new Button("Delete");
+        Button exportButton = new Button("Export");
+        editButton.setEnabled(false);
+        deleteButton.setEnabled(false);
+        exportButton.setEnabled(false);
+        JPanel TopButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 2, 2));
+        createButton.addActionListener(e -> {
+            Billboard created = BillboardOptions.BillboardEditor(username);
+            if(created != null) {
+                client.sendMessage(new Message(token).createBillboard(created));
+                updateTable();
             }
         });
-
-
-        previewButton.addActionListener(e -> {
-            new BillboardToImage(billboards.get(rowSelected.getMinSelectionIndex()), 1280,720).toJPanel();
-            //JOptionPane.showMessageDialog(null, BillboardToImage.Generate(billboards.get(rowSelected.getMinSelectionIndex())), "Preview: ", JOptionPane.INFORMATION_MESSAGE);
-        });
-
 
         importButton.addActionListener(e -> {
             try {
@@ -154,8 +107,120 @@ public class BillboardTab{
             }
         });
 
+        TopButtons.add(createButton);
+        TopButtons.add(importButton);
+        TopButtons.add(editButton);
+        TopButtons.add(deleteButton);
+        TopButtons.add(exportButton);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        pane.add(TopButtons,gbc);
+
+
+
+        this.preview = new JLabel("");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.weightx = 0;
+        gbc.gridheight= 2;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(0,0,0,18);
+        pane.add(preview, gbc);
+
+        this.information = new JPanel();
+        information.setLayout(new BoxLayout(information, BoxLayout.PAGE_AXIS));
+        information.add(new JLabel("Choose a billboard."));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        gbc.gridheight= 2;
+        gbc.insets = new Insets(18,12,18,18);
+        gbc.fill=GridBagConstraints.HORIZONTAL;
+        gbc.anchor= GridBagConstraints.NORTHWEST;
+        pane.add(information, gbc);
+
+
+
+        ListSelectionModel rowSelected = table.getSelectionModel();             //setup list selection model to listen for a selection of the table
+        rowSelected.addListSelectionListener(e -> {
+            if (!rowSelected.isSelectionEmpty()){
+                this.selected = rowSelected.getMinSelectionIndex();
+                editButton.setEnabled(true);
+                exportButton.setEnabled(true);
+                deleteButton.setEnabled(true);
+                this.preview.setIcon(new BillboardToImage(billboards.get(selected),pane.getWidth()-700,(int)((pane.getWidth()-700)/1.77)).toImageIcon()); ;
+                information.removeAll();
+                JLabel title = new JLabel("<html><h1>" + billboards.get(selected).getName() +"</h1><html>");
+                title.setPreferredSize(new Dimension(200,30));
+                title.setAlignmentX( Component.LEFT_ALIGNMENT );
+                information.add(title);
+                information.add(new JLabel("<html><h3> Created by: " + billboards.get(selected).getCreatorName() +"</h3><html>"));
+                JTextField field = new JTextField();
+                field.setText(billboards.get(selected).getPictureLink());
+                field.setPreferredSize(new Dimension(1,20));
+                field.setEditable(false);
+                field.setAlignmentX( Component.LEFT_ALIGNMENT );
+                JTextField field2 = new JTextField();
+                field2.setText(billboards.get(selected).getMessageText());
+                field2.setEditable(false);
+                field2.setAlignmentX( Component.LEFT_ALIGNMENT );
+                JTextField field3 = new JTextField();
+                field3.setText(billboards.get(selected).getInformationText());
+                field3.setEditable(false);
+                field3.setAlignmentX( Component.LEFT_ALIGNMENT );
+                JTextField field4 = new JTextField();
+                field4.setText(billboards.get(selected).getBackgroundColour());
+                field4.setEditable(false);
+                field4.setAlignmentX( Component.LEFT_ALIGNMENT );
+                JTextField field5 = new JTextField();
+                field5.setText(billboards.get(selected).getMessageTextColour());
+                field5.setEditable(false);
+                field5.setAlignmentX( Component.LEFT_ALIGNMENT );
+                JTextField field6 = new JTextField();
+                field6.setText(billboards.get(selected).getInformationTextColour());
+                field6.setEditable(false);
+                field6.setAlignmentX( Component.LEFT_ALIGNMENT );
+                information.add(new JLabel("URL/Data:"));
+                information.add(field);
+                information.add(Box.createVerticalStrut(10));
+                information.add(new JLabel("Message:"));
+                information.add(field2);
+                information.add(Box.createVerticalStrut(10));
+                information.add(new JLabel("Information:"));
+                information.add(field3);
+                information.add(Box.createVerticalStrut(10));
+                information.add(new JLabel("Background Colour:"));
+                information.add(field4);
+                information.add(Box.createVerticalStrut(10));
+                information.add(new JLabel("Message Text Colour:"));
+                information.add(field5);
+                information.add(Box.createVerticalStrut(10));
+                information.add(new JLabel("Information Text Colour:"));
+                information.add(field6);
+                information.add(Box.createVerticalStrut(10));
+                pane.validate();
+                pane.repaint();
+            }
+        });
+
+        pane.addComponentListener(new ComponentAdapter()
+        {
+            public void componentResized(ComponentEvent evt) {
+                if(selected >-1) {
+                    preview.setIcon(new BillboardToImage(billboards.get(selected),pane.getWidth()-700,(int)((pane.getWidth()-700)/1.77)).toImageIcon());
+                    pane.validate();
+                    pane.repaint();
+                }
+            }
+        });
+
         editButton.addActionListener(e -> {
-            if (!Objects.equals(editButton.getText(), "")){
+            if (!Objects.equals(editButton.getLabel(), "")){
                 int selected = rowSelected.getMinSelectionIndex();
                 Billboard created = BillboardOptions.BillboardEditor(username, billboards.get(selected));
                 if(created != null) {
@@ -166,14 +231,6 @@ public class BillboardTab{
             else JOptionPane.showMessageDialog(null, "Please select a billboard first.");
         });
 
-        createButton.addActionListener(e -> {
-            Billboard created = BillboardOptions.BillboardEditor(username);
-            if(created != null) {
-                client.sendMessage(new Message(token).createBillboard(created));
-                updateTable();
-            }
-        });
-
         exportButton.addActionListener(e -> {
             JFileChooser f = new JFileChooser();
             f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -182,12 +239,7 @@ public class BillboardTab{
         });
 
 
-        pane.add(createButton,GUI.newButtonConstraints(0,0));                  //place button 2 at (2,1)
-        pane.add(previewButton,GUI.newButtonConstraints(4,0));                 //place button 1 at (0,1)
-        pane.add(importButton,GUI.newButtonConstraints(1,0));
-        pane.add(exportButton,GUI.newButtonConstraints(2,0));
-        pane.add(editButton,GUI.newButtonConstraints(3,0));                   //place button 2 at (1,1)
-        pane.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+
     }
 
 

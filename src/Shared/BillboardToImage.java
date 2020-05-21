@@ -26,6 +26,7 @@ public class BillboardToImage {
         this.resolutiony = resolutiony;
     }
 
+
     public JPanel toJPanel() {
         JLabel l = new JLabel(Generate());
         JPanel panel = new JPanel();
@@ -33,7 +34,7 @@ public class BillboardToImage {
         return panel;
     }
 
-    public ImageIcon toJImageIcon() {
+    public ImageIcon toImageIcon() {
         return Generate();
     }
 
@@ -135,7 +136,9 @@ public class BillboardToImage {
             drawScaledImage(gr, image, info, message);
         }
 
+
         return new ImageIcon(bi);
+
 
     }
     public void drawScaledImage(Graphics g, BufferedImage image, Boolean infoText, Boolean messageText){

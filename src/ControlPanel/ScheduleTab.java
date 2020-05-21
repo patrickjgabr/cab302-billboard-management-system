@@ -26,7 +26,6 @@ public class ScheduleTab {
 
         for (int i = 0; i < 7; i++) {
             DefaultTableModel model = new DefaultTableModel() {
-
                 @Override
                 public boolean isCellEditable(int row, int column) {
                     //all cells false
@@ -43,15 +42,14 @@ public class ScheduleTab {
             table.setRowSelectionAllowed(false);
             int finalI = i;
             table.addMouseListener(new MouseAdapter() {
-                public void mousePressed(MouseEvent e) {
-                    if (e.getClickCount() == 2) {
+                public void mouseClicked(MouseEvent e) {
                         JTable target = (JTable)e.getSource();
                         int row = target.getSelectedRow();
                         int column = target.getSelectedColumn();
                         Object text = target.getValueAt(row,column);
                         System.out.println(" " + row + " " + column+ " "+ days[finalI] + " " + text);
                         // do some action if appropriate column
-                    }
+
                 }
             });
         }

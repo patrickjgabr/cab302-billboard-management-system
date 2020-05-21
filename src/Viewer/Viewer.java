@@ -6,6 +6,7 @@ import Shared.*;
 
 public class Viewer {
 
+
     public static Billboard errorBillboard = new Billboard("ROOT", "Error Billboard", "" , "Error connecting to server","","","Retrying in 15","");
 
    public static  void main (String[] args) throws IOException {
