@@ -490,5 +490,4 @@ public class MessageHandlerTest {
             assertEquals(false, true);
         }
     }
-
 }
