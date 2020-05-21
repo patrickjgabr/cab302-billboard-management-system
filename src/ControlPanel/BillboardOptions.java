@@ -18,7 +18,7 @@ public class BillboardOptions {
         JTextField backgroundColour = new JTextField();
         JTextField infoText = new JTextField();
         JTextField infoColour = new JTextField();
-        return BillboardEditorGUI(username, billboardName,imgSRC,messageText,messageColour,backgroundColour,infoText,infoColour);
+        return BillboardEditorGUI(new Billboard(),username, billboardName,imgSRC,messageText,messageColour,backgroundColour,infoText,infoColour);
     }
 
     public static Billboard BillboardEditor(String username, Billboard billboard) {
@@ -29,10 +29,11 @@ public class BillboardOptions {
         JTextField backgroundColour = new JTextField(billboard.getBackgroundColour());
         JTextField infoText = new JTextField(billboard.getInformationText());
         JTextField infoColour = new JTextField(billboard.getInformationTextColour());
-        return BillboardEditorGUI(username,billboardName,imgSRC,messageText,messageColour,backgroundColour,infoText,infoColour);
+        return BillboardEditorGUI(billboard, username,billboardName,imgSRC,messageText,messageColour,backgroundColour,infoText,infoColour);
     }
 
-    private static Billboard BillboardEditorGUI(String username,
+    private static Billboard BillboardEditorGUI(Billboard billboard,
+                                                String username,
                                                 JTextField billboardName,
                                                 JTextField imgSRC,
                                                 JTextField messageText,
@@ -67,7 +68,9 @@ public class BillboardOptions {
         int result = JOptionPane.showConfirmDialog(null, myPanel, "Please Enter Billboard options", JOptionPane.YES_NO_CANCEL_OPTION);
 
         if (result == JOptionPane.YES_OPTION) {
-            return new Billboard(username,billboardName.getText(), imgSRC.getText(), messageText.getText(), messageColour.getText(), backgroundColour.getText(), infoText.getText(), infoColour.getText());
+            Billboard billboard2 = new Billboard(username,billboardName.getText(), imgSRC.getText(), messageText.getText(), messageColour.getText(), backgroundColour.getText(), infoText.getText(), infoColour.getText());
+            billboard2.setBillboardID(billboard.getBillboardID());
+            return billboard2;
         }
         return null;
     }
