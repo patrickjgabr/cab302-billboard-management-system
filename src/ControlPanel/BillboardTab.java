@@ -59,7 +59,6 @@ public class BillboardTab{
         }
     }
 
-
     public void setupBillboardsTable() {
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Billboard");
@@ -86,6 +85,7 @@ public class BillboardTab{
         Button exportButton = new Button("Export");
         editButton.setEnabled(false);
         deleteButton.setEnabled(false);
+        exportButton.setEnabled(false);
         JPanel TopButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 2, 2));
         createButton.addActionListener(e -> {
             Billboard created = BillboardOptions.BillboardEditor(username);
@@ -127,6 +127,7 @@ public class BillboardTab{
         gbc.weightx = 0;
         gbc.gridheight= 2;
         gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(0,0,0,18);
         pane.add(preview, gbc);
 
         this.information = new JPanel();
@@ -138,7 +139,7 @@ public class BillboardTab{
         gbc.weightx = 1;
         gbc.weighty = 1;
         gbc.gridheight= 2;
-        gbc.insets = new Insets(12,12,18,18);
+        gbc.insets = new Insets(18,12,18,18);
         gbc.fill=GridBagConstraints.HORIZONTAL;
         gbc.anchor= GridBagConstraints.NORTHWEST;
         pane.add(information, gbc);
@@ -149,12 +150,10 @@ public class BillboardTab{
         rowSelected.addListSelectionListener(e -> {
             if (!rowSelected.isSelectionEmpty()){
                 this.selected = rowSelected.getMinSelectionIndex();
-
                 editButton.setEnabled(true);
                 exportButton.setEnabled(true);
                 deleteButton.setEnabled(true);
-                this.preview.setIcon(new BillboardToImage(billboards.get(selected),pane.getWidth()-600,(int)((pane.getWidth()-600)/1.77)).Generate()); ;
-                this.preview.setText("");
+                this.preview.setIcon(new BillboardToImage(billboards.get(selected),pane.getWidth()-700,(int)((pane.getWidth()-700)/1.77)).Generate()); ;
                 information.removeAll();
                 JLabel title = new JLabel("<html><h1>" + billboards.get(selected).getName() +"</h1><html>");
                 title.setPreferredSize(new Dimension(200,30));
@@ -163,7 +162,7 @@ public class BillboardTab{
                 information.add(new JLabel("<html><h3> Created by: " + billboards.get(selected).getCreatorName() +"</h3><html>"));
                 JTextField field = new JTextField();
                 field.setText(billboards.get(selected).getPictureLink());
-                field.setPreferredSize(new Dimension(200,20));
+                field.setPreferredSize(new Dimension(1,20));
                 field.setEditable(false);
                 field.setAlignmentX( Component.LEFT_ALIGNMENT );
                 JTextField field2 = new JTextField();
@@ -174,7 +173,19 @@ public class BillboardTab{
                 field3.setText(billboards.get(selected).getInformationText());
                 field3.setEditable(false);
                 field3.setAlignmentX( Component.LEFT_ALIGNMENT );
-                information.add(new JLabel("URL:"));
+                JTextField field4 = new JTextField();
+                field4.setText(billboards.get(selected).getBackgroundColour());
+                field4.setEditable(false);
+                field4.setAlignmentX( Component.LEFT_ALIGNMENT );
+                JTextField field5 = new JTextField();
+                field5.setText(billboards.get(selected).getMessageTextColour());
+                field5.setEditable(false);
+                field5.setAlignmentX( Component.LEFT_ALIGNMENT );
+                JTextField field6 = new JTextField();
+                field6.setText(billboards.get(selected).getInformationTextColour());
+                field6.setEditable(false);
+                field6.setAlignmentX( Component.LEFT_ALIGNMENT );
+                information.add(new JLabel("URL/Data:"));
                 information.add(field);
                 information.add(Box.createVerticalStrut(10));
                 information.add(new JLabel("Message:"));
@@ -182,6 +193,15 @@ public class BillboardTab{
                 information.add(Box.createVerticalStrut(10));
                 information.add(new JLabel("Information:"));
                 information.add(field3);
+                information.add(Box.createVerticalStrut(10));
+                information.add(new JLabel("Background Colour:"));
+                information.add(field4);
+                information.add(Box.createVerticalStrut(10));
+                information.add(new JLabel("Message Text Colour:"));
+                information.add(field5);
+                information.add(Box.createVerticalStrut(10));
+                information.add(new JLabel("Information Text Colour:"));
+                information.add(field6);
                 information.add(Box.createVerticalStrut(10));
                 pane.validate();
                 pane.repaint();
@@ -192,7 +212,7 @@ public class BillboardTab{
         {
             public void componentResized(ComponentEvent evt) {
                 if(selected >-1) {
-                    preview.setIcon(new BillboardToImage(billboards.get(selected),pane.getWidth()-600,(int)((pane.getWidth()-600)/1.77)).Generate());
+                    preview.setIcon(new BillboardToImage(billboards.get(selected),pane.getWidth()-700,(int)((pane.getWidth()-700)/1.77)).Generate());
                     pane.validate();
                     pane.repaint();
                 }
