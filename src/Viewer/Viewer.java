@@ -13,7 +13,7 @@ public class Viewer {
         //File xml = new File("externalResources/18.xml");
         //Billboard test = GenerateBillboardFromXML.XMLToBillboard(xml, "Test");
 
-        JPanel image = new BillboardToImage(errorBillboard, 1920, 1080).Generate();
+        JPanel image = new BillboardToImage(errorBillboard, 1920, 1080).toJPanel();
         viewer.getContentPane().add(image);
 
         viewer.setExtendedState(JFrame.MAXIMIZED_BOTH);                 //setting up viewer to be full screen borderless

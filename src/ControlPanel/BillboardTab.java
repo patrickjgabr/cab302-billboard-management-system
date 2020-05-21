@@ -137,7 +137,7 @@ public class BillboardTab{
 
 
         previewButton.addActionListener(e -> {
-            new BillboardToImage(billboards.get(rowSelected.getMinSelectionIndex()), 1280,720).Generate();
+            new BillboardToImage(billboards.get(rowSelected.getMinSelectionIndex()), 1280,720).toJPanel();
             //JOptionPane.showMessageDialog(null, BillboardToImage.Generate(billboards.get(rowSelected.getMinSelectionIndex())), "Preview: ", JOptionPane.INFORMATION_MESSAGE);
         });
 
