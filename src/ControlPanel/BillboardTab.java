@@ -153,7 +153,7 @@ public class BillboardTab{
                 editButton.setEnabled(true);
                 exportButton.setEnabled(true);
                 deleteButton.setEnabled(true);
-                this.preview.setIcon(new BillboardToImage(billboards.get(selected),pane.getWidth()-700,(int)((pane.getWidth()-700)/1.77)).Generate()); ;
+                this.preview.setIcon(new BillboardToImage(billboards.get(selected),pane.getWidth()-700,(int)((pane.getWidth()-700)/1.77)).toImageIcon()); ;
                 information.removeAll();
                 JLabel title = new JLabel("<html><h1>" + billboards.get(selected).getName() +"</h1><html>");
                 title.setPreferredSize(new Dimension(200,30));
@@ -212,7 +212,7 @@ public class BillboardTab{
         {
             public void componentResized(ComponentEvent evt) {
                 if(selected >-1) {
-                    preview.setIcon(new BillboardToImage(billboards.get(selected),pane.getWidth()-700,(int)((pane.getWidth()-700)/1.77)).Generate());
+                    preview.setIcon(new BillboardToImage(billboards.get(selected),pane.getWidth()-700,(int)((pane.getWidth()-700)/1.77)).toImageIcon());
                     pane.validate();
                     pane.repaint();
                 }

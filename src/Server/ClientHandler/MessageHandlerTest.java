@@ -1,7 +1,8 @@
-package Server.ClientHandler;
+/*package Server.ClientHandler;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import Server.Database.BillboardDatabase;
 import Server.Database.Database;
 import Server.Database.SessionDatabase;
 import Server.Database.UserDatabase;
@@ -15,7 +16,6 @@ import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -93,7 +93,7 @@ public class MessageHandlerTest {
         MessageHandler messageHandler = new MessageHandler(message, properties);
 
         Message returnMessage = messageHandler.getReturnMessage();
-        assertEquals(501, (Integer)returnMessage.getCommunicationID());
+        assertEquals(503, (Integer)returnMessage.getCommunicationID());
     }
 
     @Test
@@ -103,7 +103,7 @@ public class MessageHandlerTest {
         MessageHandler messageHandler = new MessageHandler(message, properties);
 
         Message returnMessage = messageHandler.getReturnMessage();
-        assertEquals(501, returnMessage.getCommunicationID());
+        assertEquals(503, returnMessage.getCommunicationID());
     }
 
     @Test
@@ -174,7 +174,7 @@ public class MessageHandlerTest {
         MessageHandler messageHandler = new MessageHandler(message, properties);
 
         Message returnMessage = messageHandler.getReturnMessage();
-        assertEquals(501, returnMessage.getCommunicationID());
+        assertEquals(503, returnMessage.getCommunicationID());
     }
 
     @Test
@@ -183,7 +183,7 @@ public class MessageHandlerTest {
         MessageHandler messageHandler = new MessageHandler(message, properties);
 
         Message returnMessage = messageHandler.getReturnMessage();
-        assertEquals(501, returnMessage.getCommunicationID());
+        assertEquals(503, returnMessage.getCommunicationID());
     }
 
     @Test
@@ -268,4 +268,228 @@ public class MessageHandlerTest {
         assertEquals(506, returnMessage1.getCommunicationID());
     }
 
+    @Test
+    public void UpdateBillboardNoData() {
+        Message message = new Message();
+        message.setSession(setRootToken());
+        message.setCommunicationID(22);
+
+        MessageHandler messageHandler = new MessageHandler(message, properties);
+        Message returnMessage = messageHandler.getReturnMessage();
+        assertEquals(500, returnMessage.getCommunicationID());
+    }
+
+    @Test
+    public void UpdateBillboardWrongData() {
+        Message message = new Message();
+        message.setSession(setRootToken());
+        message.setCommunicationID(22);
+        message.setData(1);
+
+        MessageHandler messageHandler = new MessageHandler(message, properties);
+        Message returnMessage = messageHandler.getReturnMessage();
+        assertEquals(500, returnMessage.getCommunicationID());
+    }
+
+    @Test
+    public void UpdateBillboardNoPerms() {
+        try {
+            BillboardDatabase billboardDatabase = new BillboardDatabase(properties);
+            Billboard billboard = billboardDatabase.getBillboard("name", false);
+
+            Message message = new Message().updateBillboard(billboard);
+            message.setSession(setNoPermsToken());
+
+            MessageHandler messageHandler = new MessageHandler(message, properties);
+            Message returnMessage = messageHandler.getReturnMessage();
+            assertEquals(504, returnMessage.getCommunicationID());
+        } catch (Throwable throwable) {
+            assertEquals(false, true);
+        }
+    }
+
+    @Test
+    public void UpdateBillboardNotExist() {
+        try {
+            BillboardDatabase billboardDatabase = new BillboardDatabase(properties);
+            Billboard billboard = billboardDatabase.getBillboard("I DONT EXIST", false);
+
+            Message message = new Message().updateBillboard(billboard);
+            message.setSession(setNoPermsToken());
+
+            MessageHandler messageHandler = new MessageHandler(message, properties);
+            Message returnMessage = messageHandler.getReturnMessage();
+            assertEquals(500, returnMessage.getCommunicationID());
+        } catch (Throwable throwable) {
+            assertEquals(false, true);
+        }
+    }
+
+    @Test
+    public void UpdateBillboardValid() {
+        try {
+            BillboardDatabase billboardDatabase = new BillboardDatabase(properties);
+            Billboard billboard = billboardDatabase.getBillboard("name", false);
+            Billboard updateBillboard = new Billboard("root", "name", "NEWVALUE", "NEWVALUE", "NEWVALUE", "NEWVALUE", "NEWVALUE", "NEWVALUE");
+            updateBillboard.setBillboardID(billboard.getBillboardID());
+
+            Message message = new Message().updateBillboard(updateBillboard);
+            message.setSession(setRootToken());
+
+            MessageHandler messageHandler = new MessageHandler(message, properties);
+            Message returnMessage = messageHandler.getReturnMessage();
+            assertEquals(200, returnMessage.getCommunicationID());
+
+            Billboard billboard1 = billboardDatabase.getBillboard(billboard.getName(), false);
+            assertEquals("root", billboard1.getCreatorName());
+            assertEquals("name", billboard1.getName());
+            assertEquals("NEWVALUE", billboard1.getPictureLink());
+            assertEquals("NEWVALUE", billboard1.getMessageText());
+            assertEquals("NEWVALUE", billboard1.getMessageTextColour());
+            assertEquals("NEWVALUE", billboard1.getBackgroundColour());
+            assertEquals("NEWVALUE", billboard1.getInformationText());
+            assertEquals("NEWVALUE", billboard1.getInformationTextColour());
+            assertEquals(0, billboard1.getScheduled());
+
+        } catch (Throwable throwable) {
+            assertEquals(false, true);
+        }
+    }
+
+    @Test
+    public void GetUsersNoSession() {
+        Message message = new Message().requestUsers();
+        MessageHandler messageHandler = new MessageHandler(message, properties);
+
+        Message returnMessage = messageHandler.getReturnMessage();
+        assertEquals(503, returnMessage.getCommunicationID());
+    }
+
+    @Test
+    public void GetUsersValidSession() {
+        Message message = new Message().requestUsers();
+        message.setSession(setRootToken());
+        MessageHandler messageHandler = new MessageHandler(message, properties);
+
+        Message returnMessage = messageHandler.getReturnMessage();
+        assertEquals(200, returnMessage.getCommunicationID());
+    }
+
+    @Test
+    public void CreateUserNoData() {
+        Message message = new Message();
+        message.setCommunicationID(31);
+        message.setSession(setRootToken());
+        MessageHandler messageHandler = new MessageHandler(message, properties);
+
+        Message returnMessage = messageHandler.getReturnMessage();
+        assertEquals(500, returnMessage.getCommunicationID());
+    }
+
+    @Test
+    public void CreateUserInvalidData() {
+        Message message = new Message();
+        message.setCommunicationID(31);
+        message.setSession(setRootToken());
+        message.setData(1);
+        MessageHandler messageHandler = new MessageHandler(message, properties);
+
+        Message returnMessage = messageHandler.getReturnMessage();
+        assertEquals(500, returnMessage.getCommunicationID());
+    }
+
+    @Test
+    public void CreateUserNoPerms() {
+        User newUser = new User("newUser", "c13866ce9e42e90d3cf50ded2dc9e00194ffc4ad4e15865cd1b368f168944646", new ArrayList<>(Arrays.asList(0, 0, 0, 0)), 100000,"y6WOb24rUAINN6KoUQ7lWNeniyTpsxPaZqzEhvAMzSqE5MrIx2kJS9TaTm0rl96n");
+        Message message = new Message().createUsers(newUser);
+        message.setSession(setNoPermsToken());
+        MessageHandler messageHandler = new MessageHandler(message, properties);
+
+        Message returnMessage = messageHandler.getReturnMessage();
+        assertEquals(504, returnMessage.getCommunicationID());
+    }
+
+    @Test
+    public void CreateUserCorrect() {
+        User newUser = new User("newUser", "c13866ce9e42e90d3cf50ded2dc9e00194ffc4ad4e15865cd1b368f168944646", new ArrayList<>(Arrays.asList(0, 0, 0, 0)), 100000,"y6WOb24rUAINN6KoUQ7lWNeniyTpsxPaZqzEhvAMzSqE5MrIx2kJS9TaTm0rl96n");
+        Message message = new Message().createUsers(newUser);
+        message.setSession(setRootToken());
+        MessageHandler messageHandler = new MessageHandler(message, properties);
+
+        Message returnMessage = messageHandler.getReturnMessage();
+        assertEquals(200, returnMessage.getCommunicationID());
+    }
+
+    @Test
+    public void CreateUserDuplicate() {
+        User sameUser = new User("SAMEUSER", "c13866ce9e42e90d3cf50ded2dc9e00194ffc4ad4e15865cd1b368f168944646", new ArrayList<>(Arrays.asList(0, 0, 0, 0)), 100000,"y6WOb24rUAINN6KoUQ7lWNeniyTpsxPaZqzEhvAMzSqE5MrIx2kJS9TaTm0rl96n");
+        Message message = new Message().createUsers(sameUser);
+        message.setSession(setRootToken());
+        MessageHandler messageHandler = new MessageHandler(message, properties);
+
+        Message returnMessage = messageHandler.getReturnMessage();
+        Message returnMessage2 = messageHandler.getReturnMessage();
+
+        assertEquals(500, returnMessage2.getCommunicationID());
+    }
+
+    @Test
+    public void UpdateUserNoData() {
+        Message message = new Message();
+        message.setCommunicationID(32);
+        message.setSession(setRootToken());
+        MessageHandler messageHandler = new MessageHandler(message, properties);
+
+        Message returnMessage = messageHandler.getReturnMessage();
+        assertEquals(500, returnMessage.getCommunicationID());
+    }
+
+    @Test
+    public void UpdateUserInvalidData() {
+        Message message = new Message();
+        message.setCommunicationID(32);
+        message.setSession(setRootToken());
+        message.setData(1);
+        MessageHandler messageHandler = new MessageHandler(message, properties);
+
+        Message returnMessage = messageHandler.getReturnMessage();
+        assertEquals(500, returnMessage.getCommunicationID());
+    }
+
+    @Test
+    public void UpdateUserNoPerms() {
+        User newUser = new User("newUser", "c13866ce9e42e90d3cf50ded2dc9e00194ffc4ad4e15865cd1b368f168944646", new ArrayList<>(Arrays.asList(0, 0, 0, 0)), 100000,"y6WOb24rUAINN6KoUQ7lWNeniyTpsxPaZqzEhvAMzSqE5MrIx2kJS9TaTm0rl96n");
+        Message message = new Message().updateUser(newUser);
+        message.setSession(setNoPermsToken());
+
+        MessageHandler messageHandler = new MessageHandler(message, properties);
+        Message returnMessage = messageHandler.getReturnMessage();
+        assertEquals(504, returnMessage.getCommunicationID());
+    }
+
+    @Test
+    public void UpdateUserCorrect() {
+        User newUser = new User("correctUpdate", "089542505d659cecbb988bb5ccff5bccf85be2dfa8c221359079aee2531298bb", new ArrayList<>(Arrays.asList(1, 1, 1, 1)), 100000,"y6WOb24rUAINN6KoUQ7lWNeniyTpsxPaZqzEhvAMzSqE5MrIx2kJS9TaTm0rl96n");
+        UserDatabase userDatabase = new UserDatabase(properties);
+        try {
+            userDatabase.addToDatabase(newUser);
+        } catch (Throwable throwable) {}
+
+        Message message = new Message().updateUser(newUser);
+        message.setSession(setRootToken());
+
+        MessageHandler messageHandler = new MessageHandler(message, properties);
+        Message returnMessage = messageHandler.getReturnMessage();
+        assertEquals(200, returnMessage.getCommunicationID());
+
+        try {
+            User user = userDatabase.getUser("correctUpdate", true);
+            assertEquals(new ArrayList<Integer>(Arrays.asList(1, 1, 1, 1)), user.getPermission());
+            assertEquals("76f29a4a6613bc1efd89ae4df268f9161b13a2bcd094b1536bca89c3d678be7c", user.getUserPassword());
+        } catch (Throwable throwable) {
+            assertEquals(false, true);
+        }
+    }
+
 }
+*/

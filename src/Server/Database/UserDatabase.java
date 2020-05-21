@@ -13,6 +13,7 @@ import Shared.*;
 public class UserDatabase extends Database {
 
     private ResultSet results;
+    private Object Exception;
 
     public UserDatabase(Properties properties) {
         super(properties);
@@ -33,6 +34,7 @@ public class UserDatabase extends Database {
             results = super.runSelectQuery(sqlSelect);
             results.next();
             returnValue = new User(results.getBytes("userObject"));
+            returnValue.setUserID(results.getInt("userID"));
             results.close();
         } catch (SQLException e) {}
         super.closeConnection();
@@ -49,6 +51,7 @@ public class UserDatabase extends Database {
 
             while(results.next()) {
                 User user = new User(results.getBytes("userObject"));
+                user.setUserID(results.getInt("userID"));
                 allUser.add(user);
             }
             results.close();
@@ -60,7 +63,7 @@ public class UserDatabase extends Database {
         return allUser;
    }
 
-    public boolean isInTable(User user) {
+    private boolean isInTable(User user) {
         boolean returnValue = false;
         if(user != null) {
             try {
@@ -93,11 +96,15 @@ public class UserDatabase extends Database {
             String sqlInsert = "INSERT INTO users (userName, userObject) VALUES (?, ?)";
             Object[] parameters = new Object[]{user.getUserName(), user};
             super.runInsertUpdateQuery(sqlInsert, parameters, "INSERT");
+        } else {
+            super.closeConnection();
+            throw (Throwable) Exception;
         }
 
         updateUserID(user);
         if(super.getConnectionStatus()) {
             super.closeConnection();
+            throw (Throwable) Exception;
         }
     }
 
