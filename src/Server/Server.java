@@ -145,9 +145,9 @@ public class Server {
             try {
                 if(futureStateList.get(x) instanceof Future) {
                     Future<Boolean> futureObject = (Future<Boolean>) futureStateList.get(x);
-                    if(futureObject.isDone() && futureObject.get()) {
+                    if(futureObject.isDone()) {
+                        updateRequired = futureObject.get();
                         futureStateList.set(futureStateList.indexOf(futureObject), new Object());
-                        updateRequired = true;
                     }
                 }
             } catch (Exception e) {}
