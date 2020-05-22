@@ -16,11 +16,7 @@ public class Event {
         this.eventID = eventID;
         this.day = startTime.get(Calendar.DAY_OF_WEEK);
         this.startTime = toMinutes(startTime);
-        this.endTime = toMinutes(startTime) + duration ;
-        System.out.println(this.eventID);
-        System.out.println(this.startTime);
-        System.out.println(endTime);
-        System.out.println("day: " + day);
+        this.endTime = toMinutes(startTime) + duration;
     }
 
     public Event() {
