@@ -7,18 +7,31 @@ import java.util.Date;
 public class Event {
 
     private int eventID;
-    private Calendar startTime;
-    private Calendar endTime;
+    private int startTime;
+    private int endTime;
+    private int day;
 
 
-    public Event (int eventID, Calendar startTime, Calendar endTime) {
+    public Event (int eventID, Calendar startTime, int duration) {
         this.eventID = eventID;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.day = startTime.get(Calendar.DAY_OF_WEEK);
+        this.startTime = toMinutes(startTime);
+        this.endTime = toMinutes(startTime) + duration ;
+        System.out.println(this.eventID);
+        System.out.println(this.startTime);
+        System.out.println(endTime);
+        System.out.println("day: " + day);
     }
 
     public Event() {
 
+    }
+
+    private int toMinutes(Calendar time){
+        int minutes = (
+                time.get(Calendar.MINUTE) +
+                time.get(Calendar.HOUR_OF_DAY) * 60);
+        return minutes;
     }
 
     public int getEventID() {
@@ -29,19 +42,15 @@ public class Event {
         this.eventID = eventID;
     }
 
-    public Calendar getStartTime() {
-        return startTime;
+    public int getDay() {
+        return day;
     }
 
-    public void setStartTime(Calendar startTime) {
-        this.startTime = startTime;
-    }
-
-    public Calendar getEndTime() {
+    public int getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Calendar endTime) {
-        this.endTime = endTime;
+    public int getStartTime() {
+        return startTime;
     }
 }

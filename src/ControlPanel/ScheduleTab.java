@@ -1,6 +1,7 @@
 package ControlPanel;
 
-import Shared.Billboard;
+import Shared.*;
+import Shared.Event;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -24,6 +25,13 @@ public class ScheduleTab {
 
         String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
+
+        ArrayList<Event> events = ScheduleHelper.GenerateEvents(TestCase.schedule());
+
+        for (Event x : events) {
+            System.out.println(x);
+        }
+
         for (int i = 0; i < 7; i++) {
             DefaultTableModel model = new DefaultTableModel() {
                 @Override
@@ -32,13 +40,13 @@ public class ScheduleTab {
                     return false;
                 }
             };
-            String[] data = {"test1","test2"};
-            model.addColumn(days[i], data);
+            model.addColumn(days[i]);
             JTable table = new JTable(model);
             pane.add(new JScrollPane(table));
-            if (days[i].equals("Sunday")) {
-                table.setRowHeight(1,100);
-            }
+
+
+
+
             table.setRowSelectionAllowed(false);
             int finalI = i;
             table.addMouseListener(new MouseAdapter() {

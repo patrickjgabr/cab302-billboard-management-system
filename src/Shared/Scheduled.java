@@ -17,11 +17,10 @@ public class Scheduled implements Serializable{
     private int duration;
     private int[] interval;
 
-    public Scheduled(Integer creatorID, Integer billboardID, Calendar startTime, Calendar endTime, int duration, int[] interval){
+    public Scheduled(Integer creatorID, Integer billboardID, Calendar startTime, int duration, int[] interval){
         this.billboardID = billboardID;
         this.creatorID = creatorID;
         this.startTime = startTime;
-        this.endTime = endTime;
         this.duration = duration;
         this.interval = interval;
     }
