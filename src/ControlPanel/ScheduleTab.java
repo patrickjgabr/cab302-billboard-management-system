@@ -21,72 +21,130 @@ public class ScheduleTab {
     private JPanel pane;
     public ScheduleTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client,  String Token){
         this.pane = new JPanel();
+        pane.setLayout(new GridBagLayout());
         scheduleView();
         mainPane.addTab("Schedule", pane);
     }
 
     private void scheduleView() {
-
+        ArrayList<JScrollPane> columns = new ArrayList<>();
         String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+        GridBagConstraints gbc = new GridBagConstraints();
+        JPanel topBar = new JPanel(new GridLayout(1,3, 5, 5));
+        JButton createButton = new JButton("Schedule a Billboard");
+        JButton editButton = new JButton("");
+        editButton.setVisible(false);
+        topBar.add(createButton);
+        topBar.add(editButton);
+        gbc.gridx=0;
+        gbc.gridy=0;
+        gbc.gridwidth=7;
+        gbc.weightx = 1;
+        gbc.insets = new Insets(5,5,5,5);
+        gbc.anchor= GridBagConstraints.NORTHWEST;
+        pane.add(topBar,gbc);
 
-
-
-
+        JLabel selected = new JLabel("Select Event");
+        gbc.gridx= 0;
+        gbc.gridy= 2;
+        gbc.gridwidth =7;
+        pane.add(selected, gbc);
 
         for (int i = 0; i < 7; i++) {
-
             DefaultTableModel model = new DefaultTableModel() {
                 @Override
                 public boolean isCellEditable(int row, int column) {
-                    //all cells false
+
                     return false;
                 }
             };
-
             model.addColumn(days[i]);
-            System.out.println(days[i]);
             JTable table = new JTable(model);
-            pane.add(new JScrollPane(table));
-
+            JScrollPane scrollpane = new JScrollPane(table);
+            scrollpane.setVerticalScrollBarPolicy((JScrollPane.VERTICAL_SCROLLBAR_NEVER));
+            columns.add(scrollpane);
             ArrayList<Event> events = ScheduleHelper.GenerateEvents(TestCase.schedule());
             int finalI1 = i;
             events.removeIf(n-> n.getDay() != finalI1 +1);
             Collections.reverse(events);
             int breaktime = 0;
+            int count = 1;
+            int current = 0;
             for (int x = 0; x < 1440; x++) {
                 for(int y = 0; y < events.size(); y++) {
-                    if(x >= events.get(y).getStartTime() && x <= events.get(y).getEndTime()) {
+                    if(x >= events.get(y).getStartTime() && x < events.get(y).getEndTime()) {
                         if(breaktime != 0) {
-                            System.out.println("Break Time: " +breaktime);
+                            model.addRow(new Object[]{"Break: "+ breaktime});
+                            table.setRowHeight(model.getRowCount()-1,breaktime*2);
                             breaktime=0;
+                            current=0;
+                            count =1;
                         }
-                        System.out.println("Minute: " + x + " ID: "+ events.get(y).getEventID());
+                        else if (current==0){
+                            model.addRow(new Object[]{});
+                            current = events.get(y).getEventID();
+                        }
+                        else if(current != events.get(y).getEventID()) {
+                            model.addRow(new Object[]{});
+                            current = events.get(y).getEventID();
+                            count = 1;
+                        }
+                        else {
+                            table.setRowHeight(model.getRowCount()-1,count*2);
+                        }
+
+                        if (current != 0) {
+                            table.setValueAt("Event ID: "+ current + "\n" + count + " minutes.",model.getRowCount()-1,0);
+                        }
+                        count++;
                         break;
                     }
                     if(y == events.size()-1) {
                         breaktime++;
-                        break;
                     }
                 }
             }
-            System.out.println("Break Time: " + breaktime);
+
+            if (breaktime != 0) {
+                model.addRow(new Object[]{"Break: "+ breaktime});
+                table.setRowHeight(model.getRowCount()-1,breaktime);
+            }
             table.setDefaultRenderer(Object.class, new MultiLineCellRenderer());
-            table.setRowHeight(45);
             table.setRowSelectionAllowed(false);
-            int finalI = i;
             table.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
                         JTable target = (JTable)e.getSource();
                         int row = target.getSelectedRow();
                         int column = target.getSelectedColumn();
-                        Object text = target.getValueAt(row,column);
-                        System.out.println(" " + row + " " + column+ " "+ days[finalI] + " " + text);
-                        // do some action if appropriate column
+                        String text = (String) target.getValueAt(row,column);
+                        if (!text.contains("Break")) {
+                            editButton.setText("Edit " + text.split("\n")[0]);
+                            selected.setText(text.replace("\n", " Duration: "));
+                            editButton.setVisible(true);
+                        }
+                        else {
+                            editButton.setVisible(false);
+                            selected.setText("Select Event");
+                        }
 
                 }
             });
         }
-        pane.setLayout(new GridLayout(1,7));
+
+        columns.get(6).setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        System.out.println(columns.size());
+        gbc = new GridBagConstraints();
+        for(int x = 0; x < 7; x++) {
+            columns.get(x).getVerticalScrollBar().setModel(columns.get(6).getVerticalScrollBar().getModel());
+            gbc.gridy =1;
+            gbc.gridx =x;
+            gbc.fill = GridBagConstraints.BOTH;
+            gbc.weightx = 1;
+            gbc.weighty = 1;
+            gbc.gridwidth = 1;
+            pane.add(columns.get(x),gbc);
+        }
+
 
 
 
