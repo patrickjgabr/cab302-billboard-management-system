@@ -74,19 +74,19 @@ public class BillboardTab{
         gbc.gridy = 1;
         gbc.weighty =1;
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setPreferredSize(new Dimension(300,0));
+        scrollPane.setPreferredSize(new Dimension(250,0));
         pane.add(scrollPane, gbc);
     }
     public void setupDetails() {
-        Button createButton = new Button("Create");
-        Button importButton = new Button("Import");
-        Button editButton = new Button("Edit");
-        Button deleteButton = new Button("Delete");
-        Button exportButton = new Button("Export");
+        JButton createButton = new JButton("Create");
+        JButton importButton = new JButton("Import");
+        JButton editButton = new JButton("Edit");
+        JButton deleteButton = new JButton("Delete");
+        JButton exportButton = new JButton("Export");
         editButton.setEnabled(false);
         deleteButton.setEnabled(false);
         exportButton.setEnabled(false);
-        JPanel TopButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 2, 2));
+        JPanel TopButtons = new JPanel(new GridLayout(1,5,5,5));
         createButton.addActionListener(e -> {
             Billboard created = BillboardOptions.BillboardEditor(username);
             if(created != null) {
@@ -116,10 +116,9 @@ public class BillboardTab{
         gbc.anchor = GridBagConstraints.WEST;
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.gridwidth =2;
+        gbc.insets = new Insets(5,5,5,5);
         pane.add(TopButtons,gbc);
-
-
-
         this.preview = new JLabel("");
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
@@ -135,7 +134,7 @@ public class BillboardTab{
         information.add(new JLabel("Choose a billboard."));
         gbc = new GridBagConstraints();
         gbc.gridx = 1;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         gbc.weightx = 1;
         gbc.weighty = 1;
         gbc.gridheight= 2;
@@ -153,7 +152,7 @@ public class BillboardTab{
                 editButton.setEnabled(true);
                 exportButton.setEnabled(true);
                 deleteButton.setEnabled(true);
-                this.preview.setIcon(new BillboardToImage(billboards.get(selected),pane.getWidth()-700,(int)((pane.getWidth()-700)/1.77)).toImageIcon()); ;
+                this.preview.setIcon(new BillboardToImage(billboards.get(selected),pane.getWidth()-600,(int)((pane.getWidth()-600)/1.77)).toImageIcon()); ;
                 information.removeAll();
                 JLabel title = new JLabel("<html><h1>" + billboards.get(selected).getName() +"</h1><html>");
                 title.setPreferredSize(new Dimension(200,30));
@@ -212,7 +211,7 @@ public class BillboardTab{
         {
             public void componentResized(ComponentEvent evt) {
                 if(selected >-1) {
-                    preview.setIcon(new BillboardToImage(billboards.get(selected),pane.getWidth()-700,(int)((pane.getWidth()-700)/1.77)).toImageIcon());
+                    preview.setIcon(new BillboardToImage(billboards.get(selected),pane.getWidth()-600,(int)((pane.getWidth()-600)/1.77)).toImageIcon());
                     pane.validate();
                     pane.repaint();
                 }
