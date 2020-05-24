@@ -3,12 +3,10 @@ package Server;
 import Server.ClientHandler.ClientHandler;
 import Server.ClientHandler.ClientHandlerMessage;
 import Server.ClientHandler.MessageHandler;
+import Server.Database.BillboardDatabase;
 import Server.Database.Database;
 import Server.Database.ScheduleDatabase;
-import Shared.Event;
-import Shared.Message;
-import Shared.Properties;
-import Shared.Scheduled;
+import Shared.*;
 
 import javax.xml.crypto.Data;
 import java.io.FileNotFoundException;
@@ -18,6 +16,8 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -42,6 +42,7 @@ public class Server {
     private ExecutorService threads;
     private ArrayList<Object> futureStateList;
     private ArrayList<Event> schedule;
+    private ArrayList<Scheduled> scheduled;
     public boolean runServer = true;
 
     /**
@@ -59,7 +60,9 @@ public class Server {
 
             this.threads = Executors.newFixedThreadPool(50);
 
-            schedule = generateSchedule();
+            scheduled = generateScheduled();
+            schedule = generateSchedule(scheduled);
+
             try {
                 //Attempts to setup the ServerSocket on the port specified by the properties object and initialises the socket
                 // variable to be null for further use.
@@ -94,7 +97,8 @@ public class Server {
             boolean updateRequired = checkFutureState();
 
             if(updateRequired) {
-                this.schedule = generateSchedule();
+                scheduled = generateScheduled();
+                schedule = generateSchedule(scheduled);
             }
 
             try {
@@ -124,14 +128,17 @@ public class Server {
             threads.shutdown();
     }
 
-    private ArrayList<Event> generateSchedule() {
+    private ArrayList<Event> generateSchedule(ArrayList<Scheduled> scheduled) {
+        return GenerateEvents(scheduled);
+    }
+
+    private ArrayList<Scheduled> generateScheduled() {
         ClientHandlerMessage clientHandlerMessage = new ClientHandlerMessage();
         ScheduleDatabase scheduleDatabase = new ScheduleDatabase(properties);
-        ArrayList<Event> returnArray = new ArrayList<>();
+        ArrayList<Scheduled> returnArray = new ArrayList<>();
         try {
-            clientHandlerMessage.printGeneral("SERVER", "Updating Schedule", 75);
-            ArrayList<Scheduled> scheduled = scheduleDatabase.getSchedule();
-            returnArray = GenerateEvents(scheduled);
+            clientHandlerMessage.printGeneral("SERVER", "Updating Scheduled", 75);
+            returnArray = scheduleDatabase.getSchedule();
         } catch (Throwable throwable) {}
 
         return returnArray;
@@ -187,10 +194,16 @@ public class Server {
                     //  a new MessageHandler object. This returns the appropriate message. This message
                     //  is then written to the outputStream and sent back to the client.
                     Message receivedMessage = (Message)inputStream.readObject();
-                    MessageHandler messageHandler = new MessageHandler(receivedMessage, properties);
-                    Message returnMessage = messageHandler.getReturnMessage();
 
-                    if((receivedMessage.getCommunicationID() == 41 || receivedMessage.getCommunicationID() == 42) && returnMessage.getCommunicationID() == 200) {
+                    Message returnMessage;
+                    if(receivedMessage.getCommunicationID() == 50) {
+                        returnMessage = handleClientViewer();
+                    } else {
+                        returnMessage = handleClientControlPanel(receivedMessage);
+                    }
+
+                    ArrayList<Integer> scheduleEffectingID = new ArrayList<>(Arrays.asList(41, 42, 23, 33, 43));
+                    if(scheduleEffectingID.contains(receivedMessage.getCommunicationID()) && returnMessage.getCommunicationID() == 200) {
                         scheduleEdited = true;
                     }
 
@@ -209,6 +222,56 @@ public class Server {
                 return scheduleEdited;
             }
         };
+    }
+
+    private Message handleClientControlPanel(Message receivedMessage) {
+        MessageHandler messageHandler = new MessageHandler(receivedMessage, properties);
+        return messageHandler.getReturnMessage();
+    }
+
+    private Message handleClientViewer() {
+        Message message = new Message();
+
+        Scheduled matchedSchedule = null;
+        Calendar currentTime = Calendar.getInstance();
+        int minutes = (currentTime.get(Calendar.MINUTE) + currentTime.get(Calendar.HOUR_OF_DAY) * 60);
+        for (Event event: schedule) {
+            if(event.getDay() == currentTime.get(Calendar.DAY_OF_WEEK) && event.getStartTime() <= minutes && event.getEndTime() >= minutes) {
+                if(matchedSchedule == null) {
+                    matchedSchedule = getScheduledFromEvent(event);
+                } else {
+                    if(matchedSchedule.getID() < event.getEventID()) {
+                        matchedSchedule = getScheduledFromEvent(event);
+                    }
+                }
+            }
+        }
+
+        if(matchedSchedule != null) {
+            BillboardDatabase billboardDatabase = new BillboardDatabase(properties);
+            try {
+                Billboard billboard = billboardDatabase.getBillboard(matchedSchedule.getBillboardID().toString(), true);
+                message.setData(billboard);
+                message.setCommunicationID(200);
+            } catch (Throwable throwable) {
+                message.setCommunicationID(500);
+            }
+        } else {
+            message.setCommunicationID(201);
+        }
+
+        return message;
+    }
+
+    private Scheduled getScheduledFromEvent(Event event) {
+        Scheduled matchedScheduled = new Scheduled();
+        for (Scheduled scheduled: scheduled) {
+            if(scheduled.getID() == event.getEventID()) {
+                matchedScheduled = scheduled;
+                break;
+            }
+        }
+        return  matchedScheduled;
     }
 
     /**

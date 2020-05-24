@@ -14,9 +14,11 @@ public class UserDatabase extends Database {
 
     private ResultSet results;
     private Object Exception;
+    private Properties properties;
 
     public UserDatabase(Properties properties) {
         super(properties);
+        this.properties = properties;
     }
 
     public User getUser(String value, boolean userName) throws Throwable {
@@ -121,6 +123,44 @@ public class UserDatabase extends Database {
 
         if(super.getConnectionStatus()) {
             super.closeConnection();
+        }
+    }
+
+    public void removeUser(User user) throws Throwable {
+        super.startConnection();
+        if(isInTable(user)) {
+            try {
+                Connection connection = DriverManager.getConnection(properties.getDatabaseURL(), properties.getDatabaseUser(), properties.getDatabasePassword());
+                Statement statement = connection.createStatement();
+
+                String sqlRemoveSession = "DELETE FROM sessions WHERE userID = " + user.getUserID();
+                statement.addBatch(sqlRemoveSession);
+
+                String sqlRemoveSchedule = "DELETE FROM schedule WHERE creatorID = " + user.getUserID();
+                statement.addBatch(sqlRemoveSchedule);
+
+                String sqlRemoveScheduleBillboard = "DELETE FROM schedule WHERE billboardID IN (SELECT billboardID FROM billboards WHERE creatorID = " + user.getUserID() + ")";
+                statement.addBatch(sqlRemoveScheduleBillboard);
+
+                String sqlRemoveBillboards = "DELETE FROM billboards WHERE creatorID = " + user.getUserID();
+                statement.addBatch(sqlRemoveBillboards);
+
+                String sqlRemoveUser = "DELETE FROM users WHERE userID = " + user.getUserID();
+                statement.addBatch(sqlRemoveUser);
+
+                statement.executeBatch();
+                statement.close();
+                connection.close();
+
+                super.updateBillboardStatus();
+                super.closeConnection();
+            } catch (Throwable throwable) {
+                super.closeConnection();
+                throw (Throwable) Exception;
+            }
+        } else {
+            super.closeConnection();
+            throw (Throwable) Exception;
         }
     }
 }

@@ -10,6 +10,7 @@ import Shared.*;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.sql.ResultSet;
 import java.sql.SQLSyntaxErrorException;
 import java.util.ArrayList;
@@ -74,6 +75,8 @@ public class MessageHandler {
                 }
             } else if (sentMessage.getCommunicationID() == 22) {
                 handleUpdateBillboard(user);
+            } else if(sentMessage.getCommunicationID() == 23) {
+                handleRemoveBillboard(user);
             } else if (sentMessage.getCommunicationID() == 30) {
                 handleGetUsers();
             } else if (sentMessage.getCommunicationID() == 31) {
@@ -90,16 +93,21 @@ public class MessageHandler {
                     consoleMessage.printWarning("User not authorised to update User", 75);
                     returnMessage.setCommunicationID(504);
                 }
+            } else if(sentMessage.getCommunicationID() == 33) {
+                handleRemoveUser(user);
             } else if(sentMessage.getCommunicationID() == 40) {
                 handleRequestSchedule();
             } else if(sentMessage.getCommunicationID() == 41) {
-                if(user.getPermission().get(2) == 1) {
+                if (user.getPermission().get(2) == 1) {
                     handleAddToSchedule(user.getUserID());
                 } else {
                     consoleMessage.printWarning("User not authorised to add to schedule", 75);
                     returnMessage.setCommunicationID(504);
                 }
-
+            } else if(sentMessage.getCommunicationID() == 42) {
+                handleUpdateSchedule(user);
+            } else if (sentMessage.getCommunicationID() == 43) {
+                handleRemoveSchedule(user);
             } else {
                 consoleMessage.printWarning("Invalid communicationID", 75);
                 returnMessage.setCommunicationID(501);
@@ -317,6 +325,33 @@ public class MessageHandler {
         }
     }
 
+    private void handleRemoveUser(User user) {
+        try {
+            UserDatabase userDatabase = new UserDatabase(properties);
+            User sentUser = (User)sentMessage.getData();
+            User databaseUser = userDatabase.getUser(sentUser.getUserName(), true);
+
+            if(sentUser.getUserID() == databaseUser.getUserID()) {
+                if(sentUser.getUserID() != user.getUserID() && user.getPermission().get(3) == 1) {
+                    userDatabase.removeUser(sentUser);
+                    returnMessage.setCommunicationID(200);
+                    consoleMessage.printGeneral("REQUEST ACCEPTED", "User removed", 75);
+                } else {
+                    returnMessage.setCommunicationID(515);
+                    consoleMessage.printWarning("User not permitted to remove user",75);
+                }
+            } else {
+                returnMessage.setCommunicationID(516);
+                consoleMessage.printWarning("Database failed to find user to remove",75);
+            }
+
+        } catch (Throwable throwable) {
+            //Sets the return data to 500 if the Select is unsuccessful.
+            returnMessage.setCommunicationID(500);
+            consoleMessage.printWarning("Database failed to select all users",75);
+        }
+    }
+
     /**
      * Method which handles a Message object containing communicationID 22. This indicates that the billboards table needs to
      * be updated using the Billboard object contained in the Message object.
@@ -328,11 +363,24 @@ public class MessageHandler {
                 //Instantiates a new BillboardDatabase object connecting to the database specified by the Properties Object.
                 //  Uses the updateDatabase method to update database using the information contained within the Message object.
                 BillboardDatabase billboardDB = new BillboardDatabase(properties);
-                billboardDB.updateDatabase((Billboard)sentMessage.getData());
 
-                //Sets the return data to 200 if the update is successful
-                returnMessage.setCommunicationID(200);
-                consoleMessage.printGeneral("REQUEST ACCEPTED", "Billboard updated   |   billboardID [" + ((Billboard) sentMessage.getData()).getBillboardID() + "]", 75);
+                Billboard sentBillboard = (Billboard)sentMessage.getData();
+                Billboard billboard = billboardDB.getBillboard(sentBillboard.getBillboardID().toString(), true);
+
+                if(billboard.getScheduled() == 0) {
+                    billboardDB.updateDatabase(sentBillboard);
+                    //Sets the return data to 200 if the update is successful
+                    returnMessage.setCommunicationID(200);
+                    consoleMessage.printGeneral("REQUEST ACCEPTED", "Billboard updated   |   billboardID [" + ((Billboard) sentMessage.getData()).getBillboardID() + "]", 75);
+                } else if(billboard.getScheduled() == 1 && user.getPermission().get(1) == 1) {
+                    billboardDB.updateDatabase(sentBillboard);
+                    //Sets the return data to 200 if the update is successful
+                    returnMessage.setCommunicationID(200);
+                    consoleMessage.printGeneral("REQUEST ACCEPTED", "Billboard updated   |   billboardID [" + ((Billboard) sentMessage.getData()).getBillboardID() + "]", 75);
+                } else {
+                    returnMessage.setCommunicationID(512);
+                    consoleMessage.printWarning("User not authorised to update billboard [" + ((Billboard)sentMessage.getData()).getBillboardID() +"] (Scheduled)", 75);
+                }
             } else {
                 consoleMessage.printWarning("User not authorised to update billboard [" + ((Billboard)sentMessage.getData()).getBillboardID() +"]", 75);
                 returnMessage.setCommunicationID(504);
@@ -419,6 +467,34 @@ public class MessageHandler {
         }
     }
 
+    private void handleRemoveBillboard(User user) {
+        try {
+            BillboardDatabase billboardDatabase = new BillboardDatabase(properties);
+            Billboard sentBillboard = (Billboard)sentMessage.getData();
+            Billboard billboard = billboardDatabase.getBillboard(sentBillboard.getBillboardID().toString(), true);
+
+            if(billboard.getBillboardID() == sentBillboard.getBillboardID()) {
+                if((billboard.getCreatorName() == user.getUserName()) || user.getPermission().get(1) == 1) {
+                    billboardDatabase.removeBillboard(sentBillboard);
+                    returnMessage.setCommunicationID(200);
+                    consoleMessage.printGeneral("REQUEST ACCEPTED", "Billboard removed", 75);
+                } else {
+                    returnMessage.setCommunicationID(511);
+                    consoleMessage.printWarning("User not permitted to remove billboard",75);
+                }
+
+            } else {
+                returnMessage.setCommunicationID(510);
+                consoleMessage.printWarning("Database failed to find billboard to remove",75);
+            }
+
+        } catch (Throwable throwable) {
+            //Sets the return data to 500 if the select is unsuccessful
+            returnMessage.setCommunicationID(500);
+            consoleMessage.printWarning("Database failed to remove billboard",75);
+        }
+    }
+
     private void handleRequestSchedule() {
         try {
             ScheduleDatabase scheduleDatabase = new ScheduleDatabase(properties);
@@ -456,7 +532,59 @@ public class MessageHandler {
             }
 
         } catch (Throwable throwable) {
+            //Sets the return data to 500 if the select is unsuccessful
+            returnMessage.setCommunicationID(500);
+            consoleMessage.printWarning("Database failed to select billboard",75);
+        }
+    }
 
+    private void handleUpdateSchedule(User user) {
+        try {
+            ScheduleDatabase scheduleDatabase = new ScheduleDatabase(properties);
+
+            Scheduled scheduled = (Scheduled)sentMessage.getData();
+            if(scheduled.getCreatorID() == user.getUserID()) {
+                scheduleDatabase.updateDatabase(scheduled);
+                returnMessage.setCommunicationID(200);
+                consoleMessage.printGeneral("REQUEST ACCEPTED", "Schedule updated", 75);
+            } else {
+                returnMessage.setCommunicationID(517);
+                consoleMessage.printWarning("User not permitted to update schedule",75);
+            }
+
+        } catch (Throwable throwable) {
+            //Sets the return data to 500 if the select is unsuccessful
+            returnMessage.setCommunicationID(500);
+            consoleMessage.printWarning("Database failed to select billboard",75);
+        }
+    }
+
+    private void handleRemoveSchedule(User user) {
+        try {
+            ScheduleDatabase scheduleDatabase = new ScheduleDatabase(properties);
+            Scheduled sentSchedule = (Scheduled)sentMessage.getData();
+
+            Scheduled scheduled = scheduleDatabase.getScheduled(String.valueOf(sentSchedule.getID()));
+
+            if(sentSchedule.getID() == scheduled.getID()) {
+                if (user.getUserID() == scheduled.getCreatorID() || user.getPermission().get(1) == 1) {
+                    scheduleDatabase.removeSchedule(sentSchedule);
+
+                    //Sets the return data to 200 if the remove is successful
+                    returnMessage.setCommunicationID(200);
+                    consoleMessage.printGeneral("REQUEST ACCEPTED", "Scheduled removed", 75);
+                } else {
+                    //Sets the return data to 200 if the remove is successful
+                    returnMessage.setCommunicationID(513);
+                    consoleMessage.printWarning("User not permitted to remove Scheduled", 75);
+                }
+            } else {
+                //Sets the return data to 200 if the remove is successful
+                returnMessage.setCommunicationID(514);
+                consoleMessage.printWarning("Database failed to find schedule to remove", 75);
+            }
+
+        } catch (Throwable throwable) {
             //Sets the return data to 500 if the select is unsuccessful
             returnMessage.setCommunicationID(500);
             consoleMessage.printWarning("Database failed to select billboard",75);

@@ -1,5 +1,6 @@
 package Server.Database;
 
+import ControlPanel.Client;
 import Server.Database.Database;
 import Server.Server;
 import Shared.*;
@@ -18,14 +19,25 @@ public class Main_Database {
         try {
             Properties properties = new Properties();
 
-            Billboard billboard = new Billboard("root", "Test", "NEWNEWNEW", "msgText", "", "#000FFF", "infoText", "");
-            billboard.setBillboardID(100000);
+            UserDatabase userDatabase = new UserDatabase(properties);
+            ArrayList<Integer> perms = new ArrayList<>();
+            perms.add(0,0);
+            perms.add(1,0);
+            perms.add(2,0);
+            perms.add(3,0);
+            User newUser = new User("user2", "pass", perms, 0, "test");
+            newUser.setUserID(100003);
+            userDatabase.removeUser(newUser);
 
-            BillboardDatabase billboardDatabase = new BillboardDatabase(properties);
-            billboardDatabase.updateDatabase(billboard);
+            //Billboard billboard = new Billboard("user2", "Test2", "NA", "This is the main test", "", "", "info text", "");
+            //BillboardDatabase billboardDatabase = new BillboardDatabase(properties);
+            //billboardDatabase.addToDatabase(billboard, 100003);
 
-            Billboard billboardNew = billboardDatabase.getBillboard(billboard.getName(), false);
-            System.out.println(billboardNew.getPictureLink());
+            //ScheduleDatabase scheduleDatabase = new ScheduleDatabase(properties);
+            //Scheduled scheduled = new Scheduled(100003,100007,ScheduleHelper.DateTime(0,0,0,0),1440, new int[]{1,0,0});
+            //scheduleDatabase.addToDatabase(scheduled, 100003);
+            //scheduled.setID(100012);
+            //scheduleDatabase.removeSchedule(scheduled);
 
         } catch (Throwable e) {
             e.printStackTrace();
