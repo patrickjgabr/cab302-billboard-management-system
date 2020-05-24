@@ -16,6 +16,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -201,7 +202,8 @@ public class Server {
                         returnMessage = handleClientControlPanel(receivedMessage);
                     }
 
-                    if((receivedMessage.getCommunicationID() == 41 || receivedMessage.getCommunicationID() == 42) && returnMessage.getCommunicationID() == 200) {
+                    ArrayList<Integer> scheduleEffectingID = new ArrayList<>(Arrays.asList(41, 42, 23, 33, 43));
+                    if(scheduleEffectingID.contains(receivedMessage.getCommunicationID()) && returnMessage.getCommunicationID() == 200) {
                         scheduleEdited = true;
                     }
 
@@ -232,8 +234,9 @@ public class Server {
 
         Scheduled matchedSchedule = null;
         Calendar currentTime = Calendar.getInstance();
+        int minutes = (currentTime.get(Calendar.MINUTE) + currentTime.get(Calendar.HOUR_OF_DAY) * 60);
         for (Event event: schedule) {
-            if(event.getStartTime().compareTo(currentTime) <= 0 && event.getEndTime().compareTo(currentTime) >= 0) {
+            if(event.getDay() == currentTime.get(Calendar.DAY_OF_WEEK) && event.getStartTime() <= minutes && event.getEndTime() >= minutes) {
                 if(matchedSchedule == null) {
                     matchedSchedule = getScheduledFromEvent(event);
                 } else {

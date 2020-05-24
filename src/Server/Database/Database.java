@@ -2,12 +2,11 @@ package Server.Database;
 
 import java.io.*;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
 
 import Server.ConsoleMessage.DatabaseMessage;
 import Shared.*;
+import Shared.Properties;
 
 public class Database {
 
@@ -252,6 +251,44 @@ public class Database {
         return 0;
     }
 
+    public void updateBillboardStatus() throws Throwable {
+        if(connectionStatus) {
+
+            ScheduleDatabase scheduleDatabase = new ScheduleDatabase(properties);
+            ArrayList<Scheduled> scheduled = scheduleDatabase.getSchedule();
+
+            BillboardDatabase billboardDatabase = new BillboardDatabase(properties);
+            ArrayList<Billboard> billboards = billboardDatabase.getBillboards();
+
+            TreeMap<Integer, Integer> scheduledValue = new TreeMap<>();
+            for (Billboard billboard: billboards) {
+                boolean isScheduled = false;
+
+                for (Scheduled schedule: scheduled) {
+                    Integer billboardID = billboard.getBillboardID();
+                    Integer scheduleID = schedule.getBillboardID();
+                    if(billboardID.equals(scheduleID)) {
+                        isScheduled = true;
+                    }
+                }
+
+                if(isScheduled) {
+                    scheduledValue.put(billboard.getBillboardID(), 1);
+                } else {
+                    scheduledValue.put(billboard.getBillboardID(), 0);
+                }
+            }
+
+            for (Map.Entry<Integer, Integer> value: scheduledValue.entrySet()) {
+                String sqlUpdate = "UPDATE billboards SET scheduled = " + value.getValue() + " WHERE billboardID = " + value.getKey();
+                statement.execute(sqlUpdate);
+            }
+
+        } else {
+            databaseMessage.printError1003();
+            throw (Throwable) Exception;
+        }
+    }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //Start and close connection functions

@@ -3,17 +3,18 @@ package Server.Database;
 import Shared.Billboard;
 import Shared.Properties;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class BillboardDatabase extends Database {
 
     private ResultSet results;
     private Object Exception;
+    private Properties properties;
 
     public BillboardDatabase(Properties properties) {
         super(properties);
+        this.properties = properties;
     }
 
     private boolean isInTable(Billboard billboard) throws Throwable {
@@ -96,6 +97,35 @@ public class BillboardDatabase extends Database {
         } else {
             super.closeConnection();
             return false;
+        }
+    }
+
+    public void removeBillboard(Billboard billboard) throws Throwable {
+        super.startConnection();
+        if(isInTable(billboard)) {
+            try {
+                Connection connection = DriverManager.getConnection(properties.getDatabaseURL(), properties.getDatabaseUser(), properties.getDatabasePassword());
+                Statement statement = connection.createStatement();
+
+                String sqlRemoveSchedule = "DELETE FROM schedule WHERE billboardID = " + billboard.getBillboardID();
+                statement.addBatch(sqlRemoveSchedule);
+
+                String sqlRemoveBillboard = "DELETE FROM billboards WHERE billboardID = " + billboard.getBillboardID();
+                statement.addBatch(sqlRemoveBillboard);
+
+                statement.executeBatch();
+                statement.close();
+                connection.close();
+
+                super.updateBillboardStatus();
+                super.closeConnection();
+            } catch (Throwable throwable) {
+                super.closeConnection();
+                throw (Throwable) Exception;
+            }
+        } else {
+            super.closeConnection();
+            throw (Throwable) Exception;
         }
     }
 }

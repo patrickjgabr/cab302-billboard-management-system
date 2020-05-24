@@ -2,8 +2,7 @@ package Server.Database;
 
 import Shared.*;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -12,9 +11,11 @@ public class ScheduleDatabase extends Database {
 
     private ResultSet results;
     private Object Exception;
+    private Properties properties;
 
     public ScheduleDatabase(Properties properties) {
         super(properties);
+        this.properties = properties;
     }
 
     public boolean isInTable(Scheduled scheduled) throws Throwable {
@@ -90,6 +91,44 @@ public class ScheduleDatabase extends Database {
         } else {
             super.closeConnection();
             return false;
+        }
+    }
+
+    public void updateDatabase(Scheduled scheduled) throws Throwable {
+        super.startConnection();
+        if(isInTable(scheduled)) {
+            String sqlUpdate = "UPDATE schedule SET scheduleObject = ? where scheduleID = ?";
+            Object[] parameters = new Object[]{scheduled, scheduled.getID()};
+            super.runInsertUpdateQuery(sqlUpdate, parameters, "UPDATE");
+            super.closeConnection();
+        } else {
+            super.closeConnection();
+        }
+    }
+
+    public void removeSchedule(Scheduled scheduled) throws Throwable {
+        super.startConnection();
+        if(isInTable(scheduled)) {
+            try {
+                Connection connection = DriverManager.getConnection(properties.getDatabaseURL(), properties.getDatabaseUser(), properties.getDatabasePassword());
+                Statement statement = connection.createStatement();
+
+                String sqlRemoveSchedule = "DELETE FROM schedule WHERE scheduleID = " + scheduled.getID();
+                statement.addBatch(sqlRemoveSchedule);
+                statement.executeBatch();
+
+                statement.close();
+                connection.close();
+
+                super.updateBillboardStatus();
+                super.closeConnection();
+            } catch (Throwable throwable) {
+                super.closeConnection();
+                throw (Throwable) Exception;
+            }
+        } else {
+            super.closeConnection();
+            throw (Throwable) Exception;
         }
     }
 }
