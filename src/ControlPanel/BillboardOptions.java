@@ -6,9 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class BillboardOptions {
-    //public static void main (String[]args){
-    //   MultiInputOptionPane();
-    //}
     public static Billboard BillboardEditor(String username) {
 
         JTextField billboardName = new JTextField();
