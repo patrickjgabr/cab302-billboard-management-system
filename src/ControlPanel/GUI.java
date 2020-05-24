@@ -20,15 +20,17 @@ public class GUI {
         }
     }
 
-    public static GridBagConstraints newButtonConstraints(int x, int y) {
-
+    public static GridBagConstraints generateGBC(int gx, int gy, int gw, int gh, int wx, int wy, int fill, int inset, int anchor) {
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = x;
-        gbc.gridy = y;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-        gbc.insets = new Insets(5,10,5,10);
-        gbc.anchor = GridBagConstraints.EAST;
+        gbc.gridx = gx;
+        gbc.gridy = gy;
+        gbc.gridwidth = gw;
+        gbc.gridheight = gh;
+        gbc.weightx = wx;
+        gbc.weighty = wy;
+        gbc.fill = fill;
+        gbc.insets = new Insets(inset,inset,inset,inset);
+        gbc.anchor = anchor;
         return gbc;
     }
 }

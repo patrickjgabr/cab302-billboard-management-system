@@ -38,7 +38,6 @@ public class BillboardTab{
         this.client = client;
         this.username = username;
         this.token = token;
-        this.billboards = billboards;
         this.pane = new JPanel();
         this.selected = -1;
         pane.setLayout(new GridBagLayout());
@@ -67,15 +66,9 @@ public class BillboardTab{
         table.setAutoResizeMode( JTable.AUTO_RESIZE_OFF );
         table.setRowHeight(90);
         table.setTableHeader(null);
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.fill = GridBagConstraints.VERTICAL;
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weighty =1;
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setPreferredSize(new Dimension(250,0));
-        pane.add(scrollPane, gbc);
+        pane.add(scrollPane, GUI.generateGBC(0,1,1,1,0,1,GridBagConstraints.VERTICAL, 0, GridBagConstraints.NORTHWEST));
     }
     public void setupDetails() {
         JButton createButton = new JButton("Create");
@@ -94,15 +87,10 @@ public class BillboardTab{
                 updateTable();
             }
         });
-
         importButton.addActionListener(e -> {
             try {
                 fileSelection();
-            } catch (ParserConfigurationException ex) {
-                ex.printStackTrace();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            } catch (SAXException ex) {
+            } catch (ParserConfigurationException | IOException | SAXException ex) {
                 ex.printStackTrace();
             }
         });
@@ -112,40 +100,19 @@ public class BillboardTab{
         TopButtons.add(editButton);
         TopButtons.add(deleteButton);
         TopButtons.add(exportButton);
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth =2;
-        gbc.insets = new Insets(5,5,5,5);
-        pane.add(TopButtons,gbc);
+        pane.add(TopButtons, GUI.generateGBC(0,0,2,1,0,0,0, 5, GridBagConstraints.WEST));
         this.preview = new JLabel("");
-        gbc = new GridBagConstraints();
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        gbc.weightx = 0;
-        gbc.gridheight= 2;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(0,0,0,18);
-        pane.add(preview, gbc);
-
+        GridBagConstraints previewGBC = GUI.generateGBC(2,0,1,2,0,0,GridBagConstraints.BOTH,0,GridBagConstraints.NORTHWEST);
+        previewGBC.insets = new Insets(0,0,0,18);
+        pane.add(preview, previewGBC);
         this.information = new JPanel();
         information.setLayout(new BoxLayout(information, BoxLayout.PAGE_AXIS));
         information.add(new JLabel("Choose a billboard."));
-        gbc = new GridBagConstraints();
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-        gbc.gridheight= 2;
-        gbc.insets = new Insets(18,12,18,18);
-        gbc.fill=GridBagConstraints.HORIZONTAL;
-        gbc.anchor= GridBagConstraints.NORTHWEST;
-        pane.add(information, gbc);
+        pane.add(information, GUI.generateGBC(1,1,1,2,1,1,GridBagConstraints.HORIZONTAL,18,GridBagConstraints.NORTHWEST));
 
 
 
-        ListSelectionModel rowSelected = table.getSelectionModel();             //setup list selection model to listen for a selection of the table
+        ListSelectionModel rowSelected = table.getSelectionModel();
         rowSelected.addListSelectionListener(e -> {
             if (!rowSelected.isSelectionEmpty()){
                 this.selected = rowSelected.getMinSelectionIndex();

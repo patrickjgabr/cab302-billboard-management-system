@@ -43,7 +43,6 @@ public class ScheduleTab {
         gbc.insets = new Insets(5,5,5,5);
         gbc.anchor= GridBagConstraints.NORTHWEST;
         pane.add(topBar,gbc);
-
         JLabel selected = new JLabel("Select Event");
         gbc.gridx= 0;
         gbc.gridy= 2;
@@ -92,7 +91,6 @@ public class ScheduleTab {
                         else {
                             table.setRowHeight(model.getRowCount()-1,count*2);
                         }
-
                         if (current != 0) {
                             table.setValueAt("Event ID: "+ current + "\n" + count + " minutes.",model.getRowCount()-1,0);
                         }
