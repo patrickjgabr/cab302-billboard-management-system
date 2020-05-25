@@ -15,8 +15,14 @@ import java.util.Collections;
 
 public class ScheduleTab {
     private JPanel pane;
-    public ScheduleTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client,  String Token){
+    private Client client;
+    private String username;
+    private String token;
+    public ScheduleTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client,  String token, String username){
         this.pane = new JPanel();
+        this.client = client;
+        this.username = username;
+        this.token = token;
         pane.setLayout(new GridBagLayout());
         scheduleView();
         mainPane.addTab("Schedule", pane);
@@ -27,6 +33,12 @@ public class ScheduleTab {
         String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
         JPanel topBar = new JPanel(new GridLayout(1,3, 5, 5));
         JButton createButton = new JButton("Schedule a Billboard");
+
+        createButton.addActionListener(e -> {
+            Scheduled created = ScheduleOptions.ScheduleEditor(client, username, token);
+
+        });
+
         JButton editButton = new JButton("");
         editButton.setVisible(false);
         topBar.add(createButton);

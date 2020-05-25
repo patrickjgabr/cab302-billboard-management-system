@@ -19,7 +19,7 @@ public class ControlPanel {
         JFrame frame = GUI.SetupFrame();
         JTabbedPane pane = new JTabbedPane();
         BillboardTab billboardsPane = new BillboardTab(pane, permissions, client, token, username);
-        ScheduleTab userManagementPane = new ScheduleTab(pane, permissions, client, token);
+        ScheduleTab userManagementPane = new ScheduleTab(pane, permissions, client, token, username);
         UserManagementTab schedulePane = new UserManagementTab(pane, permissions, client, token);
         pane.setFont(tabs);
         frame.getContentPane().add(pane);
@@ -52,14 +52,17 @@ public class ControlPanel {
         session.getSubmit().addActionListener(e -> {
             try {
                 Client client = new Client();
-                Message login = new Message().loginUser(session.getUsername(), session.getPassword());
-                Message reply = client.sendMessage(login);
+                Message reply = client.sendMessage(new Message().loginUser(session.getUsername(), session.getPassword()));
+                if (reply.getCommunicationID() == 502) {
+                    JOptionPane.showConfirmDialog(null, "Wrong login details.", "Error", JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE);
+                    return;
+                }
                 session.getFrame().setVisible(false);
                 ArrayList<Integer> permissions = (ArrayList<Integer>) reply.getData();
                 String token = (String) reply.getSession();
                 ShowControlPanel(permissions, token, client, session.getUsername());
             } catch (Exception error) {
-                error.printStackTrace();
+                JOptionPane.showConfirmDialog(null, "Server not available.", error.toString(), JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE);
             }
         });
 

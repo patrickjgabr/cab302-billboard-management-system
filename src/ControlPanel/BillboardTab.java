@@ -186,7 +186,7 @@ public class BillboardTab{
         });
 
         editButton.addActionListener(e -> {
-            if (!Objects.equals(editButton.getLabel(), "")){
+            if (!Objects.equals(editButton.getText(), "")){
                 int selected = rowSelected.getMinSelectionIndex();
                 Billboard created = BillboardOptions.BillboardEditor(username, billboards.get(selected));
                 if(created != null) {
