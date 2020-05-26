@@ -36,10 +36,14 @@ public class Viewer {
            System.out.println("REFRESHED");
            try{
                Message recieved = client.sendMessage(requestSched);
-               current = (Billboard) recieved.getData();
 
-           }catch (Exception e){
-               current = new Billboard("ROOT", "Error Billboard", "" , "Error connecting to server","","","Retrying in 15","");
+               if(recieved.getCommunicationID() == 201) {
+                   current = new Billboard("ROOT", "Error Billboard", "" , "No Billboard Scheduled","#FFFFFF","#000000","Retrying in 15","");
+               } else {
+                   current = (Billboard) recieved.getData();
+               }
+           } catch (Exception e){
+               current = new Billboard("ROOT", "Error Billboard", "" , "Error connecting to server","#000000","","Retrying in 15","");
            }
 
            JPanel image = new BillboardToImage(current, 400, 400).toJPanel();
