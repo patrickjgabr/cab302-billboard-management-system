@@ -35,9 +35,7 @@ public class Client {
         try {
             outputStream.writeObject(message);
             returnMessage = (Message)inputStream.readObject();
-        } catch (IOException | ClassNotFoundException errorMessage) {
-            System.out.println(errorMessage);
-        }
+        } catch (IOException | ClassNotFoundException errorMessage) { }
 
         return returnMessage;
     }

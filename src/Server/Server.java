@@ -118,7 +118,12 @@ public class Server {
             catch(Exception e) {
                 try {
                     socket.close();
-                } catch (IOException ex) {}
+                    serverSocket = new ServerSocket(Integer.parseInt(properties.getServerPort()));
+                    setInputStream();
+                    setOutputStream();
+                } catch (IOException ex) {
+                    runServer = false;
+                }
             }
 
                 //Iterate clientID
