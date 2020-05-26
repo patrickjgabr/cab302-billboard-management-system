@@ -513,7 +513,7 @@ public class MessageHandler {
     private void handleAddToSchedule(Integer userID) {
         try {
             Scheduled scheduled = (Scheduled)sentMessage.getData();
-            if(userID == scheduled.getCreatorID()) {
+            if(userID.equals(scheduled.getCreatorID())) {
                 ScheduleDatabase scheduleDatabase = new ScheduleDatabase(properties);
                 boolean success = scheduleDatabase.addToDatabase(scheduled, userID);
                 if(success) {

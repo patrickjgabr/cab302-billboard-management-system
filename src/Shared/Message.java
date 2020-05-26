@@ -68,16 +68,16 @@ public class Message implements Serializable {
         this.communicationID = 40;
         return this;
     }
-
-    /**
-    need to decide how to schedule a billboard
-
-    public void ScheduleBillboard(Session session, Billboard billboard) {
+    public Message scheduleBillboard(String session, Scheduled schedule) {
         this.communicationID = 41;
-        this.data = billboard;
+        this.data = schedule;
+        this.session = session;
+        return this;
     }
-    **/
-
+    public Message getScheduleViewer() {
+        this.communicationID = 50;
+        return this;
+    }
 
     /**
     public Message updateScheduledBillboard(Session session, Billboard billboard) {
@@ -86,7 +86,6 @@ public class Message implements Serializable {
         return this;
     }
      */
-
 
     /**
      * Returns the session information of the Control Panel
