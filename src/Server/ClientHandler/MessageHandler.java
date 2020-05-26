@@ -523,7 +523,7 @@ public class MessageHandler {
                 } else  {
                     //Sets the return data to 506 if billboard name already exists
                     returnMessage.setCommunicationID(500);
-                    consoleMessage.printWarning("Database failed to select billboard",75);
+                    consoleMessage.printWarning("Database failed to schedule add to database",75);
                 }
             } else {
                 //Sets the return data to 505 if the add is unsuccessful due to non matching session and creator
@@ -534,7 +534,7 @@ public class MessageHandler {
         } catch (Throwable throwable) {
             //Sets the return data to 500 if the select is unsuccessful
             returnMessage.setCommunicationID(500);
-            consoleMessage.printWarning("Database failed to select billboard",75);
+            consoleMessage.printWarning("Database failed to schedule add to database",75);
         }
     }
 
