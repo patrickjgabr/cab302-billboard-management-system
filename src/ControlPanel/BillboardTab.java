@@ -2,6 +2,7 @@ package ControlPanel;
 import Shared.Billboard;
 import Shared.Message;
 import Shared.BillboardToImage;
+import Viewer.GenerateBillboardFromXML;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -215,8 +216,14 @@ public class BillboardTab{
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
         fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("*.xml", "xml"));
         int result = fileChooser.showOpenDialog(pane);
+
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
+            Billboard selected = GenerateBillboardFromXML.XMLToBillboard(selectedFile, selectedFile.getName(), username);
+            client.sendMessage(new Message(token).createBillboard(selected));
+            updateTable();
+        }
+            /*
             System.out.println("PogChamp");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -228,8 +235,8 @@ public class BillboardTab{
             System.out.println("Picture URL: "  + doc.getElementsByTagName("picture").item(0).getAttributes().getNamedItem("url").getNodeValue());
             System.out.println("Information Colour: "  + doc.getElementsByTagName("information").item(0).getAttributes().getNamedItem("colour").getNodeValue());
             System.out.println("Information : "  + doc.getElementsByTagName("information").item(0).getTextContent());
-        }
-
+            }
+             */
     }
 
 }

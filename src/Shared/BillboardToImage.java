@@ -20,13 +20,22 @@ public class BillboardToImage {
     private Billboard billboard;
     private Integer resolutionx, resolutiony;
 
+    /**
+     * Default billboard to image constructor
+     * @param billboard Billboard to be converted for display
+     * @param resolutionx image width resolution
+     * @param resolutiony image height resolution
+     */
     public BillboardToImage(Billboard billboard, Integer resolutionx, Integer resolutiony){
         this.billboard = billboard;
         this.resolutionx = resolutionx;
         this.resolutiony = resolutiony;
     }
 
-
+    /**
+     * Constructs JPanel for displaying image in. Used in billboard viewer.
+     * @return JPanel containing a JLabel with an imageicon of the billboard.
+     */
     public JPanel toJPanel() {
         JLabel l = new JLabel(Generate());
         JPanel panel = new JPanel();
@@ -34,12 +43,18 @@ public class BillboardToImage {
         return panel;
     }
 
+    /**
+     * For creating billboard as imageIcon. Used in control panel.
+     * @return ImageIcon
+     */
     public ImageIcon toImageIcon() {
         return Generate();
     }
 
     /**
-     * @return Jpanel containing message text, info text and picture where applicable.
+     * method to handle creation of billboard. First checks for colour tags before drawing text in appropriate colours, then places text
+     *  in the right position according to other present elements.
+     * @return ImageIcon containing message text, info text and picture where applicable.
      */
     private ImageIcon Generate() {
         //setting defaults
@@ -47,7 +62,7 @@ public class BillboardToImage {
         Boolean picture = !billboard.getPictureLink().equals("");
         Boolean info = !billboard.getInformationText().equals(""), message = !billboard.getMessageText().equals("");    //boolean determining whether text is present.
 
-        JFrame f = new JFrame();
+
         BufferedImage bi = new BufferedImage(resolutionx, resolutiony, BufferedImage.TYPE_INT_RGB);
         Rectangle screen = new Rectangle(bi.getWidth(),bi.getHeight());
         Graphics gr = bi.getGraphics();
@@ -56,14 +71,16 @@ public class BillboardToImage {
         //------------------Background Colouring-----------------//
         if (!billboard.getBackgroundColour().equals("")) {                                     //check for background colour tag
             if (billboard.getBackgroundColour().startsWith("#")) {                          //check for hex tag
-                bg = Color.decode(billboard.getBackgroundColour()); }
+                bg = Color.decode(billboard.getBackgroundColour());
+            }
         }
         gr.setColor(bg);                                                                       //set background colour to default or specified.
         gr.fillRect(0, 0, bi.getWidth(), bi.getHeight());                               //fill background colour
 
         //----------------Message---------------------------//
         if (!billboard.getMessageTextColour().equals("")) {                                     //check for message text colour tag
-            mt = Color.decode(billboard.getMessageTextColour()); }
+            mt = Color.decode(billboard.getMessageTextColour());
+        }
         gr.setColor(mt);                                                                        //set message text colour to default or specified
 
         int txtWidth = gr.getFontMetrics(text).stringWidth(billboard.getMessageText());         //calculating font size
@@ -72,9 +89,11 @@ public class BillboardToImage {
         int newMessageFontSize = (int) (text.getSize() * messageWidthRatio);
         if (newMessageFontSize >= 170){newMessageFontSize = 170;};
         gr.setFont(new Font("Dialogue", Font.PLAIN, newMessageFontSize));
-        if (info && !picture){drawCenteredText(gr, billboard.getMessageText(), new Rectangle(bi.getWidth(), bi.getHeight() / 2));}          //position and draw centred text
+        if (info && !picture){drawCenteredText(gr, billboard.getMessageText(), new Rectangle(bi.getWidth(), bi.getHeight() / 2));  //position and draw centred text
+        }
         else if(picture || info){
-            drawCenteredText(gr, billboard.getMessageText(), new Rectangle(bi.getWidth(), bi.getHeight() / 3)); }
+            drawCenteredText(gr, billboard.getMessageText(), new Rectangle(bi.getWidth(), bi.getHeight() / 3));
+        }
         else drawCenteredText(gr, billboard.getMessageText(), screen);
 
 
@@ -84,37 +103,56 @@ public class BillboardToImage {
         gr.setColor(it);
 
         if (info) {
-            String wrapped = wrapString(billboard.getInformationText(), "\n", 70);
+            String wrapped = wrapString(billboard.getInformationText(), "\n", 60);
             String [] lines = wrapped.split("\n");
 
             int longestStringIndex = 0;
             int lineLength = lines[0].length();
             for(int i =0; i < lines.length; i++){
-                if (lines[i].length() > lineLength){ longestStringIndex = i; lineLength = lines[i].length(); }
+                if (lines[i].length() > lineLength){ longestStringIndex = i; lineLength = lines[i].length();
+                }
             }
 
-            int infoTextWidth = gr.getFontMetrics(text).stringWidth(lines[longestStringIndex]);      //calculating max text size
+            int infoTextWidth = gr.getFontMetrics(text).stringWidth(lines[longestStringIndex]);      //calculating max text width
             double infoWidthRatio = imageWidth / (double) infoTextWidth;
-            int newInfoFontSize = (int) (text.getSize() * infoWidthRatio);
+            double newInfoFontSize = (text.getSize() * infoWidthRatio);
 
             if (newInfoFontSize >= 130){ newInfoFontSize = 130;}                                    //don't let info text size exceed 130
             if (newInfoFontSize >= newMessageFontSize){newInfoFontSize -= 5;}
-            gr.setFont(new Font("Dialogue", Font.PLAIN, newInfoFontSize));
+            gr.setFont(new Font("Dialogue", Font.PLAIN, (int) newInfoFontSize));
 
             int imageHeight = bi.getHeight();
             int lineHeight = gr.getFontMetrics().getHeight();
 
-            if (message && !picture){                                               //deciding where to draw info text based on which attributes are present
-                for (String line : wrapped.split("\n")){
-                    drawCenteredText(gr, line, new Rectangle(bi.getWidth(), imageHeight += (lineHeight + 30))); }
+            //deciding where to draw info text based on which attributes are present
+
+            //draw in bottom half of screen if only message is present.
+            if (message && !picture){
+                imageHeight = (imageHeight /2) - lineHeight;
+                for (String line : wrapped.split("\n")) {
+                    Rectangle r = new Rectangle(20, (bi.getHeight() / 2)-lineHeight, bi.getWidth() - 40, imageHeight += (lineHeight+30));
+                    drawCenteredText(gr, line, r);
+                }
             }
-            else if(picture || (message && picture)){
+
+            //draw in bottom third of screen if picture is present. (same for picture && message)
+            else if(picture){
+                imageHeight = (imageHeight /3) - lineHeight;
+                //gr.setColor(Color.gray);
+                //gr.fillRect(20, ((bi.getHeight() / 3)*2), bi.getWidth() - 40, imageHeight += (lineHeight+30));
+                //gr.setColor(it);
                 for (String line : wrapped.split("\n")){
-                    drawCenteredText(gr, line, new Rectangle(bi.getWidth(), ((imageHeight += lineHeight)*2) - 550 ));}
+                    Rectangle r = new Rectangle(20, ((bi.getHeight() / 3)*2) - lineHeight, bi.getWidth() - 40, imageHeight += (lineHeight+30));
+                    drawCenteredText(gr, line, r);//new Rectangle(bi.getWidth(), ((imageHeight += lineHeight)*2) - 550 ));
+                }
             }
+
+            //draw in centre of screen if neither are present
             else {
                 for (String line : wrapped.split("\n")){
-                    drawCenteredText(gr, line, new Rectangle(bi.getWidth(), (imageHeight += (lineHeight + 20)*2) - (imageHeight/4) )); }}
+                    drawCenteredText(gr, line, new Rectangle(bi.getWidth(), (imageHeight += (lineHeight + 20)*2) - (imageHeight/4) ));
+                }
+            }
         }
 
         //---------------------------IMAGE PROCESSING----------------------------------------------------------//
@@ -138,13 +176,20 @@ public class BillboardToImage {
 
 
         return new ImageIcon(bi);
-
-
     }
+
+    /**
+     * calculates correct aspect ratios for images depending on their width, height, and presence of other elements. Image is then drawn to
+     * graphics while maintaining their original aspect ratios.
+     * @param g graphics for image to be drawn to.
+     * @param image image to be scaled. must be in form of BufferedImage
+     * @param infoText Boolean value indicating the presence of the 'infoText' attribute.  Image co-ordinates are decided by this.
+     * @param messageText Boolean value indicating the presence of the 'messageText' attribute. Image co-ordinates are decided by this.
+     */
     public void drawScaledImage(Graphics g, BufferedImage image, Boolean infoText, Boolean messageText){
         double imgHeight = image.getHeight(null), imgWidth = image.getWidth(null);
         int w = resolutionx, h = resolutiony, x=0, y=0, thirdY = h/3;
-        double windowAspect=h/w, imageAspect = imgHeight / imgWidth, newHeight, newWidth;
+        double windowAspect, imageAspect = imgHeight / imgWidth, newHeight, newWidth;
         Rectangle bounds = new Rectangle(0,0,w,h);
         BufferedImage newImage = image;
 
@@ -172,6 +217,7 @@ public class BillboardToImage {
                 x = (w - newImage.getWidth())/2;
                 y = (bounds.height - newImage.getHeight())/2;
             }
+
             else if(imageAspect > windowAspect){
                 newWidth = (double)bounds.height / imageAspect;
                 newImage = scaleImage(image, (int) newWidth, bounds.height);
@@ -191,6 +237,7 @@ public class BillboardToImage {
                     y = (bounds.height - newImage.getHeight())/2;
                 }
             }
+
             else if(imageAspect > windowAspect){
                 newWidth = (h/2) / imageAspect;
                 newImage = scaleImage(image, (int) newWidth, h/2);
@@ -202,9 +249,10 @@ public class BillboardToImage {
             }
         }
         g.drawImage(newImage, x, y, null);
+
     }
     /**
-     * A very basic method to draw centred text to the provided
+     * A method to draw centred text to the provided
      * graphics inside a specified rectangular area.
      * @param g graphics to use
      * @param text String of text to be written to the graphics
@@ -219,19 +267,34 @@ public class BillboardToImage {
         g.drawString(text, x, y);
     }
 
+
+    /**
+     * Takes a string and splits it with a deliminator based on a provided line length.
+     * @param s String to be wrapped
+     * @param deliminator character to insert at the end of a length. Usually '\n' in this application.
+     * @param length length to split the string
+     * @return string with inserted deliminator at every length
+     */
     public static String wrapString(String s, String deliminator, int length) {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         int previousDelimPos = 0;
         for (String i : s.split(" ", -1)) {
             if (result.length() - previousDelimPos + i.length() > length) {
-                result = result + deliminator + i;
+                result.append(deliminator).append(i);
                 previousDelimPos = result.length() + 1;
             }
-            else result += (result.isEmpty() ? "" : " ") + i;
+            else result.append((result.length() == 0) ? "" : " ").append(i);
         }
-        return result;
+        return result.toString();
     }
 
+    /**
+     * Function for scaling images to a certain width and height. Does not retain aspect ratio, DrawScaledImage deals with aspect ratios.
+     * @param imageToScale BufferedImage of the image that requires scaling
+     * @param newWidth  new width of image
+     * @param newHeight new height of image
+     * @return image stretched to new width and heigh ready for use by DrawScaledImage function.
+     */
     public static BufferedImage scaleImage(BufferedImage imageToScale, int newWidth, int newHeight) {
         BufferedImage scaledImage = null;
         if (imageToScale != null) {

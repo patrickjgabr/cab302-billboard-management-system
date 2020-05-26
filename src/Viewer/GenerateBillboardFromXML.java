@@ -18,7 +18,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 public class GenerateBillboardFromXML{
-    public static Billboard XMLToBillboard(File XMLFile, String name){
+    public static Billboard XMLToBillboard(File XMLFile, String billboardName, String creatorName){
         String background = "";
         String message = "";
         String info = "";
@@ -73,6 +73,6 @@ public class GenerateBillboardFromXML{
         if(!link.equals("")){picture=link;}
         else if(!data.equals("")){ picture=data; }
 
-        return new Billboard("Test Creator Name", name, picture, message, msgColour, background, info, infoColour);
+        return new Billboard(creatorName, billboardName, picture, message, msgColour, background, info, infoColour);
     }
 }
