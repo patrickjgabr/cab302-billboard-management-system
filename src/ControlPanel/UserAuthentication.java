@@ -3,6 +3,9 @@ package ControlPanel;
 
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,16 +19,40 @@ public class UserAuthentication extends JFrame {
     private JTextField username;
     private JTextField password;
 
-
+    /**
+     * method for setting up username and password entry fields and sending inputs to server.
+     */
     public UserAuthentication() {
+        //user name
         this.frame = new JFrame();
         JLabel user_label = new JLabel();
+        user_label.setFont(CustomFont.login);
+        user_label.setBorder(new EmptyBorder(10,10,10,0));
         user_label.setText("User Name :");
+        user_label.setHorizontalAlignment(JLabel.CENTER);
         this.username = new JTextField();
+        username.setFont(CustomFont.tabs);
+        username.setBorder(new LineBorder(Color.gray, 2, true));
+        username.setHorizontalAlignment(JTextField.CENTER);
+
+        //password
         JLabel password_label = new JLabel();
+        password_label.setFont(CustomFont.login);
+        password_label.setBorder(new EmptyBorder(10,10,10,0));
         password_label.setText("Password :");
+        password_label.setHorizontalAlignment(JLabel.CENTER);
         this.password = new JPasswordField();
+        password.setBorder(new LineBorder(Color.gray, 2, true));
+        password.setHorizontalAlignment(JTextField.CENTER);
+
+        //submit buton
         this.submit = new JButton("SUBMIT");
+        submit.setBackground(CustomFont.softBlue);
+        submit.setFont(CustomFont.tabs);
+        submit.setFont(submit.getFont().deriveFont(Font.BOLD));
+        submit.setForeground(Color.black);
+        submit.setBorder(new LineBorder(CustomFont.softBlue, 2, true));
+
         JPanel panel = new JPanel(new GridLayout(3, 1));
         panel.add(user_label);
         panel.add(username);
@@ -34,10 +61,12 @@ public class UserAuthentication extends JFrame {
         JLabel message = new JLabel();
         panel.add(message);
         panel.add(submit);
+        panel.setBorder(new EmptyBorder(5,5,5,5));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(panel, BorderLayout.CENTER);
         frame.setTitle("Login");
-        frame.setSize(300, 100);
+        frame.getRootPane().setDefaultButton(submit);
+        frame.setSize(350, 150);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
         ArrayList<Boolean> permissions = new ArrayList<>();
