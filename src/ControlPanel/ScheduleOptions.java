@@ -37,6 +37,8 @@ public class ScheduleOptions {
         JComboBox<Object> durationminutes = new JComboBox<>(rawdurationminutes.toArray());
         JComboBox<String> day = new JComboBox<>(days);
         JComboBox<String> period = new JComboBox<>(periods);
+        period.setSelectedItem("AM");
+        period.setPreferredSize(new Dimension(30,20));
         JComboBox<String> hour = new JComboBox<>(hours);
         JCheckBox daily = new JCheckBox("Daily");
         JCheckBox hourly = new JCheckBox("Hourly ");
@@ -75,16 +77,20 @@ public class ScheduleOptions {
         intervalminutes.setEnabled(false);
         intervals.setEnabled(false);
         myPanel.add(new JLabel("Billboard ID/Name: "), GUI.generateGBC(0,0,1,1,1,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(billboardName, GUI.generateGBC(1,0,6,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(billboardName, GUI.generateGBC(1,0,3,1,1,1,GridBagConstraints.HORIZONTAL,5,GridBagConstraints.WEST));
         myPanel.add(new JLabel("Day: "), GUI.generateGBC(0,1,1,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(day, GUI.generateGBC(1,1,6,1,1,1,0,5,GridBagConstraints.WEST));
+
+        hour.setPreferredSize(new Dimension(50,20));
+        minutes.setPreferredSize(new Dimension(50,20));
+        period.setPreferredSize(new Dimension(50,20));
         myPanel.add(new JLabel("Start Time: "), GUI.generateGBC(0,2,1,1,1,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(new JLabel("Hour: "), GUI.generateGBC(1,2,1,1,1,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(hour, GUI.generateGBC(2,2,1,1,1,1,GridBagConstraints.HORIZONTAL,5,GridBagConstraints.WEST));
-        myPanel.add(new JLabel("Minute: "), GUI.generateGBC(3,2,1,1,1,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(minutes, GUI.generateGBC(4,2,1,1,1,1,GridBagConstraints.HORIZONTAL,5,GridBagConstraints.WEST));
-        myPanel.add(new JLabel("Period: "), GUI.generateGBC(5,2,1,1,1,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(period, GUI.generateGBC(6,2,1,1,1,1,GridBagConstraints.HORIZONTAL,5,GridBagConstraints.WEST));
+
+        myPanel.add(hour, GUI.generateGBC(1,2,1,1,0,0,GridBagConstraints.HORIZONTAL,5,GridBagConstraints.WEST));
+        myPanel.add(minutes, GUI.generateGBC(2,2,1,1,0,0,0,5,GridBagConstraints.WEST));
+        myPanel.add(period, GUI.generateGBC(3,2,1,1,0,0,0,5,GridBagConstraints.WEST));
+
+
         myPanel.add(new JLabel("Duration (minutes): "), GUI.generateGBC(0,3,1,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(durationminutes, GUI.generateGBC(1,3,2,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(new JLabel("Interval (Optional) "), GUI.generateGBC(0,4,7,1,1,1,0,5,GridBagConstraints.CENTER));

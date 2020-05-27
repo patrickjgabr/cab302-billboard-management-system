@@ -40,7 +40,6 @@ public class ScheduleTab {
                 client.sendMessage(new Message(token).scheduleBillboard(created));
             }
         });
-
         JButton editButton = new JButton("");
         editButton.setVisible(false);
         topBar.add(createButton);
@@ -73,7 +72,7 @@ public class ScheduleTab {
                 for(int y = 0; y < events.size(); y++) {
                     if(x >= events.get(y).getStartTime() && x < events.get(y).getEndTime()) {
                         if(empty != 0) {
-                            model.addRow(new Object[]{"Break: "+ empty});
+                            model.addRow(new Object[]{"Empty"});
                             table.setRowHeight(model.getRowCount()-1,empty*2);
                             empty=0;
                             current=0;
@@ -118,7 +117,7 @@ public class ScheduleTab {
                         int row = target.getSelectedRow();
                         int column = target.getSelectedColumn();
                         String text = (String) target.getValueAt(row,column);
-                        if (!text.contains("Break")) {
+                        if (!text.contains("Empty")) {
                             editButton.setText("Edit " + text.split("\n")[0]);
                             selected.setText(text.replace("\n", " Duration: "));
                             editButton.setVisible(true);
