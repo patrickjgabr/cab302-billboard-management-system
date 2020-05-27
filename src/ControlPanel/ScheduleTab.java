@@ -35,7 +35,7 @@ public class ScheduleTab {
         JButton createButton = new JButton("Schedule a Billboard");
 
         createButton.addActionListener(e -> {
-            Scheduled created = new ScheduleOptions().ScheduleEditor(client, username, token);
+            Scheduled created = new ScheduleOptions(client, username, token).newSchedule();
             if(created != null) {
                 client.sendMessage(new Message(token).scheduleBillboard(created));
             }

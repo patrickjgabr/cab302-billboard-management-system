@@ -10,52 +10,67 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class ScheduleOptions {
+    private String username;
     private Client client;
     private String token;
-    public Scheduled ScheduleEditor(Client client, String username, String token) {
+    private String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+    private String[] periods = {"AM", "PM"};
+    private ArrayList<Billboard> billboards;
+    private String[] hours = {"12","1","2","3","4","5","6","7","8","9","10","11"};
+    private JCheckBox daily = new JCheckBox("Daily");
+    private JCheckBox hourly = new JCheckBox("Hourly ");
+    private JCheckBox minutely = new JCheckBox("Every ");
+    private ArrayList<String> rawbillboards  = new ArrayList<>();
+    private JComboBox<Object> billboardsList;
+    private ArrayList<String> rawminutes = new ArrayList<>();
+    private JComboBox<Object> minutes;
+    private ArrayList<String> rawdurationminutes = new ArrayList<>();
+    private JComboBox<Object> intervalminutes;
+    private JComboBox<Object> durationminutes;
+    private JComboBox<String> day = new JComboBox<>(days);
+    private JComboBox<String> period = new JComboBox<>(periods);
+    private JComboBox<String> hour = new JComboBox<>(hours);
+    private JComboBox<Object> intervals;
+
+    public ScheduleOptions(Client client, String username, String token) {
         this.client = client;
         this.token = token;
-        ArrayList<Billboard> billboards = (ArrayList<Billboard>) client.sendMessage(new Message(token).requestBillboards()).getData();
-        ArrayList<String> rawbillboards  = new ArrayList<>();
+        this.username = username;
+        this.billboards = (ArrayList<Billboard>) client.sendMessage(new Message(token).requestBillboards()).getData();
         for (Billboard x : billboards) {
             rawbillboards.add(x. getBillboardID() + " "+x.getName());
         }
-        JComboBox<Object> billboardsList = new JComboBox<>(rawbillboards.toArray());
-        String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-        String[] periods = {"AM", "PM"};
-        ArrayList<String> rawminutes = new ArrayList<>();
+        this.billboardsList = new JComboBox<>(rawbillboards.toArray());;
         for (int x = 0; x <60; x++) {
             rawminutes.add(Integer.toString(x));
         }
-        String[] hours = {"12","1","2","3","4","5","6","7","8","9","10","11"};
-        JComboBox<Object> minutes = new JComboBox<>(rawminutes.toArray());
-        ArrayList<String> rawdurationminutes = new ArrayList<>();
+        this.minutes = new JComboBox<>(rawminutes.toArray());
+
         for (int x = 1; x <=60; x++) {
             rawdurationminutes.add(Integer.toString(x));
         }
-        JComboBox<Object> intervalminutes = new JComboBox<>(rawminutes.toArray());
-        JComboBox<Object> durationminutes = new JComboBox<>(rawdurationminutes.toArray());
-        JComboBox<String> day = new JComboBox<>(days);
-        JComboBox<String> period = new JComboBox<>(periods);
+        this.intervalminutes = new JComboBox<>(rawminutes.toArray());
+        this.durationminutes = new JComboBox<>(rawdurationminutes.toArray());
+
+
         period.setSelectedItem("AM");
         period.setPreferredSize(new Dimension(30,20));
-        JComboBox<String> hour = new JComboBox<>(hours);
-        JCheckBox daily = new JCheckBox("Daily");
-        JCheckBox hourly = new JCheckBox("Hourly ");
-        JCheckBox minutely = new JCheckBox("Every ");
+
         ArrayList<String> rawIntervals = new ArrayList<>();
         for (int x = 1; x <=10; x++) {
             rawIntervals.add(Integer.toString(x));
         }
-        JComboBox<Object> intervals = new JComboBox<>(rawIntervals.toArray());
-
+        this.intervals = new JComboBox<>(rawIntervals.toArray());
         ButtonGroup checkBoxGroup = new ButtonGroup();
-        //add CheckBoxes to ButtonGroup
         checkBoxGroup.add(daily);
         checkBoxGroup.add(hourly);
         checkBoxGroup.add(minutely);
+
+    }
+    public Scheduled newSchedule() {
         return ScheduleEditorGUI(new Scheduled(),  username,intervals, durationminutes, intervalminutes,hour, period,minutes, billboardsList,day, daily,hourly,minutely);
     }
+
 
 
 
@@ -89,8 +104,6 @@ public class ScheduleOptions {
         myPanel.add(hour, GUI.generateGBC(1,2,1,1,0,0,GridBagConstraints.HORIZONTAL,5,GridBagConstraints.WEST));
         myPanel.add(minutes, GUI.generateGBC(2,2,1,1,0,0,0,5,GridBagConstraints.WEST));
         myPanel.add(period, GUI.generateGBC(3,2,1,1,0,0,0,5,GridBagConstraints.WEST));
-
-
         myPanel.add(new JLabel("Duration (minutes): "), GUI.generateGBC(0,3,1,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(durationminutes, GUI.generateGBC(1,3,2,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(new JLabel("Interval (Optional) "), GUI.generateGBC(0,4,7,1,1,1,0,5,GridBagConstraints.CENTER));
