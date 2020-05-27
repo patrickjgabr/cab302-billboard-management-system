@@ -18,11 +18,13 @@ public class ScheduleTab {
     private Client client;
     private String username;
     private String token;
+    private ArrayList<Scheduled> schedule;
     public ScheduleTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client,  String token, String username){
         this.pane = new JPanel();
         this.client = client;
         this.username = username;
         this.token = token;
+        this.schedule = (ArrayList<Scheduled>) client.sendMessage(new Message(token).requestSchedule()).getData();
         pane.setLayout(new GridBagLayout());
         scheduleView();
         mainPane.addTab("Schedule", pane);
@@ -68,8 +70,8 @@ public class ScheduleTab {
             JScrollPane scrollPanel = new JScrollPane(table);
             scrollPanel.setVerticalScrollBarPolicy((JScrollPane.VERTICAL_SCROLLBAR_NEVER));
             columns.add(scrollPanel);
-            ArrayList<Scheduled> schedule = (ArrayList<Scheduled>) client.sendMessage(new Message(token).requestSchedule()).getData();
-            ArrayList<Event> events = ScheduleHelper.GenerateEvents(schedule);
+            ArrayList<Scheduled> todaySchedule = schedule;
+            ArrayList<Event> events = ScheduleHelper.GenerateEvents(todaySchedule);
             Collections.reverse(events);
             int finalI1 = i;
             events.removeIf(n-> n.getDay() != finalI1 +1);
