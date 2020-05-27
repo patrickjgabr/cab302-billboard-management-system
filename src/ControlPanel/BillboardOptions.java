@@ -62,7 +62,7 @@ public class BillboardOptions {
         myPanel.add(infoColour);
         myPanel.add(Box.createHorizontalStrut(5)); // a spacer
 
-        int result = JOptionPane.showConfirmDialog(null, myPanel, "Please Enter Billboard options", JOptionPane.YES_NO_CANCEL_OPTION);
+        int result = JOptionPane.showConfirmDialog(null, myPanel, "Please Enter Billboard options", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
         if (result == JOptionPane.YES_OPTION) {
             Billboard billboard2 = new Billboard(username,billboardName.getText(), imgSRC.getText(), messageText.getText(), messageColour.getText(), backgroundColour.getText(), infoText.getText(), infoColour.getText());

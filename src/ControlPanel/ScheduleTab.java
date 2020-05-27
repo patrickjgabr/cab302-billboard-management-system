@@ -35,8 +35,10 @@ public class ScheduleTab {
         JButton createButton = new JButton("Schedule a Billboard");
 
         createButton.addActionListener(e -> {
-            Scheduled created = ScheduleOptions.ScheduleEditor(client, username, token);
-
+            Scheduled created = new ScheduleOptions().ScheduleEditor(client, username, token);
+            if(created != null) {
+                client.sendMessage(new Message(token).scheduleBillboard(created));
+            }
         });
 
         JButton editButton = new JButton("");
@@ -59,10 +61,11 @@ public class ScheduleTab {
             JScrollPane scrollPanel = new JScrollPane(table);
             scrollPanel.setVerticalScrollBarPolicy((JScrollPane.VERTICAL_SCROLLBAR_NEVER));
             columns.add(scrollPanel);
-            ArrayList<Event> events = ScheduleHelper.GenerateEvents(TestCase.schedule());
+            ArrayList<Scheduled> schedule = (ArrayList<Scheduled>) client.sendMessage(new Message(token).requestSchedule()).getData();
+            ArrayList<Event> events = ScheduleHelper.GenerateEvents(schedule);
+            Collections.reverse(events);
             int finalI1 = i;
             events.removeIf(n-> n.getDay() != finalI1 +1);
-            Collections.reverse(events);
             int empty = 0;
             int count = 1;
             int current = 0;
@@ -100,8 +103,12 @@ public class ScheduleTab {
                 }
             }
             if (empty != 0) {
-                model.addRow(new Object[]{"Break: "+ empty});
+                model.addRow(new Object[]{"Empty"});
                 table.setRowHeight(model.getRowCount()-1,empty);
+            }
+            if (events.size()==0) {
+                model.addRow(new Object[]{"Empty"});
+                table.setRowHeight(0, 1440);
             }
             table.setDefaultRenderer(Object.class, new MultiLineCellRenderer());
             table.setRowSelectionAllowed(false);

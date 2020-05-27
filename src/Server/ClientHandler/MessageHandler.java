@@ -473,8 +473,8 @@ public class MessageHandler {
             Billboard sentBillboard = (Billboard)sentMessage.getData();
             Billboard billboard = billboardDatabase.getBillboard(sentBillboard.getBillboardID().toString(), true);
 
-            if(billboard.getBillboardID() == sentBillboard.getBillboardID()) {
-                if((billboard.getCreatorName() == user.getUserName()) || user.getPermission().get(1) == 1) {
+            if(billboard.getBillboardID().equals(sentBillboard.getBillboardID())) {
+                if((billboard.getCreatorName().equals(user.getUserName())) || user.getPermission().get(1) == 1) {
                     billboardDatabase.removeBillboard(sentBillboard);
                     returnMessage.setCommunicationID(200);
                     consoleMessage.printGeneral("REQUEST ACCEPTED", "Billboard removed", 75);
@@ -513,7 +513,7 @@ public class MessageHandler {
     private void handleAddToSchedule(Integer userID) {
         try {
             Scheduled scheduled = (Scheduled)sentMessage.getData();
-            if(userID == scheduled.getCreatorID()) {
+            if(userID.equals(scheduled.getCreatorID())) {
                 ScheduleDatabase scheduleDatabase = new ScheduleDatabase(properties);
                 boolean success = scheduleDatabase.addToDatabase(scheduled, userID);
                 if(success) {

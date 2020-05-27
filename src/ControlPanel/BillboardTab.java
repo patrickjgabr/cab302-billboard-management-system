@@ -197,6 +197,18 @@ public class BillboardTab{
             else JOptionPane.showMessageDialog(null, "Please select a billboard first.");
         });
 
+        deleteButton.addActionListener(e -> {
+            if (!Objects.equals(editButton.getText(), "")){
+                int selected = rowSelected.getMinSelectionIndex();
+                Billboard delete = billboards.get(selected);
+                if(delete != null) {
+                    client.sendMessage(new Message(token).deleteBillboard(delete));
+                    updateTable();
+                }
+            }
+            else JOptionPane.showMessageDialog(null, "Please select a billboard first.");
+        });
+
         exportButton.addActionListener(e -> {
             JFileChooser f = new JFileChooser();
             f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);

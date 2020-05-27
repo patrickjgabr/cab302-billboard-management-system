@@ -50,6 +50,13 @@ public class Message implements Serializable {
         this.data = billboard;
         return this;
     }
+
+    public Message deleteBillboard(Billboard billboard) {
+        this.communicationID = 23;
+        this.data = billboard;
+        return this;
+    }
+
     public Message requestUsers() {
         this.communicationID = 30;
         return this;
@@ -66,6 +73,11 @@ public class Message implements Serializable {
     }
     public Message requestSchedule() {
         this.communicationID = 40;
+        return this;
+    }
+    public Message scheduleBillboard(Scheduled scheduled) {
+        this.communicationID = 41;
+        this.data = scheduled;
         return this;
     }
 

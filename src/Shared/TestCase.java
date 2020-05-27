@@ -41,7 +41,7 @@ public class TestCase {
         Scheduled newschedule2 = new Scheduled(1,1,ScheduleHelper.DateTime(0,0,15,0),30, new int[]{2,2,2});
         newschedule2.setID(2);
         schedule.add(newschedule2);
-        Scheduled newschedule3 = new Scheduled(1,1,ScheduleHelper.DateTime(0,5,0,0),60, new int[]{1,0,0});
+        Scheduled newschedule3 = new Scheduled(1,1,ScheduleHelper.DateTime(0,5,0,1),60, new int[]{1,0,0});
         newschedule3.setID(3);
         schedule.add(newschedule3);
 
