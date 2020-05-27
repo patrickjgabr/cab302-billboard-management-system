@@ -28,6 +28,14 @@ public class ScheduleTab {
         mainPane.addTab("Schedule", pane);
     }
 
+    private String toTime(int min) {
+        int hours = min / 60; //since both are ints, you get an int
+        int minutes = min % 60;
+        return (hours + ":" + minutes);
+
+
+    }
+
     private void scheduleView() {
         ArrayList<JScrollPane> columns = new ArrayList<>();
         String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
@@ -71,28 +79,42 @@ public class ScheduleTab {
             for (int x = 0; x < 1440; x++) {
                 for(int y = 0; y < events.size(); y++) {
                     if(x >= events.get(y).getStartTime() && x < events.get(y).getEndTime()) {
-                         if (current==0){
-                            model.addRow(new Object[]{});
-                            current = events.get(y).getEventID();
+                        if(empty != 0) {
+                            model.addRow(new Object[]{"Empty"});
+                            table.setRowHeight(model.getRowCount()-1,empty);
+                            empty=0;
+                            current=0;
+                            count =0;
                         }
-                        else if(current != events.get(y).getEventID()) {
-                            model.addRow(new Object[]{});
+                        if (current != events.get(y).getEventID() || current==0) {
                             current = events.get(y).getEventID();
+                            model.addRow(new Object[]{toTime(x) + "\nEvent ID: " + (current) +"\n"});
+
                             count = 1;
                         }
                         else {
-                            table.setRowHeight(model.getRowCount()-1,count*2);
+                            table.setRowHeight(model.getRowCount()-1,count);
                         }
                         if (current != 0) {
-                            table.setValueAt("Event ID: "+ current + "\n" + count + " minutes.",model.getRowCount()-1,0);
+                            String[] strings = table.getValueAt(model.getRowCount()-1,0).toString().split("\n");
+                            table.setValueAt( strings[0]+ "\n" + strings[1] + "\n" + count + " minutes.",model.getRowCount()-1,0);
                         }
                         count++;
+
                         break;
                     }
                     if(y == events.size()-1) {
                         empty++;
                     }
                 }
+            }
+            if (empty != 0) {
+                model.addRow(new Object[]{"Empty"});
+                table.setRowHeight(model.getRowCount()-1,empty);
+            }
+            if (events.size() == 0) {
+                model.addRow(new Object[]{"Empty"});
+                table.setRowHeight(0,1440);
             }
             table.setDefaultRenderer(Object.class, new MultiLineCellRenderer());
             table.setRowSelectionAllowed(false);
@@ -103,7 +125,7 @@ public class ScheduleTab {
                         int column = target.getSelectedColumn();
                         String text = (String) target.getValueAt(row,column);
                         if (!text.contains("Empty")) {
-                            editButton.setText("Edit " + text.split("\n")[0]);
+                            editButton.setText("Edit " + text.split("\n")[1]);
                             selected.setText(text.replace("\n", " Duration: "));
                             editButton.setVisible(true);
                         }
@@ -121,6 +143,8 @@ public class ScheduleTab {
         }
     }
 }
+
+
 
 
 class MultiLineCellRenderer extends JTextArea implements TableCellRenderer {

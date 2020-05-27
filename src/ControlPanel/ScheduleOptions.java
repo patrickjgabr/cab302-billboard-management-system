@@ -163,7 +163,14 @@ public class ScheduleOptions {
                     break;
             }
             int selectedPeriod = -1;
+            int selectedHour = -1;
             if (Objects.requireNonNull(period.getSelectedItem()).toString().equals("AM")) {
+                if (Integer.parseInt((String) Objects.requireNonNull(hour.getSelectedItem())) == 12) {
+                    selectedHour = 0;
+                }
+                else {
+                    selectedHour = Integer.parseInt((String) Objects.requireNonNull(hour.getSelectedItem()));
+                }
                 selectedPeriod = 0;
             }
             else if (Objects.requireNonNull(period.getSelectedItem()).toString().equals("PM")) {
@@ -193,12 +200,12 @@ public class ScheduleOptions {
             }
             System.out.println("Input");
             System.out.println(today);
-            System.out.println(Integer.parseInt((String) Objects.requireNonNull(hour.getSelectedItem())));
+            System.out.println();
             System.out.println(Integer.parseInt((String) Objects.requireNonNull(minutes.getSelectedItem())));
             System.out.println(selectedPeriod);
 
             int billboardID = Integer.parseInt(Objects.requireNonNull(billboardsList.getSelectedItem()).toString().split(" ")[0]);;
-            return new Scheduled(creatorID, billboardID, ScheduleHelper.DateTime(today, Integer.parseInt((String) Objects.requireNonNull(hour.getSelectedItem())) , Integer.parseInt((String) Objects.requireNonNull(minutes.getSelectedItem())),selectedPeriod),Integer.parseInt((String) Objects.requireNonNull(durationminutes.getSelectedItem())), interval);
+            return new Scheduled(creatorID, billboardID, ScheduleHelper.DateTime(today,selectedHour , Integer.parseInt((String) Objects.requireNonNull(minutes.getSelectedItem())),selectedPeriod),Integer.parseInt((String) Objects.requireNonNull(durationminutes.getSelectedItem())), interval);
         }
         return null;
 
