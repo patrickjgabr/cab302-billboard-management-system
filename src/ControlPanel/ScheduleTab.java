@@ -66,19 +66,12 @@ public class ScheduleTab {
             int finalI1 = i;
             events.removeIf(n-> n.getDay() != finalI1 +1);
             int empty = 0;
-            int count = 1;
             int current = 0;
+            int count = 1;
             for (int x = 0; x < 1440; x++) {
                 for(int y = 0; y < events.size(); y++) {
                     if(x >= events.get(y).getStartTime() && x < events.get(y).getEndTime()) {
-                        if(empty != 0) {
-                            model.addRow(new Object[]{"Empty"});
-                            table.setRowHeight(model.getRowCount()-1,empty*2);
-                            empty=0;
-                            current=0;
-                            count =1;
-                        }
-                        else if (current==0){
+                         if (current==0){
                             model.addRow(new Object[]{});
                             current = events.get(y).getEventID();
                         }
@@ -100,14 +93,6 @@ public class ScheduleTab {
                         empty++;
                     }
                 }
-            }
-            if (empty != 0) {
-                model.addRow(new Object[]{"Empty"});
-                table.setRowHeight(model.getRowCount()-1,empty);
-            }
-            if (events.size()==0) {
-                model.addRow(new Object[]{"Empty"});
-                table.setRowHeight(0, 1440);
             }
             table.setDefaultRenderer(Object.class, new MultiLineCellRenderer());
             table.setRowSelectionAllowed(false);

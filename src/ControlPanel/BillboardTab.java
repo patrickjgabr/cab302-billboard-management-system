@@ -59,7 +59,14 @@ public class BillboardTab{
     }
 
     public void setupBillboardsTable() {
-        DefaultTableModel model = new DefaultTableModel();
+        DefaultTableModel model = new DefaultTableModel() {
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
         model.addColumn("Billboard");
         this.table = new JTable(model);
         table.setFont(new Font("SansSerif", Font.PLAIN, 12));
