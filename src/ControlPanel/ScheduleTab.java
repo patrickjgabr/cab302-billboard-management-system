@@ -1,6 +1,8 @@
 package ControlPanel;
 import Shared.*;
 import Shared.Event;
+import org.junit.jupiter.api.Test;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
@@ -24,7 +26,8 @@ public class ScheduleTab {
         this.client = client;
         this.username = username;
         this.token = token;
-        this.schedule = (ArrayList<Scheduled>) client.sendMessage(new Message(token).requestSchedule()).getData();
+        this.schedule = (ArrayList<Scheduled>) client.sendMessage(new Message(token).requestSchedule()).getData();;
+        //this.schedule = TestCase.schedule();
         pane.setLayout(new GridBagLayout());
         scheduleView();
         mainPane.addTab("Schedule", pane);
@@ -73,8 +76,8 @@ public class ScheduleTab {
             ArrayList<Scheduled> todaySchedule = schedule;
             ArrayList<Event> events = ScheduleHelper.GenerateEvents(todaySchedule);
             Collections.reverse(events);
-            int finalI1 = i;
-            events.removeIf(n-> n.getDay() != finalI1 +1);
+            int finalI = i;
+            events.removeIf(n-> n.getDay() != finalI);
             int empty = 0;
             int current = 0;
             int count = 1;

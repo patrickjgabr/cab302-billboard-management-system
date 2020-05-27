@@ -12,15 +12,16 @@ public class Scheduled implements Serializable{
     private int ID;
     private Integer billboardID;
     private Integer creatorID;
-    private Calendar startTime;
-    private Calendar endTime;
+    private int start;
+    private int day;
     private int duration;
     private int[] interval;
 
-    public Scheduled(Integer creatorID, Integer billboardID, Calendar startTime, int duration, int[] interval){
+    public Scheduled(Integer creatorID, Integer billboardID, int[] start, int duration, int[] interval){
         this.billboardID = billboardID;
         this.creatorID = creatorID;
-        this.startTime = startTime;
+        this.day = start[0];
+        this.start = start[1];
         this.duration = duration;
         this.interval = interval;
     }
@@ -31,13 +32,13 @@ public class Scheduled implements Serializable{
             Object s = inputStream.readObject();
             Scheduled schedule = (Scheduled) s;
 
+
             this.billboardID = schedule.billboardID;
             this.creatorID = schedule.creatorID;
-            this.startTime = schedule.startTime;
-            this.endTime = schedule.endTime;
+            this.day = schedule.day;
+            this.start = schedule.start;
             this.duration = schedule.duration;
             this.interval = schedule.interval;
-            this.ID = schedule.ID;
 
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -72,41 +73,26 @@ public class Scheduled implements Serializable{
         this.creatorID = creatorID;
     }
 
-    public int[] getInterval() {
-        return interval;
+    public int getDay() {
+        return day;
     }
 
     public int getInterval(int type) {
         return interval[type];
     }
 
-    public void setInterval(int[] interval) {
-        this.interval = interval;
+
+
+    public int getStartTime() {
+        return start;
     }
 
-    public Calendar getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(Calendar startTime) {
-        this.startTime = startTime;
-    }
-
-    public Calendar getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(Calendar endTime) {
-        this.endTime = endTime;
-    }
 
     public int getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
+
 
     public byte [] getByteArray(){
         ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();

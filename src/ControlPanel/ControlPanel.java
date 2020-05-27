@@ -61,6 +61,7 @@ public class ControlPanel {
                 String token = (String) reply.getSession();
                 ShowControlPanel(permissions, token, client, session.getUsername());
             } catch (Exception error) {
+                error.printStackTrace();
                 JOptionPane.showConfirmDialog(null, "Server not available.", error.toString(), JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE);
             }
         });

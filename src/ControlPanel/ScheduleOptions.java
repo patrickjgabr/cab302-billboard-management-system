@@ -141,25 +141,25 @@ public class ScheduleOptions {
             int today = 0;
             switch(Objects.requireNonNull(day.getSelectedItem()).toString()) {
                 case "Sunday":
-                    today = 1;
+                    today = 0;
                     break;
                 case "Monday":
-                    today = 2;
+                    today = 1;
                     break;
                 case "Tuesday":
-                    today = 3;
+                    today = 2;
                     break;
                 case "Wednesday":
-                    today = 4;
+                    today = 3;
                     break;
                 case "Thursday":
-                    today = 5;
+                    today = 4;
                     break;
                 case "Friday":
-                    today = 6;
+                    today = 5;
                     break;
                 case "Saturday":
-                    today = 0;
+                    today = 6;
                     break;
             }
             int selectedPeriod = -1;
@@ -174,6 +174,7 @@ public class ScheduleOptions {
                 selectedPeriod = 0;
             }
             else if (Objects.requireNonNull(period.getSelectedItem()).toString().equals("PM")) {
+                selectedHour = Integer.parseInt((String) Objects.requireNonNull(hour.getSelectedItem()));
                 selectedPeriod = 1;
             }
             int[] interval = new int[]{0,0,0};
@@ -200,12 +201,15 @@ public class ScheduleOptions {
             }
             System.out.println("Input");
             System.out.println(today);
-            System.out.println();
+            System.out.println(selectedHour);
             System.out.println(Integer.parseInt((String) Objects.requireNonNull(minutes.getSelectedItem())));
             System.out.println(selectedPeriod);
+            System.out.println(interval[0]);
+            System.out.println(interval[1]);
+            System.out.println(interval[2]);
 
             int billboardID = Integer.parseInt(Objects.requireNonNull(billboardsList.getSelectedItem()).toString().split(" ")[0]);;
-            return new Scheduled(creatorID, billboardID, ScheduleHelper.DateTime(today,selectedHour , Integer.parseInt((String) Objects.requireNonNull(minutes.getSelectedItem())),selectedPeriod),Integer.parseInt((String) Objects.requireNonNull(durationminutes.getSelectedItem())), interval);
+            return new Scheduled(creatorID, billboardID, ScheduleHelper.CalculateStart(today,selectedHour , Integer.parseInt((String) Objects.requireNonNull(minutes.getSelectedItem())),selectedPeriod),Integer.parseInt((String) Objects.requireNonNull(durationminutes.getSelectedItem())), interval);
         }
         return null;
 
