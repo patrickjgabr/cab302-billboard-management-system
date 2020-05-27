@@ -187,11 +187,16 @@ public class BillboardTab{
 
         editButton.addActionListener(e -> {
             if (!Objects.equals(editButton.getText(), "")){
-                int selected = rowSelected.getMinSelectionIndex();
+                selected = rowSelected.getMinSelectionIndex();
                 Billboard created = BillboardOptions.BillboardEditor(username, billboards.get(selected));
                 if(created != null) {
                     client.sendMessage(new Message(token).updateBillboard(created));
                     updateTable();
+                    information.removeAll();
+                    preview.setIcon(null);
+                    information.add(new JLabel("Choose a billboard."));
+                    pane.validate();
+                    pane.repaint();
                 }
             }
             else JOptionPane.showMessageDialog(null, "Please select a billboard first.");

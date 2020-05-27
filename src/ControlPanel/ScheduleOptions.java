@@ -32,6 +32,13 @@ public class ScheduleOptions {
     private JComboBox<String> hour = new JComboBox<>(hours);
     private JComboBox<Object> intervals;
 
+    /**
+     * Method which instantiates all the elements required for the Schedule Options window.
+     * @param client Client object used to send message requests to the server.
+     * @param username name reference.
+     * @param token unique token for message requests.
+     */
+
     public ScheduleOptions(Client client, String username, String token) {
         this.client = client;
         this.token = token;
@@ -68,39 +75,22 @@ public class ScheduleOptions {
 
     }
     public Scheduled newSchedule() {
-        return ScheduleEditorGUI(new Scheduled(),  username,intervals, durationminutes, intervalminutes,hour, period,minutes, billboardsList,day, daily,hourly,minutely);
+        return ScheduleEditorGUI(new Scheduled());
     }
 
-
-
-
-    private  Scheduled ScheduleEditorGUI(Scheduled scheduled,
-                                               String username,
-                                               JComboBox<Object> intervals,
-                                               JComboBox<Object> durationminutes,
-                                               JComboBox<Object> intervalminutes,
-                                               JComboBox<String> hour,
-                                               JComboBox<String> period,
-                                               JComboBox<Object> minutes,
-                                               JComboBox<Object> billboardName,
-                                               JComboBox<String> day,
-                                               JCheckBox daily,
-                                               JCheckBox hourly,
-                                               JCheckBox minutely){
+    private  Scheduled ScheduleEditorGUI(Scheduled scheduled){
         JPanel myPanel = new JPanel(new GridBagLayout());
         JFrame f = new JFrame();
         intervalminutes.setEnabled(false);
         intervals.setEnabled(false);
         myPanel.add(new JLabel("Billboard ID/Name: "), GUI.generateGBC(0,0,1,1,1,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(billboardName, GUI.generateGBC(1,0,3,1,1,1,GridBagConstraints.HORIZONTAL,5,GridBagConstraints.WEST));
+        myPanel.add(billboardsList, GUI.generateGBC(1,0,3,1,1,1,GridBagConstraints.HORIZONTAL,5,GridBagConstraints.WEST));
         myPanel.add(new JLabel("Day: "), GUI.generateGBC(0,1,1,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(day, GUI.generateGBC(1,1,6,1,1,1,0,5,GridBagConstraints.WEST));
-
         hour.setPreferredSize(new Dimension(50,20));
         minutes.setPreferredSize(new Dimension(50,20));
         period.setPreferredSize(new Dimension(50,20));
         myPanel.add(new JLabel("Start Time: "), GUI.generateGBC(0,2,1,1,1,1,0,5,GridBagConstraints.WEST));
-
         myPanel.add(hour, GUI.generateGBC(1,2,1,1,0,0,GridBagConstraints.HORIZONTAL,5,GridBagConstraints.WEST));
         myPanel.add(minutes, GUI.generateGBC(2,2,1,1,0,0,0,5,GridBagConstraints.WEST));
         myPanel.add(period, GUI.generateGBC(3,2,1,1,0,0,0,5,GridBagConstraints.WEST));
@@ -116,6 +106,7 @@ public class ScheduleOptions {
         myPanel.add(intervals, GUI.generateGBC(1,8,1,2,1,1,GridBagConstraints.HORIZONTAL,5,GridBagConstraints.WEST));
         f.add(myPanel);
 
+        //Button listeners for interval options
         daily.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -125,7 +116,6 @@ public class ScheduleOptions {
                 }
             }
         });
-
         hourly.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -135,7 +125,6 @@ public class ScheduleOptions {
                 }
             }
         });
-
         minutely.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -146,7 +135,7 @@ public class ScheduleOptions {
             }
         });
 
-
+        //create dialogue window containing Billboard Options UI elements.
         int result = JOptionPane.showConfirmDialog(null, myPanel, "Schedule Billboard", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
         if (result == JOptionPane.YES_OPTION) {
             int today = 0;
@@ -202,7 +191,7 @@ public class ScheduleOptions {
                     creatorID = x.getUserID();
                 }
             }
-            int billboardID = Integer.parseInt(Objects.requireNonNull(billboardName.getSelectedItem()).toString().split(" ")[0]);;
+            int billboardID = Integer.parseInt(Objects.requireNonNull(billboardsList.getSelectedItem()).toString().split(" ")[0]);;
             return new Scheduled(creatorID, billboardID, ScheduleHelper.DateTime(today, Integer.parseInt((String)hour.getSelectedItem()) , Integer.parseInt((String)minutes.getSelectedItem()),selectedPeriod),Integer.parseInt((String)durationminutes.getSelectedItem()), interval);
         }
         return null;
