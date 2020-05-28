@@ -81,18 +81,30 @@ public class Scheduled implements Serializable{
         return interval[type];
     }
 
-
-
     public int getStartTime() {
         return start;
     }
-
 
     public int getDuration() {
         return duration;
     }
 
+    public void setDay(int day) {
+        this.day = day;
+    }
 
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public void setInterval(int[] interval) {
+        this.interval = interval;
+    }
+
+    public void setStart(int start) {
+        this.start = start;
+    }
 
     public byte [] getByteArray(){
         ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();

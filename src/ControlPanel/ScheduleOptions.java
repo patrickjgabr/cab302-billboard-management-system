@@ -78,6 +78,10 @@ public class ScheduleOptions {
         return ScheduleEditorGUI(new Scheduled());
     }
 
+    public Scheduled editSchedule(Scheduled scheduled) {
+        return ScheduleEditorGUI(scheduled);
+    }
+
     private  Scheduled ScheduleEditorGUI(Scheduled scheduled){
         JPanel myPanel = new JPanel(new GridBagLayout());
         JFrame f = new JFrame();
@@ -91,7 +95,6 @@ public class ScheduleOptions {
         myPanel.add(billboardsList, GUI.generateGBC(1,0,3,1,1,1,GridBagConstraints.HORIZONTAL,5,GridBagConstraints.WEST));
         myPanel.add(new JLabel("Day: "), GUI.generateGBC(0,1,1,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(day, GUI.generateGBC(1,1,6,1,1,1,0,5,GridBagConstraints.WEST));
-
         myPanel.add(new JLabel("Start Time: "), GUI.generateGBC(0,2,1,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(hour, GUI.generateGBC(1,2,1,1,0,0,GridBagConstraints.HORIZONTAL,5,GridBagConstraints.WEST));
         myPanel.add(minutes, GUI.generateGBC(2,2,1,1,0,0,0,5,GridBagConstraints.WEST));
@@ -205,14 +208,21 @@ public class ScheduleOptions {
                 }
             }
 
-
+            //get billboard id where it matches name
             int billboardID = Integer.parseInt(Objects.requireNonNull(billboardsList.getSelectedItem()).toString().split(" ")[0]);;
-            if (interval[2] < Integer.parseInt((String) Objects.requireNonNull(durationminutes.getSelectedItem()))) {
+            if (minutely.isSelected() &&interval[2] < Integer.parseInt((String) Objects.requireNonNull(durationminutes.getSelectedItem()))) {
                 JOptionPane.showConfirmDialog(null, "Duration exceeds interval duration", "Error", JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE);
 
             }
             else {
-                return new Scheduled(creatorID, billboardID, ScheduleHelper.CalculateStart(today,selectedHour , Integer.parseInt((String) Objects.requireNonNull(minutes.getSelectedItem())),selectedPeriod),Integer.parseInt((String) Objects.requireNonNull(durationminutes.getSelectedItem())), interval);
+                scheduled.setCreatorID(creatorID);
+                scheduled.setBillboardID(billboardID);
+                int[] start = ScheduleHelper.CalculateStart(today,selectedHour , Integer.parseInt((String) Objects.requireNonNull(minutes.getSelectedItem())),selectedPeriod);
+                scheduled.setDay(start[0]);
+                scheduled.setStart(start[1]);
+                scheduled.setDuration(Integer.parseInt((String) Objects.requireNonNull(durationminutes.getSelectedItem())));
+                scheduled.setInterval(interval);
+                return scheduled;
             }
 
 
