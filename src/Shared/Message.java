@@ -81,6 +81,18 @@ public class Message implements Serializable {
         return this;
     }
 
+    public Message updateSchedule(Scheduled scheduled) {
+        this.communicationID = 42;
+        this.data = scheduled;
+        return this;
+    }
+
+    public Message deleteSchedule(Scheduled scheduled) {
+        this.communicationID = 43;
+        this.data = scheduled;
+        return this;
+    }
+
     /**
     need to decide how to schedule a billboard
 

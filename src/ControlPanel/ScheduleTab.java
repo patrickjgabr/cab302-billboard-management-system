@@ -21,6 +21,7 @@ public class ScheduleTab {
     private String username;
     private String token;
     private ArrayList<Scheduled> schedule;
+    private int selected;
     public ScheduleTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client,  String token, String username){
         this.pane = new JPanel();
         this.client = client;
@@ -74,11 +75,33 @@ public class ScheduleTab {
         });
         JButton editButton = new JButton("");
         editButton.setVisible(false);
+        editButton.addActionListener(e -> {
+            for (Scheduled x : schedule) {
+                if(selected == x.getID()) {
+                    Scheduled edited = new ScheduleOptions(client, username, token).editSchedule(x);
+                    client.sendMessage(new Message(token).updateSchedule(edited));
+                    refresh();
+                    break;
+                }
+            }
+        });
+        JButton deleteButton = new JButton("");
+        deleteButton.setVisible(false);
+        deleteButton.addActionListener(e -> {
+            for (Scheduled x : schedule) {
+                if(selected == x.getID()) {
+                    client.sendMessage(new Message(token).deleteSchedule(x));
+                    refresh();
+                    break;
+                }
+            }
+        });
         topBar.add(createButton);
         topBar.add(editButton);
+        topBar.add(deleteButton);
         pane.add(topBar,GUI.generateGBC(0,0,7,1,1,0,0,5,GridBagConstraints.NORTHWEST));
-        JLabel selected = new JLabel("Select Event");
-        pane.add(selected, GUI.generateGBC(0,2,7,1,1,0,0,5,GridBagConstraints.NORTHWEST));
+        JLabel bottom = new JLabel("Select Event");
+        pane.add(bottom, GUI.generateGBC(0,2,7,1,1,0,0,5,GridBagConstraints.NORTHWEST));
 
         for (int i = 0; i < 7; i++) {
             DefaultTableModel model = new DefaultTableModel() {
@@ -147,13 +170,17 @@ public class ScheduleTab {
                         int column = target.getSelectedColumn();
                         String text = (String) target.getValueAt(row,column);
                         if (!(text.equals(" "))) {
-                            editButton.setText("Edit " + text.split("\n")[1]);
-                            selected.setText(text.replace("\n", "   |   "));
+                            selected = Integer.parseInt(text.split("\n")[1].replace("Event ID: ", ""));
+                            editButton.setText("Edit " + selected);
+                            bottom.setText(text.replace("\n", "   |   "));
                             editButton.setVisible(true);
+                            deleteButton.setText("Delete " + selected);
+                            deleteButton.setVisible(true);
                         }
                         else {
                             editButton.setVisible(false);
-                            selected.setText("Select Event");
+                            bottom.setText("Select Event");
+                            deleteButton.setVisible(false);
                         }
                 }
             });
