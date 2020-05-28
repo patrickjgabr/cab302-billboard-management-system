@@ -199,17 +199,18 @@ public class ScheduleOptions {
                     creatorID = x.getUserID();
                 }
             }
-            System.out.println("Input");
-            System.out.println(today);
-            System.out.println(selectedHour);
-            System.out.println(Integer.parseInt((String) Objects.requireNonNull(minutes.getSelectedItem())));
-            System.out.println(selectedPeriod);
-            System.out.println(interval[0]);
-            System.out.println(interval[1]);
-            System.out.println(interval[2]);
+
 
             int billboardID = Integer.parseInt(Objects.requireNonNull(billboardsList.getSelectedItem()).toString().split(" ")[0]);;
-            return new Scheduled(creatorID, billboardID, ScheduleHelper.CalculateStart(today,selectedHour , Integer.parseInt((String) Objects.requireNonNull(minutes.getSelectedItem())),selectedPeriod),Integer.parseInt((String) Objects.requireNonNull(durationminutes.getSelectedItem())), interval);
+            if (interval[2] < Integer.parseInt((String) Objects.requireNonNull(durationminutes.getSelectedItem()))) {
+                JOptionPane.showConfirmDialog(null, "Duration exceeds interval duration", "Error", JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE);
+
+            }
+            else {
+                return new Scheduled(creatorID, billboardID, ScheduleHelper.CalculateStart(today,selectedHour , Integer.parseInt((String) Objects.requireNonNull(minutes.getSelectedItem())),selectedPeriod),Integer.parseInt((String) Objects.requireNonNull(durationminutes.getSelectedItem())), interval);
+            }
+
+
         }
         return null;
 
