@@ -104,7 +104,7 @@ public class ScheduleTab {
                 for(int y = 0; y < events.size(); y++) {
                     if(x >= events.get(y).getStartTime() && x < events.get(y).getEndTime()) {
                         if(empty != 0) {
-                            model.addRow(new Object[]{"Empty"});
+                            model.addRow(new Object[]{" "});
                             table.setRowHeight(model.getRowCount()-1,empty*2);
                             empty=0;
                             current=0;
@@ -131,11 +131,11 @@ public class ScheduleTab {
                 }
             }
             if (empty != 0) {
-                model.addRow(new Object[]{"Empty"});
+                model.addRow(new Object[]{" "});
                 table.setRowHeight(model.getRowCount()-1,empty*2);
             }
             if (events.size() == 0) {
-                model.addRow(new Object[]{"Empty"});
+                model.addRow(new Object[]{" "});
                 table.setRowHeight(0,2280);
             }
             table.setDefaultRenderer(Object.class, new MultiLineCellRenderer());
@@ -146,7 +146,7 @@ public class ScheduleTab {
                         int row = target.getSelectedRow();
                         int column = target.getSelectedColumn();
                         String text = (String) target.getValueAt(row,column);
-                        if (!text.contains("Empty")) {
+                        if (!(text.equals(" "))) {
                             editButton.setText("Edit " + text.split("\n")[1]);
                             selected.setText(text.replace("\n", "   |   "));
                             editButton.setVisible(true);
