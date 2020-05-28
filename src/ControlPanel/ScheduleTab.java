@@ -34,9 +34,20 @@ public class ScheduleTab {
     }
 
     private String toTime(int min) {
-        int hours = min / 60; //since both are ints, you get an int
+        int hours = min / 60;
+        if (hours == 0) {
+            hours = 12;
+        }
         int minutes = min % 60;
-        return (hours + ":" + minutes);
+        String formatted = String.format("%02d", minutes);
+        String period;
+        if(hours > 12) {
+            period = "PM";
+        }
+        else {
+            period = "AM";
+        }
+        return (hours + ":" + formatted + period);
 
 
     }
