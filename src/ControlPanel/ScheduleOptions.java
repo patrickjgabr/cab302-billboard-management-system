@@ -83,13 +83,15 @@ public class ScheduleOptions {
         JFrame f = new JFrame();
         intervalminutes.setEnabled(false);
         intervals.setEnabled(false);
+        hour.setPreferredSize(new Dimension(50,20));
+        minutes.setPreferredSize(new Dimension(50,20));
+        period.setPreferredSize(new Dimension(50,20));
+        intervalminutes.setPreferredSize(new Dimension(50,20));
         myPanel.add(new JLabel("Billboard ID/Name: "), GUI.generateGBC(0,0,1,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(billboardsList, GUI.generateGBC(1,0,3,1,1,1,GridBagConstraints.HORIZONTAL,5,GridBagConstraints.WEST));
         myPanel.add(new JLabel("Day: "), GUI.generateGBC(0,1,1,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(day, GUI.generateGBC(1,1,6,1,1,1,0,5,GridBagConstraints.WEST));
-        hour.setPreferredSize(new Dimension(50,20));
-        minutes.setPreferredSize(new Dimension(50,20));
-        period.setPreferredSize(new Dimension(50,20));
+
         myPanel.add(new JLabel("Start Time: "), GUI.generateGBC(0,2,1,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(hour, GUI.generateGBC(1,2,1,1,0,0,GridBagConstraints.HORIZONTAL,5,GridBagConstraints.WEST));
         myPanel.add(minutes, GUI.generateGBC(2,2,1,1,0,0,0,5,GridBagConstraints.WEST));
@@ -136,7 +138,10 @@ public class ScheduleOptions {
         });
 
         //create dialogue window containing Billboard Options UI elements.
-        int result = JOptionPane.showConfirmDialog(null, myPanel, "Schedule Billboard", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        String[] options = new String[2];
+        options[0] = "Submit";
+        options[1] = "Cancel";
+        int result = JOptionPane.showOptionDialog(null, myPanel, "Schedule Billboard", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
         if (result == JOptionPane.YES_OPTION) {
             int today = 0;
             switch(Objects.requireNonNull(day.getSelectedItem()).toString()) {
