@@ -22,26 +22,26 @@ public class ScheduleHelper {
         ArrayList<Event> events = new ArrayList<>();
         for (Scheduled x : schedule) {
             if (x.getInterval(0) == 0 ){
-                events.add(new Event(x.getID(), x.getDay(), x.getStartTime(),x.getDuration()));
+                events.add(new Event(x.getID(), x.getDay(), x.getStartTime(),x.getDuration(), x.getCreatorName(),x.getBillboardName()));
             }
             if (x.getInterval(0) == 1 ){
                 int starttime = x.getStartTime();
                 for(int i = 0; i < 7; i++){
-                    events.add(new Event(x.getID(), i, x.getStartTime(),x.getDuration()));
+                    events.add(new Event(x.getID(), i, x.getStartTime(),x.getDuration(), x.getCreatorName(),x.getBillboardName()));
                 }
             }
             if (x.getInterval(0) == 2 ){
                 int starttime = x.getStartTime();
                 for(int i = 0; i < x.getInterval(1); i++){
                     System.out.println(x.getID()+ " " + x.getDay()+ " " +  starttime+ " " + x.getDuration());
-                    events.add(new Event(x.getID(), x.getDay(), starttime,x.getDuration()));
+                    events.add(new Event(x.getID(), x.getDay(), starttime,x.getDuration(), x.getCreatorName(),x.getBillboardName()));
                     starttime += 60;
                 }
             }
             if (x.getInterval(0) == 3 ){
                 int starttime = x.getStartTime();
                 for(int i = 0; i < x.getInterval(1); i++){
-                    events.add(new Event(x.getID(), x.getDay(),starttime,x.getDuration()));
+                    events.add(new Event(x.getID(), x.getDay(),starttime,x.getDuration(), x.getCreatorName(),x.getBillboardName()));
                     starttime += x.getInterval(2);
                 }
             }

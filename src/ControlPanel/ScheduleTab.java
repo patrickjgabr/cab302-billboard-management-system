@@ -119,7 +119,7 @@ public class ScheduleTab {
                         table.setRowHeight(model.getRowCount()-1,count*2);
                         if (current != 0) {
                             String[] strings = table.getValueAt(model.getRowCount()-1,0).toString().split("\n");
-                            table.setValueAt( strings[0]+ "\n" + strings[1] + "\n" + count + " minutes.",model.getRowCount()-1,0);
+                            table.setValueAt( strings[0]+ "\n" + strings[1] + "\n" + events.get(y).getBillboardName() + " by: " + events.get(y).getCreatorName() + "\n" + count + " minutes",model.getRowCount()-1,0);
                         }
                         count++;
 
@@ -148,7 +148,7 @@ public class ScheduleTab {
                         String text = (String) target.getValueAt(row,column);
                         if (!text.contains("Empty")) {
                             editButton.setText("Edit " + text.split("\n")[1]);
-                            selected.setText(text.replace("\n", " Duration: "));
+                            selected.setText(text.replace("\n", "   |   "));
                             editButton.setVisible(true);
                         }
                         else {

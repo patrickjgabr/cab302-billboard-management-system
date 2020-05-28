@@ -216,6 +216,13 @@ public class ScheduleOptions {
             }
             else {
                 scheduled.setCreatorID(creatorID);
+                for(Billboard x : billboards) {
+
+                    if (Integer.parseInt(Objects.requireNonNull(billboardsList.getSelectedItem()).toString().split(" ")[0]) == x.getBillboardID()) {
+                        scheduled.setCreatorName(x.getCreatorName());
+                        scheduled.setBillboardName(x.getName());
+                    }
+                }
                 scheduled.setBillboardID(billboardID);
                 int[] start = ScheduleHelper.CalculateStart(today,selectedHour , Integer.parseInt((String) Objects.requireNonNull(minutes.getSelectedItem())),selectedPeriod);
                 scheduled.setDay(start[0]);
