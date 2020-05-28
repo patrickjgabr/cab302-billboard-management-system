@@ -93,24 +93,7 @@ public class Message implements Serializable {
         return this;
     }
 
-    /**
-    need to decide how to schedule a billboard
-
-    public void ScheduleBillboard(Session session, Billboard billboard) {
-        this.communicationID = 41;
-        this.data = billboard;
-    }
-    **/
-
-
-    /**
-    public Message updateScheduledBillboard(Session session, Billboard billboard) {
-        this.communicationID = 42;
-        this.data = billboard;
-        return this;
-    }
-     */
-
+   
 
     /**
      * Returns the session information of the Control Panel
