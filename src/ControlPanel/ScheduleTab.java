@@ -1,6 +1,8 @@
 package ControlPanel;
 import Shared.*;
 import Shared.Event;
+import org.junit.jupiter.api.Test;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
@@ -18,14 +20,44 @@ public class ScheduleTab {
     private Client client;
     private String username;
     private String token;
+    private ArrayList<Scheduled> schedule;
+    private int selected;
     public ScheduleTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client,  String token, String username){
         this.pane = new JPanel();
         this.client = client;
         this.username = username;
-        this.token = token;
+        this.token = token;;
+        //this.schedule = TestCase.schedule();
         pane.setLayout(new GridBagLayout());
-        scheduleView();
+        refresh();
         mainPane.addTab("Schedule", pane);
+    }
+
+    private String toTime(int min) {
+        int hours = min / 60;
+        if (hours == 0) {
+            hours = 12;
+        }
+        int minutes = min % 60;
+        String formatted = String.format("%02d", minutes);
+        String period;
+        if(hours > 12) {
+            period = "PM";
+        }
+        else {
+            period = "AM";
+        }
+        return (hours + ":" + formatted + period);
+
+
+    }
+
+    private  void refresh() {
+        this.schedule = (ArrayList<Scheduled>) client.sendMessage(new Message(token).requestSchedule()).getData();
+        pane.removeAll();
+        pane.revalidate();
+        pane.repaint();
+        scheduleView();
     }
 
     private void scheduleView() {
@@ -35,17 +67,41 @@ public class ScheduleTab {
         JButton createButton = new JButton("Schedule a Billboard");
 
         createButton.addActionListener(e -> {
-            Scheduled created = ScheduleOptions.ScheduleEditor(client, username, token);
-
+            Scheduled created = new ScheduleOptions(client, username, token).newSchedule();
+            if(created != null) {
+                client.sendMessage(new Message(token).scheduleBillboard(created));
+                refresh();
+            }
         });
-
         JButton editButton = new JButton("");
         editButton.setVisible(false);
+        editButton.addActionListener(e -> {
+            for (Scheduled x : schedule) {
+                if(selected == x.getID()) {
+                    Scheduled edited = new ScheduleOptions(client, username, token).editSchedule(x);
+                    client.sendMessage(new Message(token).updateSchedule(edited));
+                    refresh();
+                    break;
+                }
+            }
+        });
+        JButton deleteButton = new JButton("");
+        deleteButton.setVisible(false);
+        deleteButton.addActionListener(e -> {
+            for (Scheduled x : schedule) {
+                if(selected == x.getID()) {
+                    client.sendMessage(new Message(token).deleteSchedule(x));
+                    refresh();
+                    break;
+                }
+            }
+        });
         topBar.add(createButton);
         topBar.add(editButton);
+        topBar.add(deleteButton);
         pane.add(topBar,GUI.generateGBC(0,0,7,1,1,0,0,5,GridBagConstraints.NORTHWEST));
-        JLabel selected = new JLabel("Select Event");
-        pane.add(selected, GUI.generateGBC(0,2,7,1,1,0,0,5,GridBagConstraints.NORTHWEST));
+        JLabel bottom = new JLabel("Select Event");
+        pane.add(bottom, GUI.generateGBC(0,2,7,1,1,0,0,5,GridBagConstraints.NORTHWEST));
 
         for (int i = 0; i < 7; i++) {
             DefaultTableModel model = new DefaultTableModel() {
@@ -59,39 +115,37 @@ public class ScheduleTab {
             JScrollPane scrollPanel = new JScrollPane(table);
             scrollPanel.setVerticalScrollBarPolicy((JScrollPane.VERTICAL_SCROLLBAR_NEVER));
             columns.add(scrollPanel);
-            ArrayList<Event> events = ScheduleHelper.GenerateEvents(TestCase.schedule());
-            int finalI1 = i;
-            events.removeIf(n-> n.getDay() != finalI1 +1);
+            ArrayList<Scheduled> todaySchedule = schedule;
+            ArrayList<Event> events = ScheduleHelper.GenerateEvents(todaySchedule);
             Collections.reverse(events);
+            int finalI = i;
+            events.removeIf(n-> n.getDay() != finalI);
             int empty = 0;
-            int count = 1;
             int current = 0;
+            int count = 1;
             for (int x = 0; x < 1440; x++) {
                 for(int y = 0; y < events.size(); y++) {
                     if(x >= events.get(y).getStartTime() && x < events.get(y).getEndTime()) {
                         if(empty != 0) {
-                            model.addRow(new Object[]{"Break: "+ empty});
+                            model.addRow(new Object[]{" "});
                             table.setRowHeight(model.getRowCount()-1,empty*2);
                             empty=0;
                             current=0;
-                            count =1;
+                            count =0;
                         }
-                        else if (current==0){
-                            model.addRow(new Object[]{});
+                        if (current != events.get(y).getEventID() || current==0) {
                             current = events.get(y).getEventID();
-                        }
-                        else if(current != events.get(y).getEventID()) {
-                            model.addRow(new Object[]{});
-                            current = events.get(y).getEventID();
+                            model.addRow(new Object[]{toTime(x) + "\nEvent ID: " + (current) +"\n"});
+
                             count = 1;
                         }
-                        else {
-                            table.setRowHeight(model.getRowCount()-1,count*2);
-                        }
+                        table.setRowHeight(model.getRowCount()-1,count*2);
                         if (current != 0) {
-                            table.setValueAt("Event ID: "+ current + "\n" + count + " minutes.",model.getRowCount()-1,0);
+                            String[] strings = table.getValueAt(model.getRowCount()-1,0).toString().split("\n");
+                            table.setValueAt( strings[0]+ "\n" + strings[1] + "\n" + events.get(y).getBillboardName() + " by: " + events.get(y).getCreatorName() + "\n" + count + " minutes",model.getRowCount()-1,0);
                         }
                         count++;
+
                         break;
                     }
                     if(y == events.size()-1) {
@@ -100,8 +154,12 @@ public class ScheduleTab {
                 }
             }
             if (empty != 0) {
-                model.addRow(new Object[]{"Break: "+ empty});
-                table.setRowHeight(model.getRowCount()-1,empty);
+                model.addRow(new Object[]{" "});
+                table.setRowHeight(model.getRowCount()-1,empty*2);
+            }
+            if (events.size() == 0) {
+                model.addRow(new Object[]{" "});
+                table.setRowHeight(0,2280);
             }
             table.setDefaultRenderer(Object.class, new MultiLineCellRenderer());
             table.setRowSelectionAllowed(false);
@@ -111,14 +169,18 @@ public class ScheduleTab {
                         int row = target.getSelectedRow();
                         int column = target.getSelectedColumn();
                         String text = (String) target.getValueAt(row,column);
-                        if (!text.contains("Break")) {
-                            editButton.setText("Edit " + text.split("\n")[0]);
-                            selected.setText(text.replace("\n", " Duration: "));
+                        if (!(text.equals(" "))) {
+                            selected = Integer.parseInt(text.split("\n")[1].replace("Event ID: ", ""));
+                            editButton.setText("Edit " + selected);
+                            bottom.setText(text.replace("\n", "   |   "));
                             editButton.setVisible(true);
+                            deleteButton.setText("Delete " + selected);
+                            deleteButton.setVisible(true);
                         }
                         else {
                             editButton.setVisible(false);
-                            selected.setText("Select Event");
+                            bottom.setText("Select Event");
+                            deleteButton.setVisible(false);
                         }
                 }
             });
@@ -130,6 +192,8 @@ public class ScheduleTab {
         }
     }
 }
+
+
 
 
 class MultiLineCellRenderer extends JTextArea implements TableCellRenderer {

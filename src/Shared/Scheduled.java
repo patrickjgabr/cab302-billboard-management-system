@@ -11,16 +11,21 @@ import java.util.Date;
 public class Scheduled implements Serializable{
     private int ID;
     private Integer billboardID;
+    private String billboardName;
     private Integer creatorID;
-    private Calendar startTime;
-    private Calendar endTime;
+    private String creatorName;
+    private int start;
+    private int day;
     private int duration;
     private int[] interval;
 
-    public Scheduled(Integer creatorID, Integer billboardID, Calendar startTime, int duration, int[] interval){
+    public Scheduled(Integer creatorID, String creatorName, Integer billboardID, String billboardName, int[] start, int duration, int[] interval){
         this.billboardID = billboardID;
         this.creatorID = creatorID;
-        this.startTime = startTime;
+        this.billboardName = billboardName;
+        this.creatorName = creatorName;
+        this.day = start[0];
+        this.start = start[1];
         this.duration = duration;
         this.interval = interval;
     }
@@ -31,13 +36,15 @@ public class Scheduled implements Serializable{
             Object s = inputStream.readObject();
             Scheduled schedule = (Scheduled) s;
 
+
             this.billboardID = schedule.billboardID;
             this.creatorID = schedule.creatorID;
-            this.startTime = schedule.startTime;
-            this.endTime = schedule.endTime;
+            this.day = schedule.day;
+            this.start = schedule.start;
             this.duration = schedule.duration;
             this.interval = schedule.interval;
-            this.ID = schedule.ID;
+            this.billboardName = schedule.billboardName;
+            this.creatorName = schedule.creatorName;
 
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -72,40 +79,54 @@ public class Scheduled implements Serializable{
         this.creatorID = creatorID;
     }
 
-    public int[] getInterval() {
-        return interval;
+    public int getDay() {
+        return day;
     }
 
     public int getInterval(int type) {
         return interval[type];
     }
 
-    public void setInterval(int[] interval) {
-        this.interval = interval;
-    }
-
-    public Calendar getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(Calendar startTime) {
-        this.startTime = startTime;
-    }
-
-    public Calendar getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(Calendar endTime) {
-        this.endTime = endTime;
+    public int getStartTime() {
+        return start;
     }
 
     public int getDuration() {
         return duration;
     }
 
+    public String getBillboardName() {
+        return billboardName;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
+    }
+
+
+
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public void setInterval(int[] interval) {
+        this.interval = interval;
+    }
+
+    public void setStart(int start) {
+        this.start = start;
+    }
+
+    public void setBillboardName(String billboardName) {
+        this.billboardName = billboardName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
     }
 
     public byte [] getByteArray(){

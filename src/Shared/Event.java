@@ -10,25 +10,23 @@ public class Event {
     private int startTime;
     private int endTime;
     private int day;
+    private String creatorName;
+    private String BillboardName;
 
 
-    public Event (int eventID, Calendar startTime, int duration) {
+    public Event (int eventID, int day, int startTime, int duration, String creatorName, String BillboardName) {
         this.eventID = eventID;
-        this.day = startTime.get(Calendar.DAY_OF_WEEK);
-        this.startTime = toMinutes(startTime);
-        this.endTime = toMinutes(startTime) + duration;
+        this.day = day;
+        this.startTime = startTime;
+        this.endTime = startTime + duration;
+        this.creatorName = creatorName;
+        this.BillboardName = BillboardName;
     }
 
     public Event() {
 
     }
 
-    private int toMinutes(Calendar time){
-        int minutes = (
-                time.get(Calendar.MINUTE) +
-                time.get(Calendar.HOUR_OF_DAY) * 60);
-        return minutes;
-    }
 
     public int getEventID() {
         return eventID;
@@ -48,5 +46,13 @@ public class Event {
 
     public int getStartTime() {
         return startTime;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public String getBillboardName() {
+        return BillboardName;
     }
 }

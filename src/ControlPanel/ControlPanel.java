@@ -33,7 +33,6 @@ public class ControlPanel {
                 int confirmed = JOptionPane.showConfirmDialog(null,
                         "Are you sure you want to exit the program?", "Exit",
                         JOptionPane.YES_NO_OPTION);
-
                 if (confirmed == JOptionPane.YES_OPTION) {
                     Client client = new Client();
                     Message signout = client.sendMessage(new Message().logoutUser(token));
@@ -62,6 +61,7 @@ public class ControlPanel {
                 String token = (String) reply.getSession();
                 ShowControlPanel(permissions, token, client, session.getUsername());
             } catch (Exception error) {
+                error.printStackTrace();
                 JOptionPane.showConfirmDialog(null, "Server not available.", error.toString(), JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE);
             }
         });

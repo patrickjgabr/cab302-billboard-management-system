@@ -50,6 +50,13 @@ public class Message implements Serializable {
         this.data = billboard;
         return this;
     }
+
+    public Message deleteBillboard(Billboard billboard) {
+        this.communicationID = 23;
+        this.data = billboard;
+        return this;
+    }
+
     public Message requestUsers() {
         this.communicationID = 30;
         return this;
@@ -68,24 +75,25 @@ public class Message implements Serializable {
         this.communicationID = 40;
         return this;
     }
-    public Message scheduleBillboard(String session, Scheduled schedule) {
+    public Message scheduleBillboard(Scheduled scheduled) {
         this.communicationID = 41;
-        this.data = schedule;
-        this.session = session;
-        return this;
-    }
-    public Message getScheduleViewer() {
-        this.communicationID = 50;
+        this.data = scheduled;
         return this;
     }
 
-    /**
-    public Message updateScheduledBillboard(Session session, Billboard billboard) {
+    public Message updateSchedule(Scheduled scheduled) {
         this.communicationID = 42;
-        this.data = billboard;
+        this.data = scheduled;
         return this;
     }
-     */
+
+    public Message deleteSchedule(Scheduled scheduled) {
+        this.communicationID = 43;
+        this.data = scheduled;
+        return this;
+    }
+
+   
 
     /**
      * Returns the session information of the Control Panel
