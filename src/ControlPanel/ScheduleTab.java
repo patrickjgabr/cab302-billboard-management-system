@@ -53,6 +53,7 @@ public class ScheduleTab {
     }
 
     private  void refresh() {
+        //this.schedule = TestCase.schedule();
         this.schedule = (ArrayList<Scheduled>) client.sendMessage(new Message(token).requestSchedule()).getData();
         pane.removeAll();
         pane.revalidate();
@@ -128,7 +129,7 @@ public class ScheduleTab {
                     if(x >= events.get(y).getStartTime() && x < events.get(y).getEndTime()) {
                         if(empty != 0) {
                             model.addRow(new Object[]{" "});
-                            table.setRowHeight(model.getRowCount()-1,empty*2);
+                            table.setRowHeight(model.getRowCount()-1,empty);
                             empty=0;
                             current=0;
                             count =0;
@@ -139,7 +140,7 @@ public class ScheduleTab {
 
                             count = 1;
                         }
-                        table.setRowHeight(model.getRowCount()-1,count*2);
+                        table.setRowHeight(model.getRowCount()-1,count);
                         if (current != 0) {
                             String[] strings = table.getValueAt(model.getRowCount()-1,0).toString().split("\n");
                             table.setValueAt( strings[0]+ "\n" + strings[1] + "\n" + events.get(y).getBillboardName() + " by: " + events.get(y).getCreatorName() + "\n" + count + " minutes",model.getRowCount()-1,0);
@@ -155,11 +156,11 @@ public class ScheduleTab {
             }
             if (empty != 0) {
                 model.addRow(new Object[]{" "});
-                table.setRowHeight(model.getRowCount()-1,empty*2);
+                table.setRowHeight(model.getRowCount()-1,empty);
             }
             if (events.size() == 0) {
                 model.addRow(new Object[]{" "});
-                table.setRowHeight(0,2280);
+                table.setRowHeight(0,1440);
             }
             table.setDefaultRenderer(Object.class, new MultiLineCellRenderer());
             table.setRowSelectionAllowed(false);

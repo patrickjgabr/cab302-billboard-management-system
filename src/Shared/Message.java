@@ -93,6 +93,11 @@ public class Message implements Serializable {
         return this;
     }
 
+    public Message getScheduleViewer() {
+        this.communicationID = 50;
+        return this;
+    }
+
    
 
     /**
