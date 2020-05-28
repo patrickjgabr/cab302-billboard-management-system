@@ -25,11 +25,10 @@ public class ScheduleTab {
         this.pane = new JPanel();
         this.client = client;
         this.username = username;
-        this.token = token;
-        this.schedule = (ArrayList<Scheduled>) client.sendMessage(new Message(token).requestSchedule()).getData();;
+        this.token = token;;
         //this.schedule = TestCase.schedule();
         pane.setLayout(new GridBagLayout());
-        scheduleView();
+        refresh();
         mainPane.addTab("Schedule", pane);
     }
 
@@ -52,6 +51,14 @@ public class ScheduleTab {
 
     }
 
+    private  void refresh() {
+        this.schedule = (ArrayList<Scheduled>) client.sendMessage(new Message(token).requestSchedule()).getData();
+        pane.removeAll();
+        pane.revalidate();
+        pane.repaint();
+        scheduleView();
+    }
+
     private void scheduleView() {
         ArrayList<JScrollPane> columns = new ArrayList<>();
         String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
@@ -62,6 +69,7 @@ public class ScheduleTab {
             Scheduled created = new ScheduleOptions(client, username, token).newSchedule();
             if(created != null) {
                 client.sendMessage(new Message(token).scheduleBillboard(created));
+                refresh();
             }
         });
         JButton editButton = new JButton("");

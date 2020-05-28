@@ -21,7 +21,6 @@ public class ScheduleHelper {
     public static ArrayList<Event> GenerateEvents (ArrayList<Scheduled> schedule) {
         ArrayList<Event> events = new ArrayList<>();
         for (Scheduled x : schedule) {
-            System.out.println(x.getStartTime());
             if (x.getInterval(0) == 0 ){
                 events.add(new Event(x.getID(), x.getDay(), x.getStartTime(),x.getDuration()));
             }
@@ -32,7 +31,6 @@ public class ScheduleHelper {
                 }
             }
             if (x.getInterval(0) == 2 ){
-                System.out.println("Here");
                 int starttime = x.getStartTime();
                 for(int i = 0; i < x.getInterval(1); i++){
                     System.out.println(x.getID()+ " " + x.getDay()+ " " +  starttime+ " " + x.getDuration());
