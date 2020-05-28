@@ -45,7 +45,7 @@ public class ScheduleOptions {
         this.username = username;
         this.billboards = (ArrayList<Billboard>) client.sendMessage(new Message(token).requestBillboards()).getData();
         for (Billboard x : billboards) {
-            rawbillboards.add(x. getBillboardID() + " "+x.getName());
+            rawbillboards.add(x.getName());
         }
         this.billboardsList = new JComboBox<>(rawbillboards.toArray());;
         for (int x = 0; x <60; x++) {
@@ -79,8 +79,58 @@ public class ScheduleOptions {
     }
 
     public Scheduled editSchedule(Scheduled scheduled) {
+        billboardsList.setSelectedItem(scheduled.getBillboardName());
+        switch(scheduled.getDay()) {
+            case 0:
+                day.setSelectedItem("Sunday");
+                break;
+            case 1:
+                day.setSelectedItem("Monday");
+                break;
+            case 2:
+                day.setSelectedItem("Tuesday");
+                break;
+            case 3:
+                day.setSelectedItem("Wednesday");
+                break;
+            case 4:
+                day.setSelectedItem("Thursday");
+                break;
+            case 5:
+                day.setSelectedItem("Friday");
+                break;
+            case 6:
+                day.setSelectedItem("Saturday");
+                break;
+        }
+        
+        hour.setSelectedItem(scheduled.getStartTime()/60);
+        minutes.setSelectedItem(scheduled.getStartTime()% 60);
+        if(scheduled.getStartTime() > 720) {
+            period.setSelectedItem("PM");
+        }
+        else {
+            period.setSelectedItem("AM");
+        }
+        durationminutes.setSelectedItem(" " + scheduled.getDuration());
+
+        if (scheduled.getInterval(0) == 1) {
+            daily.setSelected(true);
+        }
+        if (scheduled.getInterval(0) == 2) {
+            hourly.setSelected(true);
+            intervals.setSelectedItem(" " + scheduled.getInterval(1));
+        }
+        if (scheduled.getInterval(0) == 3) {
+            minutely.setSelected(true);
+            intervals.setSelectedItem(" " + scheduled.getInterval(1));
+            intervalminutes.setSelectedItem(" " + scheduled.getInterval(2));
+        }
         return ScheduleEditorGUI(scheduled);
     }
+
+
+
 
     private  Scheduled ScheduleEditorGUI(Scheduled scheduled){
         JPanel myPanel = new JPanel(new GridBagLayout());
@@ -208,8 +258,7 @@ public class ScheduleOptions {
                 }
             }
 
-            //get billboard id where it matches name
-            int billboardID = Integer.parseInt(Objects.requireNonNull(billboardsList.getSelectedItem()).toString().split(" ")[0]);;
+            ;
             if (minutely.isSelected() &&interval[2] < Integer.parseInt((String) Objects.requireNonNull(durationminutes.getSelectedItem()))) {
                 JOptionPane.showConfirmDialog(null, "Duration exceeds interval duration", "Error", JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE);
 
@@ -218,12 +267,13 @@ public class ScheduleOptions {
                 scheduled.setCreatorID(creatorID);
                 for(Billboard x : billboards) {
 
-                    if (Integer.parseInt(Objects.requireNonNull(billboardsList.getSelectedItem()).toString().split(" ")[0]) == x.getBillboardID()) {
+                    if (Objects.equals(billboardsList.getSelectedItem(), x.getName())) {
                         scheduled.setCreatorName(x.getCreatorName());
                         scheduled.setBillboardName(x.getName());
+                        scheduled.setBillboardID(x.getBillboardID());
                     }
                 }
-                scheduled.setBillboardID(billboardID);
+
                 int[] start = ScheduleHelper.CalculateStart(today,selectedHour , Integer.parseInt((String) Objects.requireNonNull(minutes.getSelectedItem())),selectedPeriod);
                 scheduled.setDay(start[0]);
                 scheduled.setStart(start[1]);

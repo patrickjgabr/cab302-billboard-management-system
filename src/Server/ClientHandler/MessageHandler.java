@@ -543,7 +543,7 @@ public class MessageHandler {
             ScheduleDatabase scheduleDatabase = new ScheduleDatabase(properties);
 
             Scheduled scheduled = (Scheduled)sentMessage.getData();
-            if(scheduled.getCreatorID() == user.getUserID()) {
+            if(scheduled.getCreatorID().equals(user.getUserID())) {
                 scheduleDatabase.updateDatabase(scheduled);
                 returnMessage.setCommunicationID(200);
                 consoleMessage.printGeneral("REQUEST ACCEPTED", "Schedule updated", 75);
@@ -567,7 +567,7 @@ public class MessageHandler {
             Scheduled scheduled = scheduleDatabase.getScheduled(String.valueOf(sentSchedule.getID()));
 
             if(sentSchedule.getID() == scheduled.getID()) {
-                if (user.getUserID() == scheduled.getCreatorID() || user.getPermission().get(1) == 1) {
+                if (user.getUserID().equals(scheduled.getCreatorID()) || user.getPermission().get(1) == 1) {
                     scheduleDatabase.removeSchedule(sentSchedule);
 
                     //Sets the return data to 200 if the remove is successful

@@ -33,7 +33,6 @@ public class ScheduleHelper {
             if (x.getInterval(0) == 2 ){
                 int starttime = x.getStartTime();
                 for(int i = 0; i < x.getInterval(1); i++){
-                    System.out.println(x.getID()+ " " + x.getDay()+ " " +  starttime+ " " + x.getDuration());
                     events.add(new Event(x.getID(), x.getDay(), starttime,x.getDuration(), x.getCreatorName(),x.getBillboardName()));
                     starttime += 60;
                 }
