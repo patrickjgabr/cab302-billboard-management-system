@@ -97,7 +97,7 @@ public class ScheduleTab {
                     if(x >= events.get(y).getStartTime() && x < events.get(y).getEndTime()) {
                         if(empty != 0) {
                             model.addRow(new Object[]{"Empty"});
-                            table.setRowHeight(model.getRowCount()-1,empty);
+                            table.setRowHeight(model.getRowCount()-1,empty*2);
                             empty=0;
                             current=0;
                             count =0;
@@ -108,9 +108,7 @@ public class ScheduleTab {
 
                             count = 1;
                         }
-                        else {
-                            table.setRowHeight(model.getRowCount()-1,count);
-                        }
+                        table.setRowHeight(model.getRowCount()-1,count*2);
                         if (current != 0) {
                             String[] strings = table.getValueAt(model.getRowCount()-1,0).toString().split("\n");
                             table.setValueAt( strings[0]+ "\n" + strings[1] + "\n" + count + " minutes.",model.getRowCount()-1,0);
@@ -126,11 +124,11 @@ public class ScheduleTab {
             }
             if (empty != 0) {
                 model.addRow(new Object[]{"Empty"});
-                table.setRowHeight(model.getRowCount()-1,empty);
+                table.setRowHeight(model.getRowCount()-1,empty*2);
             }
             if (events.size() == 0) {
                 model.addRow(new Object[]{"Empty"});
-                table.setRowHeight(0,1440);
+                table.setRowHeight(0,2280);
             }
             table.setDefaultRenderer(Object.class, new MultiLineCellRenderer());
             table.setRowSelectionAllowed(false);
