@@ -19,6 +19,13 @@ public class Database {
     private ArrayList<String> tables;
     private Object Exception;
 
+    /**
+     * The Database class provides all of the low level database functionality including Select, update, insert and delete.
+     * This class is designed to be extended by other classes, however is still functional as a stand alone class.
+     * The Select, update, insert and delete methods contained within this are class are directly related to the SQL commands they reference.
+     * The other Methods are largely responsible for maintaining the state of the database connection and checking its configuration.
+     * @param properties
+     */
     public Database(Properties properties) {
         this.databaseMessage = new DatabaseMessage();
         this.properties = properties;
