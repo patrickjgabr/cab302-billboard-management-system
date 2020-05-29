@@ -141,6 +141,11 @@ public class BillboardTab{
                     exportButton.setEnabled(true);
                     deleteButton.setEnabled(true);
                 }
+                else {
+                    editButton.setEnabled(false);
+                    exportButton.setEnabled(false);
+                    deleteButton.setEnabled(false);
+                }
 
                 this.preview.setIcon(new BillboardToImage(billboards.get(selected),pane.getWidth()-600,(int)((pane.getWidth()-600)/1.77)).toImageIcon()); ;
                 information.removeAll();
