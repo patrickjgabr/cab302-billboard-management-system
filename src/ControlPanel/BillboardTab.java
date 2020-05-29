@@ -33,6 +33,7 @@ public class BillboardTab{
     private JLabel preview;
     private int selected;
     private JPanel information;
+    private ArrayList<Integer> permissions;
 
 
     public BillboardTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client, String token, String username){
@@ -41,6 +42,7 @@ public class BillboardTab{
         this.token = token;
         this.pane = new JPanel();
         this.selected = -1;
+        this.permissions = permissions;
         pane.setLayout(new GridBagLayout());
         setupBillboardsTable();
         setupDetails();
@@ -79,8 +81,8 @@ public class BillboardTab{
         pane.add(scrollPane, GUI.generateGBC(0,1,1,1,0,1,GridBagConstraints.VERTICAL, 0, GridBagConstraints.NORTHWEST));
     }
     public void setupDetails() {
-        JButton createButton = new JButton("Create");
-        JButton importButton = new JButton("Import");
+
+
         JButton editButton = new JButton("Edit");
         JButton deleteButton = new JButton("Delete");
         JButton exportButton = new JButton("Export");
@@ -88,6 +90,10 @@ public class BillboardTab{
         deleteButton.setEnabled(false);
         exportButton.setEnabled(false);
         JPanel TopButtons = new JPanel(new GridLayout(1,5,5,5));
+
+
+        JButton createButton = new JButton("Create");
+        createButton.setEnabled(false);
         createButton.addActionListener(e -> {
             Billboard created = new BillboardOptions(username).newBillboard();
             if(created != null) {
@@ -95,16 +101,20 @@ public class BillboardTab{
                 updateTable();
             }
         });
-        importButton.addActionListener(e -> {
-            try {
-                fileSelection();
-            } catch (ParserConfigurationException | IOException | SAXException ex) {
-                ex.printStackTrace();
-            }
-        });
-
         TopButtons.add(createButton);
+
+        JButton importButton = new JButton("Import");
+        importButton.setEnabled(false);
+        importButton.addActionListener(e -> {
+            fileSelection();
+        });
         TopButtons.add(importButton);
+
+        if (permissions.get(0).equals(1)) {
+            createButton.setEnabled(true);
+            importButton.setEnabled(true);
+        }
+
         TopButtons.add(editButton);
         TopButtons.add(deleteButton);
         TopButtons.add(exportButton);
@@ -124,9 +134,14 @@ public class BillboardTab{
         rowSelected.addListSelectionListener(e -> {
             if (!rowSelected.isSelectionEmpty()){
                 this.selected = rowSelected.getMinSelectionIndex();
-                editButton.setEnabled(true);
-                exportButton.setEnabled(true);
-                deleteButton.setEnabled(true);
+
+
+                if (billboards.get(selected).getCreatorName().equals(username) || permissions.get(1).equals(1)) {
+                    editButton.setEnabled(true);
+                    exportButton.setEnabled(true);
+                    deleteButton.setEnabled(true);
+                }
+
                 this.preview.setIcon(new BillboardToImage(billboards.get(selected),pane.getWidth()-600,(int)((pane.getWidth()-600)/1.77)).toImageIcon()); ;
                 information.removeAll();
                 JLabel title = new JLabel("<html><h1>" + billboards.get(selected).getName() +"</h1><html>");
@@ -228,7 +243,7 @@ public class BillboardTab{
     }
 
 
-    private void fileSelection() throws ParserConfigurationException, IOException, SAXException {
+    private void fileSelection() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setAcceptAllFileFilterUsed(false);
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
@@ -241,20 +256,7 @@ public class BillboardTab{
             client.sendMessage(new Message(token).createBillboard(selected));
             updateTable();
         }
-            /*
-            System.out.println("PogChamp");
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(selectedFile);
-            doc.getDocumentElement().normalize();
-            System.out.println("Billboard: "  + doc.getElementsByTagName("billboard").item(0).getAttributes().getNamedItem("background").getNodeValue());
-            System.out.println("Message Colour: "  + doc.getElementsByTagName("message").item(0).getAttributes().getNamedItem("colour").getNodeValue());
-            System.out.println("Message : "  + doc.getElementsByTagName("message").item(0).getTextContent());
-            System.out.println("Picture URL: "  + doc.getElementsByTagName("picture").item(0).getAttributes().getNamedItem("url").getNodeValue());
-            System.out.println("Information Colour: "  + doc.getElementsByTagName("information").item(0).getAttributes().getNamedItem("colour").getNodeValue());
-            System.out.println("Information : "  + doc.getElementsByTagName("information").item(0).getTextContent());
-            }
-             */
+
     }
 
 }
