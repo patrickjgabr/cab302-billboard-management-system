@@ -49,7 +49,7 @@ public class ScheduleOptions {
         }
         this.billboardsList = new JComboBox<>(rawbillboards.toArray());;
         for (int x = 0; x <60; x++) {
-            rawminutes.add(Integer.toString(x));
+            rawminutes.add(String.format("%02d", x));
         }
         this.minutes = new JComboBox<>(rawminutes.toArray());
 
