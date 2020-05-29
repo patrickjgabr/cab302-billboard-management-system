@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class GUI {
     public static JFrame SetupFrame() {
-        setLook();                      //method hidden down below to avoid clutter (requires lots of exception catches)
+        setLook();                     
         JFrame frame = new JFrame();
         frame.setPreferredSize(new Dimension(1080, 620));
         return frame;
@@ -32,5 +32,9 @@ public class GUI {
         gbc.insets = new Insets(inset,inset,inset,inset);
         gbc.anchor = anchor;
         return gbc;
+    }
+
+    public static void ServerDialogue(int ID, String message) {
+        JOptionPane.showMessageDialog(JOptionPane.getRootFrame(),message, "Server Response ID: " + ID,JOptionPane.WARNING_MESSAGE);
     }
 }
