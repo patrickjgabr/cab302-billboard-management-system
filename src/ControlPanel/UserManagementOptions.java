@@ -21,24 +21,38 @@ public class UserManagementOptions {
 
     }
 
+     /**
+     * user editor function for creating a new user
+     * @return user object created based on text responses to be sent to the database.
+     */
     public User newUser() {
         name = new JTextField();
+        name.setPreferredSize(new Dimension(200, 20));
+        name.setEditable(true);
         userPassword = new JTextField();
+        userPassword.setPreferredSize(new Dimension(200,20));
         return UserEditorGUI(new User());
     }
 
+     /**
+     * user editor function that takes a user object - used for updating a user object in the database
+     * @param user user object to be updated.
+     * @return updated user object
+     */
     public User editUser(User user) {
         name = new JTextField(user.getUserName());
+        name.setPreferredSize(new Dimension(200, 20));
         name.setEditable(false);
         userPassword = new JTextField(user.getUserPassword());
-        JCheckBox p0 = new JCheckBox("Create Billboards");
+        userPassword.setPreferredSize(new Dimension(200,20));
+        p0 = new JCheckBox("Create Billboards");
         if(user.getPermission().get(0) == 1 ){p0.setSelected(true);}
-        JCheckBox p1 = new JCheckBox("Edit Billboards");
+        p1 = new JCheckBox("Edit Billboards");
         if(user.getPermission().get(1) == 1 ){p1.setSelected(true);}
-        JCheckBox p2 = new JCheckBox("Schedule Billboards");
+        p2 = new JCheckBox("Schedule Billboards");
         if(user.getPermission().get(2) == 1 ){p2.setSelected(true);}
-        JCheckBox p3 = new JCheckBox("Edit Users");
-        if(user.getPermission().get(3) == 1 ){p3.setSelected(true);}
+        p3 = new JCheckBox("Edit Users");
+        if(user.getPermission().get(3) == 1 ){p3.setSelected(true);p3.setEnabled(false);}
         return UserEditorGUI(user);
     }
 
@@ -96,7 +110,6 @@ public class UserManagementOptions {
                 } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();
                 }
-
             }
         }
         return null;

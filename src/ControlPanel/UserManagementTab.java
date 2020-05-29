@@ -33,14 +33,24 @@ public class UserManagementTab {
     private String token;
     private JPanel information;
     private int selected;
+    private String username;
     Icon yes = new ImageIcon("externalResources/confirm.png");
     Icon no = new ImageIcon("externalResources/deny.png");
 
-    public UserManagementTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client,  String token) {
+    /**
+     * method for setting private variable values based on parameters given from control panel.
+     * @param mainPane tabbed pane for adding all swing elements to. Essentially the frame.
+     * @param permissions array list of permission integers for the user currently logged in.
+     * @param client Client that is being used in session.
+     * @param token token of logged in user.
+     * @param username name of logged in user.
+     */
+    public UserManagementTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client,  String token, String username) {
         this.client = client;
         this.token = token;
         this.pane = new JPanel();
         this.perms = permissions;
+        this.username = username;
         pane.setLayout(new GridBagLayout());
         setupUserTable();
         updateTable();
@@ -48,6 +58,9 @@ public class UserManagementTab {
         mainPane.addTab("User Management", pane);
     }
 
+    /**
+     * method to be called when a change is made to the user table and it requires updating. e.g. after edit, add or delete user is called.
+     */
     public void updateTable(){
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
@@ -59,6 +72,9 @@ public class UserManagementTab {
         }
     }
 
+    /**
+     * method to set up table displaying a list of users.
+     */
     public void setupUserTable() {
         DefaultTableModel model = new DefaultTableModel(){
             @Override
@@ -82,6 +98,9 @@ public class UserManagementTab {
         pane.add(scrollPane, GUI.generateGBC(0,1,2,1,0,1,GridBagConstraints.VERTICAL, 0, GridBagConstraints.WEST));
     }
 
+    /**
+     * method for setting up majority of the 'User Management' tab. Method constructs all buttons, as well as displays all information when a user is selected.
+     */
     public void setupDetails() {
         JButton createButton = new JButton("New User");
         createButton.setPreferredSize(new Dimension(50, 25));
@@ -95,7 +114,9 @@ public class UserManagementTab {
                 updateTable();
             }
         });
-
+        if(perms.get(3)!=1){
+            createButton.setEnabled(false);
+        }
         JButton editButton = new JButton("Edit");
         editButton.setFont(buttons);
         editButton.setBackground(buttonCol);
@@ -131,13 +152,18 @@ public class UserManagementTab {
         rowSelected.addListSelectionListener(e -> {
             if (!rowSelected.isSelectionEmpty() && perms.get(3) == 1){          //check if row is selected and user has correct permissions
                 this.selected = rowSelected.getMinSelectionIndex();
-                editButton.setEnabled(true);
-                deleteButton.setEnabled(true);
+                if(perms.get(3).equals(1)){                      //if user has edit user permissions
+                    editButton.setEnabled(true);
+                    if(!"root".equals(users.get(selected).getUserName())){          //AND user is not root user
+                        deleteButton.setEnabled(true);                              //enable delete button
+                    }
+                    else {deleteButton.setEnabled(false);}                          //otherwise disable button.
+                }
                 editButton.setText("Edit '" + users.get(selected).getUserName() + "'");
                 deleteButton.setText("Delete '" + users.get(selected).getUserName() + "'");
                 information.removeAll();
                 JLabel name = new JLabel("<html>" + users.get(selected).getUserName() +"<html>");
-                name.setFont(username);
+                name.setFont(CustomFont.username);
                 name.setPreferredSize(new Dimension(500,50));
                 JLabel userID = new JLabel("<html><h2>User ID: " + users.get(selected).getUserID() +"</h2><html>");
                 userID.setFont(userIDfont);
@@ -178,6 +204,12 @@ public class UserManagementTab {
         topButtons.add(deleteButton);
         pane.add(topButtons, GUI.generateGBC(0,0,2,1,0,0,0, 5, GridBagConstraints.WEST));
     }
+
+    /**
+     * method for determining which permission icon to use based on the users permissions. red for no permission, green if they have it.
+     * @param permission either a 1 or 0 - 1 for yes, 0 for no.
+     * @return icon to be displayed in checkbox.
+     */
     public Icon getPermissionsIcon(Integer permission){
         if (permission == 1){
             return yes;
