@@ -145,7 +145,7 @@ public class BillboardTab{
                 this.preview.setIcon(new BillboardToImage(billboards.get(selected),pane.getWidth()-600,(int)((pane.getWidth()-600)/1.77)).toImageIcon()); ;
                 information.removeAll();
                 JLabel title = new JLabel("<html><h1>" + billboards.get(selected).getName() +"</h1><html>");
-                title.setPreferredSize(new Dimension(280,20));
+                title.setPreferredSize(new Dimension(280,30));
                 information.add(title, GUI.generateGBC(0,0,1,1,1,1,0,2,GridBagConstraints.WEST));
                 JLabel author = new JLabel("<html><h3> Created by: " + billboards.get(selected).getCreatorName() +"</h3><html>");
                 author.setPreferredSize(new Dimension(280,20));
@@ -253,7 +253,10 @@ public class BillboardTab{
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             Billboard selected = GenerateBillboardFromXML.XMLToBillboard(selectedFile, selectedFile.getName(), username);
-            client.sendMessage(new Message(token).createBillboard(selected));
+            Billboard preview = new BillboardOptions(username).editBillboard(selected);
+            if (preview != null) {
+                client.sendMessage(new Message(token).createBillboard(preview));
+            }
             updateTable();
         }
 

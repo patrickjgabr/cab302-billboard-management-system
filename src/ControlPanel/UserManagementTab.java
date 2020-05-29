@@ -18,7 +18,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.io.IOException;
 import java.io.File;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 import static ControlPanel.CustomFont.*;
@@ -51,7 +54,12 @@ public class UserManagementTab {
     public void updateTable(){
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
-        this.users = (ArrayList<User>) client.sendMessage(new Message(token).requestUsers()).getData();
+        if (perms.get(3).equals(1)) {
+            this.users = (ArrayList<User>) client.sendMessage(new Message(token).requestUsers()).getData();
+        }
+        else {
+            this.users = new ArrayList<>();
+        }
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         for (User user : users) {
             model.addRow(new Object[]{
@@ -79,11 +87,13 @@ public class UserManagementTab {
         table.setRowHeight(60);
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setPreferredSize(new Dimension(300,0));
-        pane.add(scrollPane, GUI.generateGBC(0,1,2,1,0,1,GridBagConstraints.VERTICAL, 0, GridBagConstraints.WEST));
+        pane.add(scrollPane, GUI.generateGBC(0,1,1,1,1,1,GridBagConstraints.VERTICAL, 0, GridBagConstraints.WEST));
     }
 
     public void setupDetails() {
         JButton createButton = new JButton("New User");
+
+
         createButton.setPreferredSize(new Dimension(50, 25));
         createButton.setFont(buttons);
         createButton.setBackground(buttonCol);
@@ -116,8 +126,17 @@ public class UserManagementTab {
 
         this.information = new JPanel();
         information.setLayout(new BoxLayout(information, BoxLayout.PAGE_AXIS));
-        information.add(new JLabel("Select a user to view permissions."));
-        pane.add(information, GUI.generateGBC(2,1,1,2,1,1,GridBagConstraints.HORIZONTAL,18,GridBagConstraints.NORTHWEST));
+
+        if (perms.get(3).equals(1)) {
+            createButton.setEnabled(true);
+            information.add(new JLabel("Select a user to view permissions."));
+        }
+        else {
+            createButton.setEnabled(false);
+            information.add(new JLabel(" \"Edit User's\" permission required."));
+        }
+
+        pane.add(information, GUI.generateGBC(1,1,1,1,1,1,GridBagConstraints.HORIZONTAL,18,GridBagConstraints.NORTHEAST));
 
         editButton.addActionListener(ee -> {
             User edited = new UserManagementOptions().editUser(users.get(selected));
@@ -139,9 +158,50 @@ public class UserManagementTab {
 
         });
 
+        JButton changePassword = new JButton("Change Password");
+        changePassword.setFont(buttons);
+        changePassword.setBackground(buttonCol);
+        changePassword.setBorder(new LineBorder(softBlue, 2, true));
+        changePassword.addActionListener(ee -> {
+            JPanel panel = new JPanel();
+            JLabel label = new JLabel("New password:");
+            JPasswordField pass = new JPasswordField(10);
+            panel.add(label);
+            panel.add(pass);
+            String[] options = new String[]{"OK", "Cancel"};
+            int option = JOptionPane.showOptionDialog(null, panel, "The title",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
+                    null, options, options[1]);
+            if(option == 0)
+            {
+                char[] password = pass.getPassword();
+                if (new String(password).equals("")) {
+                    JOptionPane.showMessageDialog(JOptionPane.getRootFrame(),"Please enter a valid password.", "Empty Password",JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                try {
+                    MessageDigest passwordHash = MessageDigest.getInstance("SHA-256");
+                    passwordHash.update(new String(password).getBytes());
+                    byte [] byteArray = passwordHash.digest();
+
+                    StringBuilder sb = new StringBuilder();
+                    for (byte b : byteArray) {
+                        sb.append(String.format("%02x", b & 0xFF));
+                    }
+                    String hashed = sb.toString();
+                    //sendmessage
+
+
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
+
         ListSelectionModel rowSelected = table.getSelectionModel();             //setup list selection model to listen for a selection of the table
         rowSelected.addListSelectionListener(e -> {
-            if (!rowSelected.isSelectionEmpty() && perms.get(3) == 1){          //check if row is selected and user has correct permissions
+            if (!rowSelected.isSelectionEmpty()){          //check if row is selected and user has correct permissions
                 information.removeAll();
                 this.selected = rowSelected.getMinSelectionIndex();
                 editButton.setEnabled(true);
@@ -182,12 +242,13 @@ public class UserManagementTab {
             }
         });
 
-        JPanel topButtons = new JPanel(new GridLayout(1,3,10,5));
+        JPanel topButtons = new JPanel(new GridLayout(1,4,10,5));
         topButtons.setBorder(new EmptyBorder(10, 5, 10, 5));
-        topButtons.setPreferredSize(new Dimension(350, 50));
+        topButtons.setPreferredSize(new Dimension(600, 50));
         topButtons.add(createButton);
         topButtons.add(editButton);
         topButtons.add(deleteButton);
+        topButtons.add(changePassword);
         pane.add(topButtons, GUI.generateGBC(0,0,2,1,0,0,0, 5, GridBagConstraints.WEST));
     }
     public Icon getPermissionsIcon(Integer permission){

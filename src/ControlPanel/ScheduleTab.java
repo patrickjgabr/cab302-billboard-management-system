@@ -156,7 +156,6 @@ public class ScheduleTab {
                             table.setValueAt( strings[0]+ "\n" + strings[1] + "\n" + events.get(y).getBillboardName() + " by: " + events.get(y).getCreatorName() + "\n" + count + " minutes",model.getRowCount()-1,0);
                         }
                         count++;
-                        System.out.println("Minute: " + x + " ID: "+ events.get(y).getEventID());
                         break;
                     }
                     if(y == events.size()-1) {
