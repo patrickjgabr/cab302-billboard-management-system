@@ -71,6 +71,13 @@ public class Message implements Serializable {
         this.data = user;
         return this;
     }
+
+    public Message deleteUser(User user) {
+        this.communicationID = 33;
+        this.data = user;
+        return this;
+    }
+
     public Message requestSchedule() {
         this.communicationID = 40;
         return this;

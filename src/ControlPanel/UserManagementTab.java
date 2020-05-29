@@ -88,7 +88,7 @@ public class UserManagementTab {
         createButton.setBackground(buttonCol);
         createButton.setBorder(new LineBorder(softBlue, 2, true));
         createButton.addActionListener(e -> {
-            User created = UserManagementOptions.UserEditor();
+            User created = new UserManagementOptions().newUser();
             if (created != null){
                 client.sendMessage(new Message(token).createUsers(created));
                 updateTable();
@@ -120,7 +120,11 @@ public class UserManagementTab {
                 int selected = rowSelected.getMinSelectionIndex();
 
                 editButton.addActionListener(ee -> {
-                    User created = UserManagementOptions.UserEditor(users.get(selected));
+                    User created = new UserManagementOptions().editUser(users.get(selected));
+                });
+
+                deleteButton.addActionListener(ee -> {
+                    client.sendMessage(new Message(token).deleteUser(users.get(selected)));
                 });
 
                 editButton.setEnabled(true);

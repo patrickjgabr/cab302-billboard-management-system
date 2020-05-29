@@ -81,7 +81,7 @@ public class ScheduleOptions {
     public Scheduled editSchedule(Scheduled scheduled) {
         billboardsList.setSelectedItem(scheduled.getBillboardName());
         switch(scheduled.getDay()) {
-            case 0:
+            case 7:
                 day.setSelectedItem("Saturday");
 
                 break;

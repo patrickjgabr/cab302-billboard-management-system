@@ -331,8 +331,8 @@ public class MessageHandler {
             User sentUser = (User)sentMessage.getData();
             User databaseUser = userDatabase.getUser(sentUser.getUserName(), true);
 
-            if(sentUser.getUserID() == databaseUser.getUserID()) {
-                if(sentUser.getUserID() != user.getUserID() && user.getPermission().get(3) == 1) {
+            if(sentUser.getUserID().equals(databaseUser.getUserID())) {
+                if(!sentUser.getUserID().equals(user.getUserID()) && user.getPermission().get(3) == 1) {
                     userDatabase.removeUser(sentUser);
                     returnMessage.setCommunicationID(200);
                     consoleMessage.printGeneral("REQUEST ACCEPTED", "User removed", 75);
