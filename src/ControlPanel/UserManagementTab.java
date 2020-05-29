@@ -93,6 +93,10 @@ public class UserManagementTab {
             if (created != null){
                 client.sendMessage(new Message(token).createUsers(created));
                 updateTable();
+                information.removeAll();
+                information.add(new JLabel("Select a user to view permissions."));
+                pane.validate();
+                pane.repaint();
             }
         });
 
@@ -100,15 +104,15 @@ public class UserManagementTab {
         editButton.setFont(buttons);
         editButton.setBackground(buttonCol);
         editButton.setBorder(new LineBorder(softBlue, 2, true));
-
+        editButton.setEnabled(false);
 
         JButton deleteButton = new JButton("Delete");
         deleteButton.setFont(buttons);
         deleteButton.setBackground(buttonCol);
         deleteButton.setBorder(new LineBorder(softBlue, 2, true));
-
-        editButton.setEnabled(false);
         deleteButton.setEnabled(false);
+
+
 
         this.information = new JPanel();
         information.setLayout(new BoxLayout(information, BoxLayout.PAGE_AXIS));
@@ -119,23 +123,31 @@ public class UserManagementTab {
             User edited = new UserManagementOptions().editUser(users.get(selected));
             client.sendMessage(new Message(token).updateUser(edited));
             updateTable();
+            information.removeAll();
+            information.add(new JLabel("Select a user to view permissions."));
+            pane.validate();
+            pane.repaint();
         });
 
         deleteButton.addActionListener(ee -> {
             client.sendMessage(new Message(token).deleteUser(users.get(selected)));
             updateTable();
+            information.removeAll();
+            information.add(new JLabel("Select a user to view permissions."));
+            pane.validate();
+            pane.repaint();
 
         });
 
         ListSelectionModel rowSelected = table.getSelectionModel();             //setup list selection model to listen for a selection of the table
         rowSelected.addListSelectionListener(e -> {
             if (!rowSelected.isSelectionEmpty() && perms.get(3) == 1){          //check if row is selected and user has correct permissions
+                information.removeAll();
                 this.selected = rowSelected.getMinSelectionIndex();
                 editButton.setEnabled(true);
                 deleteButton.setEnabled(true);
                 editButton.setText("Edit '" + users.get(selected).getUserName() + "'");
                 deleteButton.setText("Delete '" + users.get(selected).getUserName() + "'");
-                information.removeAll();
                 JLabel name = new JLabel("<html>" + users.get(selected).getUserName() +"<html>");
                 name.setFont(username);
                 name.setPreferredSize(new Dimension(500,50));
@@ -184,131 +196,4 @@ public class UserManagementTab {
         }
         else{
             return no; } }
-
-    /*
-    public void setupUserManagementTable() {
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("ID");
-        model.addColumn("Username");
-        model.addColumn("Password");
-        model.addColumn("Create User");
-        model.addColumn("Delete User");
-        model.addColumn("Schedule Billboard");
-        model.addColumn("Edit Users");
-
-        this.table = new JTable(model);
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 1;
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTH;
-        c.weightx = 1;
-        c.weighty = 1;
-        c.gridwidth = 8;
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.getViewport().setBackground(lightGray);
-        pane.add(scrollPane, c);                   //add table to pane - 1st row out of 2 in the grid layout.
-        //------------------------------------Table Created --------------------------------------------------------//
-    }
-
-    private void setTableFeatures() {
-        table.setRowSelectionAllowed(true);
-        table.setCellSelectionEnabled(false);
-        table.setRowHeight(40);
-        table.setSelectionBackground(new Color(0, 74, 127));
-        table.setRowSelectionAllowed(true);
-        table.setColumnSelectionAllowed(false);
-        table.setIntercellSpacing(new Dimension(10, 20));
-        table.setFont(tableContentsF);                                      //table contents font (16px Comic sans)
-        table.getTableHeader().setBackground(softBlue);                     //set table header colour
-        table.getTableHeader().setOpaque(false);
-        table.getTableHeader().setFont(tableHeader);
-        table.setDefaultEditor(Object.class, null);
-    }
-
-    public void updateTable(){
-        DefaultTableModel model = (DefaultTableModel) table.getModel();
-        model.setRowCount(0);
-
-        this.users = (ArrayList<User>) client.sendMessage(new Message(token).requestUsers()).getData();
-
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        for (User users : users) {
-            model.addRow(new Object[]{
-                    users.getUserID(),
-                    users.getUserName(),
-                    users.getUserPassword(),
-                    users.getPermission().get(0),
-                    users.getPermission().get(1),
-                    users.getPermission().get(2),
-                    users.getPermission().get(3)});
-        }
-    }
-
-    //-----------------------------------------------------------------
-    //Buttons still need to be implemented but works with everything else
-    //-----------------------------------------------------------------
-
-/*    public void setupButtons() {
-        //button to be placed at grid space (0,1)
-        JButton createButton = new JButton("New User");                        //button to be placed at grid space (2,1)
-        JButton editButton = new JButton();                  //button to be placed at grid space (3,1)
-
-
-        JLabel selectedRow = new JLabel();
-
-        createButton.setFont(buttons);
-
-        editButton.setFont(buttons);
-        editButton.setVisible(false);
-
-
-        selectedRow.setFont(tableContentsF);
-
-        ListSelectionModel rowSelected = table.getSelectionModel();             //setup list selection model to listen for a selection of the table
-        rowSelected.addListSelectionListener(e -> {
-            if (!rowSelected.isSelectionEmpty()){
-                int selected = rowSelected.getMinSelectionIndex();
-                editButton.setVisible(true);
-                editButton.setText("Edit " + users.get(selected).getUserName());
-            }
-        });
-
-
-
-
-
-
-
-        editButton.addActionListener(e -> {
-            if (!Objects.equals(editButton.getText(), "")){
-                int selected = rowSelected.getMinSelectionIndex();
-                Billboard created = BillboardOptions.BillboardEditor(users.get(selected));
-                if(created != null) {
-                    Client client = new Client();
-                    Message reply = client.sendMessage(new Message().updateUser(created));
-                    updateTable();
-                }
-            }
-            else JOptionPane.showMessageDialog(null, "Please select a user first.");
-        });
-
-        createButton.addActionListener(e -> {
-            Billboard created = BillboardOptions.BillboardEditor();
-            if(created != null) {
-                users.add(created); //replace with send to server
-                updateTable();
-            }
-        });
-
-
-
-
-        pane.add(createButton,GUI.newButtonConstraints(0,0));                  //place button 2 at (2,1)
-                       //place button 1 at (0,1)
-
-        pane.add(editButton,GUI.newButtonConstraints(3,0));                   //place button 2 at (1,1)
-        pane.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-    }*/
-
 }
