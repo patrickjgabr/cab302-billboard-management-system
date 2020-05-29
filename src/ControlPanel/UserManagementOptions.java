@@ -24,9 +24,6 @@ public class UserManagementOptions {
     public User newUser() {
         name = new JTextField();
         userPassword = new JTextField();
-        //ArrayList<Integer> perms = new ArrayList<Integer>();
-        //String userID = "100001";
-
         return UserEditorGUI(new User());
     }
 
@@ -47,20 +44,18 @@ public class UserManagementOptions {
 
     private User UserEditorGUI(User user) {
         JPanel myPanel = new JPanel();
-        myPanel.setLayout(new GridLayout(5,2));
+        myPanel.setLayout(new GridBagLayout());
+        myPanel.add(new JLabel("User Name: "), GUI.generateGBC(0,0,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(name, GUI.generateGBC(1,0,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(new JLabel("Password: "), GUI.generateGBC(0,1,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(userPassword, GUI.generateGBC(1,1,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(new JLabel("Permissions: "), GUI.generateGBC(0,2,2,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(p0, GUI.generateGBC(0,3,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(p1, GUI.generateGBC(1,3,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(p2, GUI.generateGBC(0,4,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(p3, GUI.generateGBC(1,4,1,1,1,1,0,5,GridBagConstraints.WEST));
 
-        myPanel.add(new JLabel("User Name: "));
-        myPanel.add(name);
-        myPanel.add(new JLabel("Password: "));
-        myPanel.add(userPassword);
-        myPanel.add(new JLabel("Permissions: "));
-        myPanel.add(new JLabel());
-        myPanel.add(p0);
-        myPanel.add(p1);
-        myPanel.add(p2);
-        myPanel.add(p3);
-
-        int result = JOptionPane.showConfirmDialog(null, myPanel, "New User", JOptionPane.YES_NO_CANCEL_OPTION);
+        int result = JOptionPane.showConfirmDialog(null, myPanel, "New User", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
         if (result == JOptionPane.YES_OPTION) {
             if(name.getText().equals("") || userPassword.getText().equals("")){

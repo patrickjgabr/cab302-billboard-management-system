@@ -32,6 +32,7 @@ public class UserManagementTab {
     private Client client;
     private String token;
     private JPanel information;
+    private int selected;
     Icon yes = new ImageIcon("externalResources/confirm.png");
     Icon no = new ImageIcon("externalResources/deny.png");
 
@@ -114,67 +115,58 @@ public class UserManagementTab {
         information.add(new JLabel("Select a user to view permissions."));
         pane.add(information, GUI.generateGBC(2,1,1,2,1,1,GridBagConstraints.HORIZONTAL,18,GridBagConstraints.NORTHWEST));
 
+        editButton.addActionListener(ee -> {
+            User edited = new UserManagementOptions().editUser(users.get(selected));
+            client.sendMessage(new Message(token).updateUser(edited));
+            updateTable();
+        });
+
+        deleteButton.addActionListener(ee -> {
+            client.sendMessage(new Message(token).deleteUser(users.get(selected)));
+            updateTable();
+
+        });
+
         ListSelectionModel rowSelected = table.getSelectionModel();             //setup list selection model to listen for a selection of the table
         rowSelected.addListSelectionListener(e -> {
             if (!rowSelected.isSelectionEmpty() && perms.get(3) == 1){          //check if row is selected and user has correct permissions
-                int selected = rowSelected.getMinSelectionIndex();
-
-                editButton.addActionListener(ee -> {
-                    User created = new UserManagementOptions().editUser(users.get(selected));
-                });
-
-                deleteButton.addActionListener(ee -> {
-                    client.sendMessage(new Message(token).deleteUser(users.get(selected)));
-                });
-
+                this.selected = rowSelected.getMinSelectionIndex();
                 editButton.setEnabled(true);
                 deleteButton.setEnabled(true);
                 editButton.setText("Edit '" + users.get(selected).getUserName() + "'");
                 deleteButton.setText("Delete '" + users.get(selected).getUserName() + "'");
-
                 information.removeAll();
                 JLabel name = new JLabel("<html>" + users.get(selected).getUserName() +"<html>");
                 name.setFont(username);
                 name.setPreferredSize(new Dimension(500,50));
-                name.setAlignmentX( Component.LEFT_ALIGNMENT );
-
                 JLabel userID = new JLabel("<html><h2>User ID: " + users.get(selected).getUserID() +"</h2><html>");
                 userID.setFont(userIDfont);
                 userID.setPreferredSize(new Dimension(200,50));
-                userID.setAlignmentX( Component.LEFT_ALIGNMENT );
-
                 JPanel perms = new JPanel();
                 perms.setLayout(new GridBagLayout());
                 perms.setFont(userIDfont);
-
                 JCheckBox createPerm = new JCheckBox("    Create Billboards");
                 createPerm.setIcon(getPermissionsIcon(users.get(selected).getPermission().get(0)));
                 perms.add(createPerm, GUI.generateGBC(0,0,1,1,1,1,GridBagConstraints.HORIZONTAL, 5, GridBagConstraints.WEST));
                 createPerm.setFont(permissionfont);
-
                 JCheckBox editPerm = new JCheckBox("    Edit Billboards");
                 editPerm.setIcon(getPermissionsIcon(users.get(selected).getPermission().get(1)));
                 perms.add(editPerm, GUI.generateGBC(0,2,1,1,1,1,GridBagConstraints.HORIZONTAL, 5, GridBagConstraints.WEST));
                 editPerm.setFont(permissionfont);
-
                 JCheckBox schedulePerm = new JCheckBox("    Schedule Billboards");
                 schedulePerm.setIcon(getPermissionsIcon(users.get(selected).getPermission().get(2)));
                 perms.add(schedulePerm, GUI.generateGBC(0,4,1,1,1,1,GridBagConstraints.HORIZONTAL, 5, GridBagConstraints.WEST));
                 schedulePerm.setFont(permissionfont);
-
                 JCheckBox editUserPerm = new JCheckBox("    Edit Users");
                 editUserPerm.setIcon(getPermissionsIcon(users.get(selected).getPermission().get(3)));
                 editUserPerm.setFont(permissionfont);
                 perms.add(editUserPerm, GUI.generateGBC(0,6,1,1,1,1, GridBagConstraints.HORIZONTAL, 5, GridBagConstraints.WEST));
-
                 perms.setPreferredSize(new Dimension(200,300));
                 perms.setAlignmentX( Component.LEFT_ALIGNMENT );
                 perms.setBorder(new LineBorder(buttonCol, 2, true));
-
                 information.add(name);
                 information.add(userID);
                 information.add(perms);
-
             }
         });
 
