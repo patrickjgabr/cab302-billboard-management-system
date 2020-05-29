@@ -22,11 +22,13 @@ public class ScheduleTab {
     private String token;
     private ArrayList<Scheduled> schedule;
     private int selected;
+    private ArrayList<Integer> permissions;
     public ScheduleTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client,  String token, String username){
         this.pane = new JPanel();
         this.client = client;
         this.username = username;
-        this.token = token;;
+        this.token = token;
+        this.permissions = permissions;
         //this.schedule = TestCase.schedule();
         pane.setLayout(new GridBagLayout());
         refresh();
@@ -67,7 +69,12 @@ public class ScheduleTab {
         String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
         JPanel topBar = new JPanel(new GridLayout(1,3, 5, 5));
         JButton createButton = new JButton("Schedule a Billboard");
-
+        if (permissions.get(2).equals(1)) {
+            createButton.setEnabled(true);
+        }
+        else {
+            createButton.setEnabled(false);
+        }
         createButton.addActionListener(e -> {
             Scheduled created = new ScheduleOptions(client, username, token).newSchedule();
             if(created != null) {
@@ -77,6 +84,7 @@ public class ScheduleTab {
         });
         JButton editButton = new JButton("");
         editButton.setVisible(false);
+        editButton.setEnabled(false);
         editButton.addActionListener(e -> {
             for (Scheduled x : schedule) {
                 if(selected == x.getID()) {
@@ -89,6 +97,7 @@ public class ScheduleTab {
         });
         JButton deleteButton = new JButton("");
         deleteButton.setVisible(false);
+        deleteButton.setEnabled(false);
         deleteButton.addActionListener(e -> {
             for (Scheduled x : schedule) {
                 if(selected == x.getID()) {
@@ -173,11 +182,16 @@ public class ScheduleTab {
                         String text = (String) target.getValueAt(row,column);
                         if (!(text.equals(" "))) {
                             selected = Integer.parseInt(text.split("\n")[1].replace("Event ID: ", ""));
-                            editButton.setText("Edit " + selected);
+                            editButton.setText("Edit Event ID: " + selected);
                             bottom.setText(text.replace("\n", "   |   "));
+
+                            deleteButton.setText("Delete Event ID: " + selected);
                             editButton.setVisible(true);
-                            deleteButton.setText("Delete " + selected);
                             deleteButton.setVisible(true);
+                            if (permissions.get(2).equals(1)) {
+                                editButton.setEnabled(true);
+                                deleteButton.setEnabled(true);
+                            }
                         }
                         else {
                             editButton.setVisible(false);
