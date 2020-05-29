@@ -519,7 +519,7 @@ public class MessageHandler {
                 if(success) {
                     //Sets the return data to 200 if the add is successful
                     returnMessage.setCommunicationID(200);
-                    consoleMessage.printGeneral("REQUEST ACCEPTED", "Billboard Added   |   billboardID [" + ((Billboard) sentMessage.getData()).getBillboardID() + "]", 75);
+                    consoleMessage.printGeneral("REQUEST ACCEPTED", "Billboard Added", 75);
                 } else  {
                     //Sets the return data to 506 if billboard name already exists
                     returnMessage.setCommunicationID(500);
