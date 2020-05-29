@@ -6,62 +6,60 @@ import javax.swing.*;
 import java.awt.*;
 
 public class BillboardOptions {
-    public static Billboard BillboardEditor(String username) {
+    private JTextField billboardName = new JTextField();
+    private JTextField imgSRC = new JTextField();
+    private JTextField messageText = new JTextField();
+    private JTextField messageColour = new JTextField();
+    private JTextField backgroundColour = new JTextField();
+    private JTextField infoText = new JTextField();
+    private JTextField infoColour = new JTextField();
+    private String username;
 
-        JTextField billboardName = new JTextField();
-        JTextField imgSRC = new JTextField();
-        JTextField messageText = new JTextField();
-        JTextField messageColour = new JTextField();
-        JTextField backgroundColour = new JTextField();
-        JTextField infoText = new JTextField();
-        JTextField infoColour = new JTextField();
-        return BillboardEditorGUI(new Billboard(),username, billboardName,imgSRC,messageText,messageColour,backgroundColour,infoText,infoColour);
+
+    public BillboardOptions(String username) {
+        this.username = username;
+
     }
 
-    public static Billboard BillboardEditor(String username, Billboard billboard) {
-        JTextField billboardName = new JTextField(billboard.getName());
-        JTextField imgSRC = new JTextField(billboard.getPictureLink());
-        JTextField messageText = new JTextField(billboard.getMessageText());
-        JTextField messageColour = new JTextField(billboard.getMessageTextColour());
-        JTextField backgroundColour = new JTextField(billboard.getBackgroundColour());
-        JTextField infoText = new JTextField(billboard.getInformationText());
-        JTextField infoColour = new JTextField(billboard.getInformationTextColour());
-        return BillboardEditorGUI(billboard, username,billboardName,imgSRC,messageText,messageColour,backgroundColour,infoText,infoColour);
+    public Billboard newBillboard() {
+        return BillboardEditorGUI(new Billboard());
     }
 
-    private static Billboard BillboardEditorGUI(Billboard billboard,
-                                                String username,
-                                                JTextField billboardName,
-                                                JTextField imgSRC,
-                                                JTextField messageText,
-                                                JTextField messageColour,
-                                                JTextField backgroundColour,
-                                                JTextField infoText,
-                                                JTextField infoColour){
+    public Billboard editBillboard(Billboard billboard) {
+        billboardName = new JTextField(billboard.getName());
+        imgSRC = new JTextField(billboard.getPictureLink());
+        messageText = new JTextField(billboard.getMessageText());
+        messageColour = new JTextField(billboard.getMessageTextColour());
+        backgroundColour = new JTextField(billboard.getBackgroundColour());
+        infoText = new JTextField(billboard.getInformationText());
+        infoColour = new JTextField(billboard.getInformationTextColour());
+        return BillboardEditorGUI(billboard);
+    }
+
+    private Billboard BillboardEditorGUI(Billboard billboard){
         JPanel myPanel = new JPanel();
-        myPanel.setLayout(new GridLayout(7,1));
-        myPanel.add(new JLabel("Billboard Name: "));
-        myPanel.add(billboardName);
-        myPanel.add(Box.createHorizontalStrut(5)); // a spacer
-        myPanel.add(new JLabel("Image Source: "));
-        myPanel.add(imgSRC);
-        myPanel.add(Box.createHorizontalStrut(5)); // a spacer
-        myPanel.add(new JLabel("Message Text: "));
-        myPanel.add(messageText);
-        myPanel.add(Box.createHorizontalStrut(5)); // a spacer
-        myPanel.add(new JLabel("Message Colour: "));
-        myPanel.add(messageColour);
-        myPanel.add(Box.createHorizontalStrut(5)); // a spacer
-        myPanel.add(new JLabel("Background Colour: "));
-        myPanel.add(backgroundColour);
-        myPanel.add(Box.createHorizontalStrut(5)); // a spacer
-        myPanel.add(new JLabel("Info Text: "));
-        myPanel.add(infoText);
-        myPanel.add(Box.createHorizontalStrut(5)); // a spacer
-        myPanel.add(new JLabel("Info Colour: "));
-        myPanel.add(infoColour);
-        myPanel.add(Box.createHorizontalStrut(5)); // a spacer
-
+        myPanel.setLayout(new GridBagLayout());
+        myPanel.add(new JLabel("Billboard Name: "),GUI.generateGBC(0,0,1,1,1,1,0,5,GridBagConstraints.WEST));
+        billboardName.setPreferredSize(new Dimension(400,20));
+        myPanel.add(billboardName, GUI.generateGBC(0,1,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(new JLabel("Image Source: "), GUI.generateGBC(0,2,1,1,1,1,0,5,GridBagConstraints.WEST));
+        imgSRC.setPreferredSize(new Dimension(400,20));
+        myPanel.add(imgSRC, GUI.generateGBC(0,3,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(new JLabel("Message Text: "), GUI.generateGBC(0,4,1,1,1,1,0,5,GridBagConstraints.WEST));
+        messageText.setPreferredSize(new Dimension(400,20));
+        myPanel.add(messageText, GUI.generateGBC(0,5,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(new JLabel("Message Colour: "), GUI.generateGBC(0,6,1,1,1,1,0,5,GridBagConstraints.WEST));
+        messageColour.setPreferredSize(new Dimension(60,20));
+        myPanel.add(messageColour, GUI.generateGBC(0,7,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(new JLabel("Background Colour: "), GUI.generateGBC(0,8,1,1,1,1,0,5,GridBagConstraints.WEST));
+        backgroundColour.setPreferredSize(new Dimension(400,20));
+        myPanel.add(backgroundColour, GUI.generateGBC(0,9,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(new JLabel("Info Text: "), GUI.generateGBC(0,10,1,1,1,1,0,5,GridBagConstraints.WEST));
+        infoText.setPreferredSize(new Dimension(400,20));
+        myPanel.add(infoText, GUI.generateGBC(0,11,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(new JLabel("Info Colour: "), GUI.generateGBC(0,12,1,1,1,1,0,5,GridBagConstraints.WEST));
+        infoColour.setPreferredSize(new Dimension(60,20));
+        myPanel.add(infoColour, GUI.generateGBC(0,13,1,1,1,1,0,5,GridBagConstraints.WEST));
         int result = JOptionPane.showConfirmDialog(null, myPanel, "Please Enter Billboard options", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
         if (result == JOptionPane.YES_OPTION) {

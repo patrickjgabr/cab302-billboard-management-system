@@ -120,7 +120,7 @@ public class ScheduleTab {
             ArrayList<Event> events = ScheduleHelper.GenerateEvents(todaySchedule);
             Collections.reverse(events);
             int finalI = i;
-            events.removeIf(n-> n.getDay() != finalI);
+            events.removeIf(n-> n.getDay() != finalI +1);
             int empty = 0;
             int current = 0;
             int count = 1;

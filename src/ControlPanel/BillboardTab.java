@@ -89,7 +89,7 @@ public class BillboardTab{
         exportButton.setEnabled(false);
         JPanel TopButtons = new JPanel(new GridLayout(1,5,5,5));
         createButton.addActionListener(e -> {
-            Billboard created = BillboardOptions.BillboardEditor(username);
+            Billboard created = new BillboardOptions(username).newBillboard();
             if(created != null) {
                 client.sendMessage(new Message(token).createBillboard(created));
                 updateTable();
@@ -196,7 +196,7 @@ public class BillboardTab{
         editButton.addActionListener(e -> {
             if (!Objects.equals(editButton.getText(), "")){
                 selected = rowSelected.getMinSelectionIndex();
-                Billboard created = BillboardOptions.BillboardEditor(username, billboards.get(selected));
+                Billboard created = new BillboardOptions(username).editBillboard(billboards.get(selected));
                 if(created != null) {
                     client.sendMessage(new Message(token).updateBillboard(created));
                     updateTable();
