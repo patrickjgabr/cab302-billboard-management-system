@@ -219,6 +219,8 @@ public class ScheduleOptions {
 
     private Scheduled createSchedule(Scheduled scheduled) {
         int today = 0;
+        int selectedPeriod = -1;
+        int selectedHour;
         switch(Objects.requireNonNull(day.getSelectedItem()).toString()) {
             case "Sunday":
                 today = 1;
@@ -242,8 +244,7 @@ public class ScheduleOptions {
                 today = 7;
                 break;
         }
-        int selectedPeriod = -1;
-        int selectedHour = -1;
+
         if (Objects.requireNonNull(period.getSelectedItem()).toString().equals("AM")) {
             if (Integer.parseInt((String) Objects.requireNonNull(hour.getSelectedItem())) == 12) {
                 selectedHour = 0;
@@ -251,12 +252,20 @@ public class ScheduleOptions {
             else {
                 selectedHour = Integer.parseInt((String) Objects.requireNonNull(hour.getSelectedItem()));
             }
-            selectedPeriod = 0;
-        }
-        else if (Objects.requireNonNull(period.getSelectedItem()).toString().equals("PM")) {
-            selectedHour = Integer.parseInt((String) Objects.requireNonNull(hour.getSelectedItem()));
             selectedPeriod = 1;
         }
+        else {
+            if (Integer.parseInt((String) Objects.requireNonNull(hour.getSelectedItem())) == 12) {
+                selectedHour = 0;
+            }
+            else {
+                selectedHour = Integer.parseInt((String) Objects.requireNonNull(hour.getSelectedItem()));
+            }
+            selectedPeriod = 1;
+
+        }
+
+
         int[] interval = new int[]{0,0,0};
         if (daily.isSelected()) {
             interval[0] = 1;

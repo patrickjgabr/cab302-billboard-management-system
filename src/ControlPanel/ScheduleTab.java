@@ -104,14 +104,14 @@ public class ScheduleTab {
         JLabel bottom = new JLabel("Select Event");
         pane.add(bottom, GUI.generateGBC(0,2,7,1,1,0,0,5,GridBagConstraints.NORTHWEST));
 
-        for (int i = 0; i < 7; i++) {
+        for (int i = 1; i <= 7; i++) {
             DefaultTableModel model = new DefaultTableModel() {
                 @Override
                 public boolean isCellEditable(int row, int column) {
                     return false;
                 }
             };
-            model.addColumn(days[i]);
+            model.addColumn(days[i-1]);
             JTable table = new JTable(model);
             JScrollPane scrollPanel = new JScrollPane(table);
             scrollPanel.setVerticalScrollBarPolicy((JScrollPane.VERTICAL_SCROLLBAR_NEVER));
@@ -120,7 +120,7 @@ public class ScheduleTab {
             ArrayList<Event> events = ScheduleHelper.GenerateEvents(todaySchedule);
             Collections.reverse(events);
             int finalI = i;
-            events.removeIf(n-> n.getDay() != finalI +1);
+            events.removeIf(n-> n.getDay() != finalI);
             int empty = 0;
             int current = 0;
             int count = 1;
@@ -146,7 +146,7 @@ public class ScheduleTab {
                             table.setValueAt( strings[0]+ "\n" + strings[1] + "\n" + events.get(y).getBillboardName() + " by: " + events.get(y).getCreatorName() + "\n" + count + " minutes",model.getRowCount()-1,0);
                         }
                         count++;
-
+                        System.out.println("Minute: " + x + " ID: "+ events.get(y).getEventID());
                         break;
                     }
                     if(y == events.size()-1) {

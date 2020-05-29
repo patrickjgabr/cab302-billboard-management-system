@@ -35,7 +35,7 @@ public class TestCase {
 
     public static ArrayList<Scheduled> schedule () {
         ArrayList<Scheduled> schedule = new ArrayList<>();
-        Scheduled newschedule = new Scheduled(1,"Test",1,"Test",ScheduleHelper.CalculateStart(0,5,0,1),5, new int[]{3,2,20});
+        Scheduled newschedule = new Scheduled(1,"Test",1,"Test",ScheduleHelper.CalculateStart(1,0,0,1),60, new int[]{0,0,0});
         newschedule.setID(1);
         schedule.add(newschedule);
 

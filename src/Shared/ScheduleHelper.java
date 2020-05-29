@@ -8,13 +8,10 @@ public class ScheduleHelper {
     public static int[] CalculateStart (int day, int hour, int minute, int period) {
         int[] calendar = new int[2];
         calendar[0] = day;
-        if (period ==0) {
-            calendar[1] = 0;
-        }
         if (period ==1) {
             calendar[1] = 720;
         }
-        calendar[1] += (hour *60) + minute;
+        calendar[1] = calendar[1] + (hour *60) + minute;
         return calendar;
     }
 
