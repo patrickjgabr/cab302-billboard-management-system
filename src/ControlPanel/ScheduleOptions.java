@@ -143,6 +143,7 @@ public class ScheduleOptions {
         JFrame f = new JFrame();
         intervalminutes.setEnabled(false);
         intervals.setEnabled(false);
+        billboardsList.setPreferredSize(new Dimension(150,20));
         hour.setPreferredSize(new Dimension(50,20));
         minutes.setPreferredSize(new Dimension(50,20));
         period.setPreferredSize(new Dimension(50,20));
