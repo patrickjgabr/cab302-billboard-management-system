@@ -26,7 +26,7 @@ public class ScheduleHelper {
             }
             if (x.getInterval(0) == 1 ){
                 int starttime = x.getStartTime();
-                for(int i = 0; i < 7; i++){
+                for(int i = 1; i <= 7; i++){
                     events.add(new Event(x.getID(), i, x.getStartTime(),x.getDuration(), x.getCreatorName(),x.getBillboardName()));
                 }
             }
