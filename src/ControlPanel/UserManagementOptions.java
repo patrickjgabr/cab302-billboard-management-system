@@ -18,7 +18,6 @@ public class UserManagementOptions {
 
 
     public UserManagementOptions() {
-
     }
 
     public User newUser() {
@@ -46,14 +45,16 @@ public class UserManagementOptions {
         JPanel myPanel = new JPanel();
         myPanel.setLayout(new GridBagLayout());
         myPanel.add(new JLabel("User Name: "), GUI.generateGBC(0,0,1,1,1,1,0,5,GridBagConstraints.WEST));
+        name.setPreferredSize(new Dimension(200, 20));
         myPanel.add(name, GUI.generateGBC(1,0,1,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(new JLabel("Password: "), GUI.generateGBC(0,1,1,1,1,1,0,5,GridBagConstraints.WEST));
+        userPassword.setPreferredSize(new Dimension(200, 20));
         myPanel.add(userPassword, GUI.generateGBC(1,1,1,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(new JLabel("Permissions: "), GUI.generateGBC(0,2,2,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(p0, GUI.generateGBC(0,3,1,1,1,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(p1, GUI.generateGBC(1,3,1,1,1,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(p2, GUI.generateGBC(0,4,1,1,1,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(p3, GUI.generateGBC(1,4,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(p1, GUI.generateGBC(0,4,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(p2, GUI.generateGBC(0,5,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(p3, GUI.generateGBC(0,6,1,1,1,1,0,5,GridBagConstraints.WEST));
 
         int result = JOptionPane.showConfirmDialog(null, myPanel, "New User", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
