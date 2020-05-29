@@ -29,7 +29,7 @@ public class MessageHandler {
     private DatabaseMessage consoleMessage;
 
     /**
-     * Method which instantiates a MessageHandler object based off two inputs.
+     * 
      * @param sentMessage Message object received by the ClientHandler thread containing the clients request.
      * @param properties Properties object containing all the client, server and database information.
      */
@@ -42,9 +42,9 @@ public class MessageHandler {
     }
 
     /**
-     * Main method which gets the appropriate return message based off the specific communicatedID of the received
-     * Message Object from the client. Each communicationID class a different handle function.
-     * @return Message Object containing data requested by the Client.
+     * Method which gets the appropriate return message based off the specific communicatedID of the received
+     * Message Object from the client. Each communicationID has a different handle function.
+     * @return Message Object containing data requested by the Client and return status.
      */
     
     public Message getReturnMessage() {
@@ -139,10 +139,6 @@ public class MessageHandler {
         return returnValue;
     }
 
-    /**
-     * Method which handles a Message object containing communicationID 10. This indicates that the client is requesting a single
-     * user from the database.
-     */
     private void handleUserLogin() {
         try {
             //Instantiates a new UserDatabase object connecting to the database specified by the Properties Object.
@@ -207,10 +203,6 @@ public class MessageHandler {
         }
     }
 
-    /**
-     * Method which handles a Message object containing communicationID 32. This indicates that the user table needs to
-     * be updated using the User object contained in the Message object.
-     */
     private void handleUpdateUser() {
         try {
             //Instantiates a new UserDatabase object connecting to the database specified by the Properties Object.
@@ -231,10 +223,6 @@ public class MessageHandler {
         }
     }
 
-    /**
-     * Method which handles a Message object containing communicationID 31. This indicates that the User Object contained within
-     * the Message packet needs to be added to the users and permissions table.
-     */
     private void handleCreateUser() {
         try {
             //Instantiates a new UserDatabase object connecting to the database specified by the Properties Object.
@@ -303,10 +291,6 @@ public class MessageHandler {
         return "";
     }
 
-    /**
-     * Method which handles a Message object containing communicationID 30. This indicates that the client is requesting all
-     * the users within the database.
-     */
     private void handleGetUsers() {
         try {
             //Instantiates a new UserDatabase object connecting to the database specified by the Properties Object.
@@ -352,10 +336,6 @@ public class MessageHandler {
         }
     }
 
-    /**
-     * Method which handles a Message object containing communicationID 22. This indicates that the billboards table needs to
-     * be updated using the Billboard object contained in the Message object.
-     */
     private void handleUpdateBillboard(User user) {
 
         try {
@@ -409,10 +389,6 @@ public class MessageHandler {
         return false;
     }
 
-    /**
-     * Method which handles a Message object containing communicationID 21. This indicates that the Billboard Object contained within
-     * the Message packet needs to be added to the billboard database.
-     */
     private void handleAddBillboard(User user) {
         try {
             Billboard billboard = (Billboard)sentMessage.getData();
@@ -444,10 +420,6 @@ public class MessageHandler {
         }
     }
 
-    /**
-     * Method which handles a Message object containing communicationID 20. This indicates that the client is requesting all the
-     * billboards from the billboard database.
-     */
     private void handleGetBillboards() {
         try {
             //Instantiates a new BillboardDatabase object connecting to the database specified by the Properties Object.

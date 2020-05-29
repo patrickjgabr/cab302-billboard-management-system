@@ -48,7 +48,7 @@ public class DatabaseMessage extends ConsoleMessage {
         super.printError(1004, "Database table configuration incorrect",
                 "Not all tables required for the server to run exist within the database. You may be running on an old copy of the database." +
                         " The database must contain the following tables: billboards, permissions, schedule, sessions and users.",
-                "Try updating the database by typing YES (All caps) to reconfigure the database to the newest version. (Will clear all current data)",
+                "The database will now be reset back to its default configuration. This will clear all data and insert a user \"root\" with all permissions and password \"password\"",
                 100);
     }
 
