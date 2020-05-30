@@ -169,7 +169,7 @@ public class BillboardTab{
                 author.setPreferredSize(new Dimension(280,20));
                 information.add(author, GUI.generateGBC(0,1,1,1,1,1,0,5,GridBagConstraints.WEST));
                 JTextField field = new JTextField();
-                field.setText(billboards.get(selected).getPictureLink());
+                field.setText(billboards.get(selected).getImageUrl());
                 field.setPreferredSize(new Dimension(280,20));
                 field.setEditable(false);
                 JTextField field2 = new JTextField();

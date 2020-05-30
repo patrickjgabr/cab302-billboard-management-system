@@ -128,14 +128,6 @@ public class Billboard implements Serializable {
     }
 
     /**
-     * Returns the Billboards image link or data
-     * @return Billboard picture link or data
-     */
-    public String getPictureLink() {
-        return imageUrl;
-    }
-
-    /**
      * Returns the Billboards message text
      * @return Billboard message text
      */
@@ -168,38 +160,74 @@ public class Billboard implements Serializable {
         return scheduled;
     }
 
+    /**
+     *Sets the creatorName of the Billboard Object to the given value
+     * @param creatorName New creator name
+     */
     public void setCreatorName(String creatorName) {
         this.creatorName = creatorName;
     }
 
+    /**
+     *Sets the backgroundColour of the Billboard Object to the given value
+     * @param backgroundColour New backgroundColour
+     */
     public void setBackgroundColour(String backgroundColour) {
         this.backgroundColour = backgroundColour;
     }
 
+    /**
+     * Returns the Billboards image link or data
+     * @return Billboard picture link or data
+     */
     public String getImageUrl() {
         return imageUrl;
     }
 
+    /**
+     * Sets the imageUrl of the Billboard Object to the given value
+     * @param imageUrl New imageUrl
+     */
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
 
+    /**
+     * Sets the informationText of the Billboard Object to the given value
+     * @param informationText New informationText
+     */
     public void setInformationText(String informationText) {
         this.informationText = informationText;
     }
 
+    /**
+     * Sets the informationText colour of the Billboard Object to the given value
+     * @param informationTextColour New informationText colour
+     */
     public void setInformationTextColour(String informationTextColour) {
         this.informationTextColour = informationTextColour;
     }
 
+    /**
+     *Sets the messageText of the Billboard Object to the given value
+     * @param messageText New messageText
+     */
     public void setMessageText(String messageText) {
         this.messageText = messageText;
     }
 
+    /**
+     * Sets messageText colour of the Billboard Object to the given value
+     * @param messageTextColour New messageText colour
+     */
     public void setMessageTextColour(String messageTextColour) {
         this.messageTextColour = messageTextColour;
     }
 
+    /**
+     * Sets the name of the Billboard Object to the given value
+     * @param name New name
+     */
     public void setName(String name) {
         this.name = name;
     }

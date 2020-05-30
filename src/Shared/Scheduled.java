@@ -1,5 +1,4 @@
 package Shared;
-
 import java.io.*;
 
 public class Scheduled implements Serializable{
@@ -125,7 +124,7 @@ public class Scheduled implements Serializable{
 
     public byte [] getByteArray(){
         ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
-        ObjectOutputStream objOutput = null;
+        ObjectOutputStream objOutput;
         byte [] data;
         try {
             objOutput = new ObjectOutputStream(byteOutput);

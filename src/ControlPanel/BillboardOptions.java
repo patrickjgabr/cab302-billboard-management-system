@@ -222,7 +222,7 @@ public class BillboardOptions {
         this.billboard.setBillboardID(billboard.getBillboardID());
         billboardName.setText(billboard.getName());
         billboardName.setEditable(false);
-        imgSRC.setText(billboard.getPictureLink());
+        imgSRC.setText(billboard.getImageUrl());
         messageText.setText(billboard.getMessageText());
         messageColourPicker.setColor(Color.decode(billboard.getMessageTextColour()));
         backgroundColourPicker.setColor(Color.decode(billboard.getBackgroundColour()));
