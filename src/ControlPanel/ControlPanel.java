@@ -6,6 +6,8 @@ import Shared.TestCase;
 import Shared.User;
 
 import static ControlPanel.CustomFont.*;
+import static java.lang.System.exit;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,11 +37,17 @@ public class ControlPanel {
                         JOptionPane.YES_NO_OPTION);
                 if (confirmed == JOptionPane.YES_OPTION) {
                     Client client = new Client();
-                    Message signout = client.sendMessage(new Message().logoutUser(token));
+                    Message signout = new Message();
+                    try {
+                        signout = client.sendMessage(new Message().logoutUser(token));
+                    } catch (Exception ex) {
+                        exit(0);
+                    }
                     System.out.println("Logged out Safely");
                     System.out.println("Session ID: "+ token);
                     System.out.println("Server Response: "+ signout.getCommunicationID());
                     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
                 }
             }
         });
