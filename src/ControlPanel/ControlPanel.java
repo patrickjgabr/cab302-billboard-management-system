@@ -26,7 +26,7 @@ public class ControlPanel {
         pane.setFont(tabs);
         frame.getContentPane().add(pane);
         frame.pack();
-        frame.setTitle("Control Panel");
+        frame.setTitle("Control Panel   User: " + username);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

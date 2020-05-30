@@ -134,12 +134,12 @@ public class BillboardTab{
         rowSelected.addListSelectionListener(e -> {
             if (!rowSelected.isSelectionEmpty()){
                 this.selected = rowSelected.getMinSelectionIndex();
-
-
                 if (billboards.get(selected).getCreatorName().equals(username) || permissions.get(1).equals(1)) {
-                    editButton.setEnabled(true);
+                    if ( billboards.get(selected).getScheduled() == 0 || permissions.get(1).equals(1)) {
+                        editButton.setEnabled(true);
+                        deleteButton.setEnabled(true);
+                    }
                     exportButton.setEnabled(true);
-                    deleteButton.setEnabled(true);
                 }
                 else {
                     editButton.setEnabled(false);
