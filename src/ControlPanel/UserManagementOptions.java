@@ -59,7 +59,7 @@ public class UserManagementOptions {
         int result = JOptionPane.showConfirmDialog(null, myPanel, "New User", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
         if (result == JOptionPane.YES_OPTION) {
-            if(name.getText().equals("") || userPassword.getText().equals("")){
+            if(name.getText().equals("") && userPassword.getText().equals("")){
                 JOptionPane.showMessageDialog(JOptionPane.getRootFrame(),"Both a Username and Password are required", "Missing Fields",JOptionPane.WARNING_MESSAGE);
             }else{
                 ArrayList<Integer> permissions = new ArrayList<>();
@@ -81,17 +81,19 @@ public class UserManagementOptions {
                     permissions.add(0); }
 
                 try {
-                    MessageDigest passwordHash = MessageDigest.getInstance("SHA-256");
-                    passwordHash.update(userPassword.getText().getBytes());
-                    byte [] byteArray = passwordHash.digest();
+                    if (!userPassword.getText().equals("") && !(userPassword.getText() == null)) {
+                        MessageDigest passwordHash = MessageDigest.getInstance("SHA-256");
+                        passwordHash.update(userPassword.getText().getBytes());
+                        byte [] byteArray = passwordHash.digest();
 
-                    StringBuilder sb = new StringBuilder();
-                    for (byte b : byteArray) {
-                        sb.append(String.format("%02x", b & 0xFF));
+                        StringBuilder sb = new StringBuilder();
+                        for (byte b : byteArray) {
+                            sb.append(String.format("%02x", b & 0xFF));
+                        }
+                        String hashed = sb.toString();
+                        user.setUserPassword(hashed);
                     }
-                    String hashed = sb.toString();
                     user.setUserName(name.getText());
-                    user.setUserPassword(hashed);
                     user.setPermission(permissions);
                     return user;
                 } catch (NoSuchAlgorithmException e) {

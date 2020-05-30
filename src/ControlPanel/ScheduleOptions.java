@@ -112,7 +112,7 @@ public class ScheduleOptions {
         
         hour.setSelectedItem("" + scheduled.getStartTime()/60);
         minutes.setSelectedItem(""+ scheduled.getStartTime()% 60);
-        if(scheduled.getStartTime() > 720) {
+        if(scheduled.getStartTime() >= 720) {
             period.setSelectedItem("PM");
         }
         else {
@@ -219,7 +219,7 @@ public class ScheduleOptions {
 
     private Scheduled createSchedule(Scheduled scheduled) {
         int today = 0;
-        int selectedPeriod = -1;
+        int selectedPeriod;
         int selectedHour;
         switch(Objects.requireNonNull(day.getSelectedItem()).toString()) {
             case "Sunday":
