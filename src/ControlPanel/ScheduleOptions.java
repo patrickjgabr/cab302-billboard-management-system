@@ -33,7 +33,7 @@ public class ScheduleOptions {
     private JComboBox<Object> intervals;
 
     /**
-     * Method which instantiates all the elements required for the Schedule Options window.
+     * Instantiates all the elements required for the Schedule Options window.
      * @param client Client object used to send message requests to the server.
      * @param username name reference.
      * @param token unique token for message requests.
@@ -49,7 +49,7 @@ public class ScheduleOptions {
         }
         this.billboardsList = new JComboBox<>(rawbillboards.toArray());;
         for (int x = 0; x <60; x++) {
-            rawminutes.add(Integer.toString(x));
+            rawminutes.add(String.format("%02d", x));
         }
         this.minutes = new JComboBox<>(rawminutes.toArray());
 
@@ -252,7 +252,7 @@ public class ScheduleOptions {
             else {
                 selectedHour = Integer.parseInt((String) Objects.requireNonNull(hour.getSelectedItem()));
             }
-            selectedPeriod = 1;
+            selectedPeriod = 0;
         }
         else {
             if (Integer.parseInt((String) Objects.requireNonNull(hour.getSelectedItem())) == 12) {

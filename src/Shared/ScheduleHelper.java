@@ -11,7 +11,7 @@ public class ScheduleHelper {
         if (period ==1) {
             calendar[1] = 720;
         }
-        calendar[1] = calendar[1] + (hour *60) + minute;
+        calendar[1] = calendar[1] + (hour * 60) + minute;
         return calendar;
     }
 

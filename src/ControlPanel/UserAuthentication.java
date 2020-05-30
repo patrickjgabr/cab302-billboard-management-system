@@ -9,6 +9,11 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -45,7 +50,7 @@ public class UserAuthentication extends JFrame {
         password.setBorder(new LineBorder(Color.gray, 2, true));
         password.setHorizontalAlignment(JTextField.CENTER);
 
-        //submit buton
+        //submit button
         this.submit = new JButton("SUBMIT");
         submit.setBackground(CustomFont.softBlue);
         submit.setFont(CustomFont.tabs);
@@ -53,7 +58,19 @@ public class UserAuthentication extends JFrame {
         submit.setForeground(Color.black);
         submit.setBorder(new LineBorder(CustomFont.softBlue, 2, true));
 
-        JPanel panel = new JPanel(new GridLayout(3, 1));
+        JLabel link = new JLabel("Forgot Password");
+        link.setForeground(Color.BLUE.darker());
+        link.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        link.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    Desktop.getDesktop().browse(new URI("https://www.youtube.com/watch?v=dQw4w9WgXcQ"));
+                } catch (IOException | URISyntaxException ex) { ex.printStackTrace(); } }
+        });
+
+
+        JPanel panel = new JPanel(new GridLayout(4, 1));
         panel.add(user_label);
         panel.add(username);
         panel.add(password_label);
@@ -61,15 +78,15 @@ public class UserAuthentication extends JFrame {
         JLabel message = new JLabel();
         panel.add(message);
         panel.add(submit);
+        panel.add(link);
         panel.setBorder(new EmptyBorder(5,5,5,5));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(panel, BorderLayout.CENTER);
         frame.setTitle("Login");
         frame.getRootPane().setDefaultButton(submit);
-        frame.setSize(350, 150);
+        frame.setSize(350, 180);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
-        ArrayList<Boolean> permissions = new ArrayList<>();
     }
     public String getUsername() {
         return username.getText();

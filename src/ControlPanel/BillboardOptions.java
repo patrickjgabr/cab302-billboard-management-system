@@ -1,6 +1,7 @@
 package ControlPanel;
 
 import Shared.Billboard;
+import Shared.BillboardToImage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,18 +16,32 @@ public class BillboardOptions {
     private JTextField infoColour = new JTextField();
     private String username;
 
-
+    /**
+     * Setup BillboardOptions object. Required to create or edit billboard.
+     * @param username username of user editing/creating billboard.
+     */
     public BillboardOptions(String username) {
         this.username = username;
-
     }
 
+    /**
+     * Instantiates the billboard editor with new Billboard object
+     * @return returns billboard object with edited fields.
+     */
     public Billboard newBillboard() {
         return BillboardEditorGUI(new Billboard());
     }
 
+
+    /**
+     * Instantiates the billboard editor with existing billboard
+     * @param billboard Billboard object used to obtain parameters to edit a billboard
+     * @return returns edited billboard object with new fields.
+     */
+
     public Billboard editBillboard(Billboard billboard) {
         billboardName = new JTextField(billboard.getName());
+        billboardName.setEditable(false);
         imgSRC = new JTextField(billboard.getPictureLink());
         messageText = new JTextField(billboard.getMessageText());
         messageColour = new JTextField(billboard.getMessageTextColour());
@@ -60,11 +75,19 @@ public class BillboardOptions {
         myPanel.add(new JLabel("Info Colour: "), GUI.generateGBC(0,12,1,1,1,1,0,5,GridBagConstraints.WEST));
         infoColour.setPreferredSize(new Dimension(60,20));
         myPanel.add(infoColour, GUI.generateGBC(0,13,1,1,1,1,0,5,GridBagConstraints.WEST));
-        int result = JOptionPane.showConfirmDialog(null, myPanel, "Please Enter Billboard options", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        int result = JOptionPane.showConfirmDialog(null, myPanel, "Please Enter Billboard options", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE);
 
         if (result == JOptionPane.YES_OPTION) {
             Billboard billboard2 = new Billboard(username,billboardName.getText(), imgSRC.getText(), messageText.getText(), messageColour.getText(), backgroundColour.getText(), infoText.getText(), infoColour.getText());
             billboard2.setBillboardID(billboard.getBillboardID());
+
+            //error check billboard before sending to server
+            try {
+                new BillboardToImage(billboard2,480,360).toImageIcon();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(JOptionPane.getRootFrame(),"Unable to generate billboard. Invalid Properties.", "Invalid Billboard Properties",JOptionPane.WARNING_MESSAGE);
+                return null;
+            }
             return billboard2;
         }
         return null;

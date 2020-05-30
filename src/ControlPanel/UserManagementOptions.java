@@ -18,33 +18,18 @@ public class UserManagementOptions {
 
 
     public UserManagementOptions() {
-
     }
 
-     /**
-     * user editor function for creating a new user
-     * @return user object created based on text responses to be sent to the database.
-     */
     public User newUser() {
         name = new JTextField();
-        name.setPreferredSize(new Dimension(200, 20));
-        name.setEditable(true);
         userPassword = new JTextField();
-        userPassword.setPreferredSize(new Dimension(200,20));
         return UserEditorGUI(new User());
     }
 
-     /**
-     * user editor function that takes a user object - used for updating a user object in the database
-     * @param user user object to be updated.
-     * @return updated user object
-     */
     public User editUser(User user) {
         name = new JTextField(user.getUserName());
-        name.setPreferredSize(new Dimension(200, 20));
         name.setEditable(false);
         userPassword = new JTextField(user.getUserPassword());
-        userPassword.setPreferredSize(new Dimension(200,20));
         p0 = new JCheckBox("Create Billboards");
         if(user.getPermission().get(0) == 1 ){p0.setSelected(true);}
         p1 = new JCheckBox("Edit Billboards");
@@ -52,7 +37,7 @@ public class UserManagementOptions {
         p2 = new JCheckBox("Schedule Billboards");
         if(user.getPermission().get(2) == 1 ){p2.setSelected(true);}
         p3 = new JCheckBox("Edit Users");
-        if(user.getPermission().get(3) == 1 ){p3.setSelected(true);p3.setEnabled(false);}
+        if(user.getPermission().get(3) == 1 ){p3.setSelected(true);p3.setEnabled(true);}
         return UserEditorGUI(user);
     }
 
@@ -60,14 +45,16 @@ public class UserManagementOptions {
         JPanel myPanel = new JPanel();
         myPanel.setLayout(new GridBagLayout());
         myPanel.add(new JLabel("User Name: "), GUI.generateGBC(0,0,1,1,1,1,0,5,GridBagConstraints.WEST));
+        name.setPreferredSize(new Dimension(200, 20));
         myPanel.add(name, GUI.generateGBC(1,0,1,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(new JLabel("Password: "), GUI.generateGBC(0,1,1,1,1,1,0,5,GridBagConstraints.WEST));
+        userPassword.setPreferredSize(new Dimension(200, 20));
         myPanel.add(userPassword, GUI.generateGBC(1,1,1,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(new JLabel("Permissions: "), GUI.generateGBC(0,2,2,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(p0, GUI.generateGBC(0,3,1,1,1,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(p1, GUI.generateGBC(1,3,1,1,1,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(p2, GUI.generateGBC(0,4,1,1,1,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(p3, GUI.generateGBC(1,4,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(p1, GUI.generateGBC(0,4,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(p2, GUI.generateGBC(0,5,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(p3, GUI.generateGBC(0,6,1,1,1,1,0,5,GridBagConstraints.WEST));
 
         int result = JOptionPane.showConfirmDialog(null, myPanel, "New User", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
@@ -110,6 +97,7 @@ public class UserManagementOptions {
                 } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();
                 }
+
             }
         }
         return null;
