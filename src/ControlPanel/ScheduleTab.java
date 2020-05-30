@@ -78,7 +78,13 @@ public class ScheduleTab {
         createButton.addActionListener(e -> {
             Scheduled created = new ScheduleOptions(client, username, token).newSchedule();
             if(created != null) {
-                client.sendMessage(new Message(token).scheduleBillboard(created));
+                Message request = client.sendMessage(new Message(token).scheduleBillboard(created));
+                if (request.getCommunicationID() == 200) {
+                    GUI.ServerDialogue(request.getCommunicationID(),"Schedule billboard successful.");
+                }
+                else {
+                    GUI.ServerDialogue(request.getCommunicationID(),(String) request.getData());
+                }
                 refresh();
             }
         });
@@ -101,7 +107,8 @@ public class ScheduleTab {
         deleteButton.addActionListener(e -> {
             for (Scheduled x : schedule) {
                 if(selected == x.getID()) {
-                    client.sendMessage(new Message(token).deleteSchedule(x));
+                    Message request = client.sendMessage(new Message(token).deleteSchedule(x));
+                    GUI.ServerDialogue(request.getCommunicationID(),"Delete billboard successful.");
                     refresh();
                     break;
                 }

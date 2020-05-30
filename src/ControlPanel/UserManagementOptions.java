@@ -55,9 +55,7 @@ public class UserManagementOptions {
         myPanel.add(p1, GUI.generateGBC(0,4,1,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(p2, GUI.generateGBC(0,5,1,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(p3, GUI.generateGBC(0,6,1,1,1,1,0,5,GridBagConstraints.WEST));
-
         int result = JOptionPane.showConfirmDialog(null, myPanel, "New User", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-
         if (result == JOptionPane.YES_OPTION) {
             if(name.getText().equals("") && userPassword.getText().equals("")){
                 JOptionPane.showMessageDialog(JOptionPane.getRootFrame(),"Both a Username and Password are required", "Missing Fields",JOptionPane.WARNING_MESSAGE);
@@ -99,7 +97,6 @@ public class UserManagementOptions {
                 } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();
                 }
-
             }
         }
         return null;

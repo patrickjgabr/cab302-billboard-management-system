@@ -69,15 +69,15 @@ public class BillboardOptions {
 
         myPanel.add(new JLabel("Background Colour: "), GUI.generateGBC(1,0,1,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(backgroundColourPicker, GUI.generateGBC(1,1,1,7,1,1,0,5,GridBagConstraints.WEST));
-        backgroundColourPicker.setPreferredSize(new Dimension(450, 250));
+        backgroundColourPicker.setPreferredSize(new Dimension(450, 280));
 
         myPanel.add(new JLabel("Message Colour: "), GUI.generateGBC(0,8,1,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(messageColourPicker, GUI.generateGBC(0,9,1,1,1,1,0,5,GridBagConstraints.WEST));
-        messageColourPicker.setPreferredSize(new Dimension(450, 250));
+        messageColourPicker.setPreferredSize(new Dimension(450, 280));
 
         myPanel.add(new JLabel("Info Colour: "), GUI.generateGBC(1,8,1,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(infoColourPicker, GUI.generateGBC(1,9,1,7,1,1,0,5,GridBagConstraints.WEST));
-        infoColourPicker.setPreferredSize(new Dimension(450, 250));
+        infoColourPicker.setPreferredSize(new Dimension(450, 280));
 
 
         int result = JOptionPane.showConfirmDialog(null, myPanel, "Please Enter Billboard options", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE);

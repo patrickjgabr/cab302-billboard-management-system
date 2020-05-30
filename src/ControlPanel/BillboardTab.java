@@ -45,8 +45,8 @@ public class BillboardTab{
         this.permissions = permissions;
         pane.setLayout(new GridBagLayout());
         setupBillboardsTable();
-        setupDetails();
         updateTable();
+        setupDetails();
         mainPane.addTab("Billboard", pane);
     }
 
@@ -69,7 +69,6 @@ public class BillboardTab{
                 return false;
             }
         };
-
         model.addColumn("Billboard");
         this.table = new JTable(model);
         table.setFont(new Font("SansSerif", Font.PLAIN, 12));
@@ -81,8 +80,6 @@ public class BillboardTab{
         pane.add(scrollPane, GUI.generateGBC(0,1,1,1,0,1,GridBagConstraints.VERTICAL, 0, GridBagConstraints.NORTHWEST));
     }
     public void setupDetails() {
-
-
         JButton editButton = new JButton("Edit");
         JButton deleteButton = new JButton("Delete");
         JButton exportButton = new JButton("Export");
@@ -90,15 +87,22 @@ public class BillboardTab{
         deleteButton.setEnabled(false);
         exportButton.setEnabled(false);
         JPanel TopButtons = new JPanel(new GridLayout(1,5,5,5));
-
-
         JButton createButton = new JButton("Create");
         createButton.setEnabled(false);
         createButton.addActionListener(e -> {
             Billboard created = new BillboardOptions(username).newBillboard();
             if(created != null) {
-                client.sendMessage(new Message(token).createBillboard(created));
+                Message request = client.sendMessage(new Message(token).createBillboard(created));
+                GUI.ServerDialogue(request.getCommunicationID(),"Create billboard successful.");
                 updateTable();
+                information.removeAll();
+                preview.setIcon(null);
+                information.add(new JLabel("Select a billboard."));
+                editButton.setEnabled(false);
+                deleteButton.setEnabled(false);
+                exportButton.setEnabled(false);
+                pane.validate();
+                pane.repaint();
             }
         });
         TopButtons.add(createButton);
@@ -212,10 +216,14 @@ public class BillboardTab{
                 selected = rowSelected.getMinSelectionIndex();
                 Billboard created = new BillboardOptions(username).editBillboard(billboards.get(selected));
                 if(created != null) {
-                    client.sendMessage(new Message(token).updateBillboard(created));
+                    Message request = client.sendMessage(new Message(token).updateBillboard(created));
+                    GUI.ServerDialogue(request.getCommunicationID(),"Delete billboard successful.");
                     updateTable();
                     information.removeAll();
                     preview.setIcon(null);
+                    editButton.setEnabled(false);
+                    deleteButton.setEnabled(false);
+                    exportButton.setEnabled(false);
                     information.add(new JLabel("Choose a billboard."));
                     pane.validate();
                     pane.repaint();
@@ -229,8 +237,17 @@ public class BillboardTab{
                 int selected = rowSelected.getMinSelectionIndex();
                 Billboard delete = billboards.get(selected);
                 if(delete != null) {
-                    client.sendMessage(new Message(token).deleteBillboard(delete));
+                    Message request = client.sendMessage(new Message(token).deleteBillboard(delete));
+                    GUI.ServerDialogue(request.getCommunicationID(),"Delete billboard successful.");
                     updateTable();
+                    information.removeAll();
+                    preview.setIcon(null);
+                    editButton.setEnabled(false);
+                    deleteButton.setEnabled(false);
+                    exportButton.setEnabled(false);
+                    information.add(new JLabel("Select a user to view permissions."));
+                    pane.validate();
+                    pane.repaint();
                 }
             }
             else JOptionPane.showMessageDialog(null, "Please select a billboard first.");

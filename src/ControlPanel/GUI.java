@@ -35,6 +35,11 @@ public class GUI {
     }
 
     public static void ServerDialogue(int ID, String message) {
-        JOptionPane.showMessageDialog(JOptionPane.getRootFrame(),message, "Server Response ID: " + ID,JOptionPane.WARNING_MESSAGE);
+        if (ID == 200) {
+            JOptionPane.showMessageDialog(JOptionPane.getRootFrame(),message, "Server Response ID: " + ID,JOptionPane.INFORMATION_MESSAGE);
+        }
+        else {
+            JOptionPane.showMessageDialog(JOptionPane.getRootFrame(),"Server Error: "+ ID + " Please contact Administrator." , "Server Response ID: " + ID,JOptionPane.WARNING_MESSAGE);
+        }
     }
 }

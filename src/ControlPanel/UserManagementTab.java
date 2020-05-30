@@ -76,7 +76,7 @@ public class UserManagementTab {
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         for (User user : users) {
             model.addRow(new Object[]{
-                    "<html><h2> &nbsp " + user.getUserName() + "&nbsp &nbsp | &nbsp &nbsp ID: " + user.getUserID() + "</h2></html>"});
+                    "<html><h2> &nbsp ID: " + user.getUserID() + "&nbsp &nbsp | &nbsp &nbsp " +  user.getUserName() + "</h2></html>"});
         }
     }
 
@@ -111,8 +111,6 @@ public class UserManagementTab {
      */
     public void setupDetails() {
         JButton createButton = new JButton("New User");
-
-
         createButton.setPreferredSize(new Dimension(50, 25));
         createButton.setFont(buttons);
         createButton.setBackground(buttonCol);
@@ -120,7 +118,8 @@ public class UserManagementTab {
         createButton.addActionListener(e -> {
             User created = new UserManagementOptions().newUser();
             if (created != null){
-                client.sendMessage(new Message(token).createUsers(created));
+                Message request = client.sendMessage(new Message(token).createUsers(created));
+                GUI.ServerDialogue(request.getCommunicationID(),"Create user successful.");
                 updateTable();
                 information.removeAll();
                 information.add(new JLabel("Select a user to view permissions."));
@@ -143,8 +142,6 @@ public class UserManagementTab {
         deleteButton.setBorder(new LineBorder(softBlue, 2, true));
         deleteButton.setEnabled(false);
 
-
-
         this.information = new JPanel();
         information.setLayout(new BoxLayout(information, BoxLayout.PAGE_AXIS));
 
@@ -161,19 +158,25 @@ public class UserManagementTab {
 
         editButton.addActionListener(ee -> {
             User edited = new UserManagementOptions().editUser(users.get(selected));
-            client.sendMessage(new Message(token).updateUser(edited));
-            updateTable();
-            information.removeAll();
-            information.add(new JLabel("Select a user to view permissions."));
-            pane.validate();
-            pane.repaint();
+            if (edited != null) {
+                Message request = client.sendMessage(new Message(token).updateUser(edited));
+                GUI.ServerDialogue(request.getCommunicationID(),"Edit user successful.");
+                updateTable();
+                information.removeAll();
+                information.add(new JLabel("Select a user to view permissions."));
+                pane.validate();
+                pane.repaint();
+            }
         });
 
         deleteButton.addActionListener(ee -> {
-            client.sendMessage(new Message(token).deleteUser(users.get(selected)));
+            Message request = client.sendMessage(new Message(token).deleteUser(users.get(selected)));
+            GUI.ServerDialogue(request.getCommunicationID(),"Delete user successful.");
             updateTable();
             information.removeAll();
             information.add(new JLabel("Select a user to view permissions."));
+            editButton.setEnabled(false);
+            deleteButton.setEnabled(false);
             pane.validate();
             pane.repaint();
 
@@ -211,7 +214,8 @@ public class UserManagementTab {
                         sb.append(String.format("%02x", b & 0xFF));
                     }
                     String hashed = sb.toString();
-                    client.sendMessage(new Message(token).updatePassword(username,hashed));
+                    Message request = client.sendMessage(new Message(token).updatePassword(username,hashed));
+                    GUI.ServerDialogue(request.getCommunicationID(),"Password updated.");
 
                 } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();
@@ -227,7 +231,7 @@ public class UserManagementTab {
                 this.selected = rowSelected.getMinSelectionIndex();
                 if(perms.get(3).equals(1)){                      //if user has edit user permissions
                     editButton.setEnabled(true);
-                    if(!"root".equals(users.get(selected).getUserName())){          //AND user is not root user
+                    if(!username.equals(users.get(selected).getUserName())){          //AND user is not root user
                         deleteButton.setEnabled(true);                              //enable delete button
                     }
                     else {deleteButton.setEnabled(false);}                          //otherwise disable button.
