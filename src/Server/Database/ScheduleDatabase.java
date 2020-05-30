@@ -244,7 +244,7 @@ public class ScheduleDatabase extends Database {
             try {
 
                 //Create a connection and statement directly with the database
-                Connection connection = DriverManager.getConnection(properties.getDatabaseURL(), properties.getDatabaseUser(), properties.getDatabasePassword());
+                Connection connection = DriverManager.getConnection(properties.getDatabaseURL() + '/' + properties.getDatabaseName(), properties.getDatabaseUser(), properties.getDatabasePassword());
                 Statement statement = connection.createStatement();
 
                 //SQL delete command which the row from schedule containing the given Schedules scheduleID is added to the batch

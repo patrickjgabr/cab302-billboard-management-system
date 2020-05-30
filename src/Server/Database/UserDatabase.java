@@ -270,7 +270,7 @@ public class UserDatabase extends Database {
             try {
 
                 //Create a connection and statement directly with the database
-                Connection connection = DriverManager.getConnection(properties.getDatabaseURL(), properties.getDatabaseUser(), properties.getDatabasePassword());
+                Connection connection = DriverManager.getConnection(properties.getDatabaseURL() + '/' + properties.getDatabaseName(), properties.getDatabaseUser(), properties.getDatabasePassword());
                 Statement statement = connection.createStatement();
 
                 //SQL delete command which removes all rows from sessions containing the given Users userID is added to the batch
