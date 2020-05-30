@@ -37,7 +37,7 @@ public class UserManagementOptions {
         p2 = new JCheckBox("Schedule Billboards");
         if(user.getPermission().get(2) == 1 ){p2.setSelected(true);}
         p3 = new JCheckBox("Edit Users");
-        if(user.getPermission().get(3) == 1 ){p3.setSelected(true);}
+        if(user.getPermission().get(3) == 1 ){p3.setSelected(true);p3.setEnabled(true);}
         return UserEditorGUI(user);
     }
 
