@@ -1,4 +1,5 @@
 package Shared;
+import ControlPanel.Client;
 import Shared.Billboard;
 import org.w3c.dom.css.Rect;
 
@@ -59,9 +60,10 @@ public class BillboardToImage {
     private ImageIcon Generate() {
         //setting defaults
         Color bg = Color.white, mt = Color.black, it = Color.black;                            //bg = background colour, mt = message text colour, it = info text colour
-        Boolean picture = !billboard.getPictureLink().equals("");
-        Boolean info = !billboard.getInformationText().equals(""), message = !billboard.getMessageText().equals("");    //boolean determining whether text is present.
 
+        boolean picture = !billboard.getPictureLink().equals("");
+        boolean info = !billboard.getInformationText().equals("");
+        boolean message = !billboard.getMessageText().equals("");    //boolean determining whether text is present.
 
         BufferedImage bi = new BufferedImage(resolutionx, resolutiony, BufferedImage.TYPE_INT_RGB);
         Rectangle screen = new Rectangle(bi.getWidth(),bi.getHeight());
