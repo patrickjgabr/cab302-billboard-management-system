@@ -119,7 +119,8 @@ public class BillboardToImage {
             double newInfoFontSize = (text.getSize() * infoWidthRatio);
 
             if (newInfoFontSize >= 130){ newInfoFontSize = 130;}                                    //don't let info text size exceed 130
-            if (newInfoFontSize >= newMessageFontSize){newInfoFontSize -= 5;}
+
+            if (newInfoFontSize >= newMessageFontSize){newInfoFontSize = newMessageFontSize-5;}
             gr.setFont(new Font("Dialogue", Font.PLAIN, (int) newInfoFontSize));
 
             int imageHeight = bi.getHeight();
@@ -130,21 +131,30 @@ public class BillboardToImage {
             //draw in bottom half of screen if only message is present.
             if (message && !picture){
                 imageHeight = (imageHeight /2) - lineHeight;
-                for (String line : wrapped.split("\n")) {
-                    Rectangle r = new Rectangle(20, (bi.getHeight() / 2)-lineHeight, bi.getWidth() - 40, imageHeight += (lineHeight+30));
-                    drawCenteredText(gr, line, r);
+                Rectangle singleLineRect = new Rectangle(10,(bi.getHeight()/2), bi.getWidth()-20, bi.getHeight()/2);
+                if (lines.length == 1){                                                                                    //if info text is not split across multiple lines
+                    drawCenteredText(gr, billboard.getInformationText(), singleLineRect);
+                }
+                else{                                                                   //if it is split into more than 1 line
+                    for (String line : wrapped.split("\n")) {
+                        Rectangle r = new Rectangle(20, (bi.getHeight() / 2)-lineHeight, bi.getWidth() - 40, imageHeight += (lineHeight+30));
+                        drawCenteredText(gr, line, r);
+                    }
                 }
             }
 
             //draw in bottom third of screen if picture is present. (same for picture && message)
             else if(picture){
                 imageHeight = (imageHeight /3) - lineHeight;
-                //gr.setColor(Color.gray);
-                //gr.fillRect(20, ((bi.getHeight() / 3)*2), bi.getWidth() - 40, imageHeight += (lineHeight+30));
-                //gr.setColor(it);
-                for (String line : wrapped.split("\n")){
-                    Rectangle r = new Rectangle(20, ((bi.getHeight() / 3)*2) - lineHeight, bi.getWidth() - 40, imageHeight += (lineHeight+30));
-                    drawCenteredText(gr, line, r);//new Rectangle(bi.getWidth(), ((imageHeight += lineHeight)*2) - 550 ));
+                Rectangle singleLineRect = new Rectangle(10,(bi.getHeight()/2), bi.getWidth(), bi.getHeight()/2);
+                if (lines.length == 1){
+                    drawCenteredText(gr, billboard.getInformationText(), singleLineRect);
+                }
+                else{
+                    for (String line : wrapped.split("\n")){
+                        Rectangle r = new Rectangle(20, ((bi.getHeight() / 3)*2) - lineHeight, bi.getWidth() - 40, imageHeight += (lineHeight+30));
+                        drawCenteredText(gr, line, r);
+                    }
                 }
             }
 
