@@ -45,8 +45,14 @@ public class Viewer {
            } catch (Exception e){
                current = new Billboard("ROOT", "Error Billboard", "" , "Error connecting to server","#000000","","Retrying in 15","");
            }
-
-           JPanel image = new BillboardToImage(current, 400, 400).toJPanel();
+            JPanel image = new JPanel();
+           try{
+               image = new BillboardToImage(current, 400, 400).toJPanel();
+           }catch (Exception e){
+               System.out.println("Error connecting to server");
+               Billboard error = new Billboard("ROOT", "Error Billboard", "" , "Error connecting to server","#FFFFFF","#000000","Retrying in 15","");
+               image = new BillboardToImage(error, 400,400).toJPanel();
+           }
 
            viewer.getContentPane().add(image);
            viewer.pack();
