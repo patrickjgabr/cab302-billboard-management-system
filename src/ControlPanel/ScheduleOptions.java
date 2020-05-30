@@ -56,7 +56,7 @@ public class ScheduleOptions {
         for (int x = 1; x <=60; x++) {
             rawdurationminutes.add(Integer.toString(x));
         }
-        this.intervalminutes = new JComboBox<>(rawminutes.toArray());
+        this.intervalminutes = new JComboBox<>(rawdurationminutes.toArray());
         this.durationminutes = new JComboBox<>(rawdurationminutes.toArray());
 
 
