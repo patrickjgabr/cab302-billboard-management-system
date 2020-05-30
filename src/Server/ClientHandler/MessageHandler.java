@@ -117,7 +117,17 @@ public class MessageHandler {
                 handleRemoveUser(user);
 
             } else if(sentMessage.getCommunicationID() == 34) {
-                handleUpdateUserPassword();
+
+                //If user has edit user permission then handle password update
+                if(user.getPermission().get(3) == 1) {
+                    handleUpdateUserPassword();
+
+                //If user doesn't have edit user permission then print and error message and set return to 504
+                } else {
+                    consoleMessage.printWarning("User not authorised edit other users passwords", 75);
+                    returnMessage.setCommunicationID(504);
+                }
+
 
             //If communicationID is 40 handle request Scheduled
             } else if(sentMessage.getCommunicationID() == 40) {
@@ -290,7 +300,8 @@ public class MessageHandler {
 
         //If a exception is thrown print an error message
         } catch (Throwable throwable) {
-            //Sets return data to 500 if the Update is unsuccessful.
+
+            //Print a error message and set the return status to 500
             consoleMessage.printWarning("Database failed to update user",75);
             returnMessage.setCommunicationID(500);
         }
@@ -328,98 +339,140 @@ public class MessageHandler {
                     consoleMessage.printWarning("Database failed to add user",75);
                 }
 
-            //
+            //If userPassword equals nothing then print an error message
             } else {
 
+                //Print a error message and set the return status to 508
                 returnMessage.setCommunicationID(508);
                 consoleMessage.printWarning("Database failed to add user",75);
             }
 
-
+        //If a exception is thrown print an error message
         } catch (Throwable throwable) {
 
-            //Sets return data to 500 if the Add is unsuccessful.
+            //Print a error message and set the return status to 500
             returnMessage.setCommunicationID(500);
             consoleMessage.printWarning("Database failed to add user",75);
         }
     }
 
+    //Function which generates a random salt string and returns it
     private String generateSalt() {
 
+        //Instantiate StringBuilder to hold the salt and character set
         StringBuilder tokenBuilder = new StringBuilder(64);
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvxyz!@#$%^&*()_+-={}[]:<>?,./";
 
+        //Iterate 64 times each time getting a random character
         for (int i = 0; i < 64; i++) {
             int index = (int)(characters.length()* Math.random());
             tokenBuilder.append(characters.charAt(index));
         }
 
+        //Return the string of the
         return tokenBuilder.toString();
     }
 
+    //Function which generates the new hashed password using the given Users password and salt
     private String generateNewPassword(User user) {
+
+        //Attempt to take the given Users password and salt and hash them
         try {
+
+            //Instantiate MessageDigest with SHA-256 hashing
             MessageDigest passwordHash = MessageDigest.getInstance("SHA-256");
+
+            //Input the current salt and password bytes into the MessageDigest and generate the hash
             passwordHash.update((user.getSalt() + user.getUserPassword()).getBytes());
             byte [] byteArray = passwordHash.digest();
 
+            //Instantiate a StringBuilder to store the hashed characters
             StringBuilder sb = new StringBuilder();
+
+            //Iterate through characters in the output byteArray and append them to the StringBuilder
             for (byte b : byteArray) {
                 sb.append(String.format("%02x", b & 0xFF));
             }
-            String hashed = sb.toString();
-            return hashed;
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
 
+            //Cover the StringBuilder into the hashed password String and return it
+            return sb.toString();
+
+        //If SHA-256 algorithm doesn't exist then
+        } catch (NoSuchAlgorithmException ignored) { }
+
+        //Return blank password if password hash fails
         return "";
     }
 
+    //Function which gets all the users from the database
     private void handleGetUsers() {
+
+        //Attempts to use getUsers method from UserDatabase
         try {
+
             //Instantiates a new UserDatabase object connecting to the database specified by the Properties Object.
-            //  Uses the getUsers method to get an ArrayList<User> from the database.
             UserDatabase userDB = new UserDatabase(properties);
+
+            //Get ArrayList of Users from the UserDatabase
             ArrayList<User> requestedUsers = userDB.getUsers();
 
-            //Sets return data to the ArrayList<User> returned by the database.
+            //Prints success message and sets the return data to the requestUsers and valid response status
             returnMessage.setData(requestedUsers);
             returnMessage.setCommunicationID(200);
             consoleMessage.printGeneral("REQUEST ACCEPTED", "All users selected", 75);
+
+        //If a exception is thrown print an error message
         } catch (Throwable throwable) {
-            //Sets the return data to 500 if the Select is unsuccessful.
+
+            //Print error message and set response status as 500
             returnMessage.setCommunicationID(500);
             consoleMessage.printWarning("Database failed to select all users",75);
         }
     }
 
+    //Function which updates user password
     private void handleUpdateUserPassword() {
+
+        //Attempts to update the password of a specific user
         try {
+
+            //Get userName and password from the data property in the received Message
             String[] changePassword = (String[])sentMessage.getData();
 
+            //Instantiate a UserDatabase Object and get the given User corresponding to the userName of (changePassword[0])
             UserDatabase userDatabase = new UserDatabase(properties);
             User user = userDatabase.getUser(changePassword[0], true);
 
+            //If user was found then generate the new password
             if(user.getUserID() != null) {
+
+                //Set the users password to the changedPassword and then set it again using the hash returned by generateNewPassword
                 user.setUserPassword(changePassword[1]);
                 user.setUserPassword(generateNewPassword(user));
 
+                //Update the resulting User object print a success message and set the response status to 200
                 userDatabase.updateDatabase(user);
                 returnMessage.setCommunicationID(200);
                 consoleMessage.printGeneral("REQUEST ACCEPTED", "User password updated", 75);
+
+            //If user doesn't exist in the database
             } else {
-                //Sets return data to 500 if the Update is unsuccessful.
+
+                //Print error message and set response status as 518
                 consoleMessage.printWarning("Database failed to find User to update",75);
                 returnMessage.setCommunicationID(518);
             }
+
+        //If a exception is thrown print an error message
         } catch (Throwable throwable) {
-            //Sets return data to 500 if the Update is unsuccessful.
+
+            //Print error message and set response status as 500
             consoleMessage.printWarning("Database failed to update users password",75);
             returnMessage.setCommunicationID(500);
         }
     }
 
+    //
     private void handleRemoveUser(User user) {
         try {
             UserDatabase userDatabase = new UserDatabase(properties);
@@ -492,7 +545,7 @@ public class MessageHandler {
         if(user.getPermission().get(1) == 1) {
             return true;
         } else {
-            if(billboard.getScheduled() == 0 && billboard.getCreatorName() == user.getUserName()) {
+            if(billboard.getScheduled() == 0 && billboard.getCreatorName().equals(user.getUserName())) {
                 return true;
             }
         }
