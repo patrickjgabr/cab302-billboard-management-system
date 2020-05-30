@@ -30,13 +30,13 @@ public class UserManagementOptions {
         name = new JTextField(user.getUserName());
         name.setEditable(false);
         userPassword = new JTextField(user.getUserPassword());
-        JCheckBox p0 = new JCheckBox("Create Billboards");
+        p0 = new JCheckBox("Create Billboards");
         if(user.getPermission().get(0) == 1 ){p0.setSelected(true);}
-        JCheckBox p1 = new JCheckBox("Edit Billboards");
+        p1 = new JCheckBox("Edit Billboards");
         if(user.getPermission().get(1) == 1 ){p1.setSelected(true);}
-        JCheckBox p2 = new JCheckBox("Schedule Billboards");
+        p2 = new JCheckBox("Schedule Billboards");
         if(user.getPermission().get(2) == 1 ){p2.setSelected(true);}
-        JCheckBox p3 = new JCheckBox("Edit Users");
+        p3 = new JCheckBox("Edit Users");
         if(user.getPermission().get(3) == 1 ){p3.setSelected(true);}
         return UserEditorGUI(user);
     }

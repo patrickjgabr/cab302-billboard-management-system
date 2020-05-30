@@ -16,15 +16,28 @@ public class BillboardOptions {
     private JTextField infoColour = new JTextField();
     private String username;
 
-
+    /**
+     * Setup BillboardOptions object. Required to create or edit billboard.
+     * @param username username of user editing/creating billboard.
+     */
     public BillboardOptions(String username) {
         this.username = username;
-
     }
 
+    /**
+     * Instantiates the billboard editor with new Billboard object
+     * @return returns billboard object with edited fields.
+     */
     public Billboard newBillboard() {
         return BillboardEditorGUI(new Billboard());
     }
+
+
+    /**
+     * Instantiates the billboard editor with existing billboard
+     * @param billboard Billboard object used to obtain parameters to edit a billboard
+     * @return returns edited billboard object with new fields.
+     */
 
     public Billboard editBillboard(Billboard billboard) {
         billboardName = new JTextField(billboard.getName());
@@ -68,6 +81,7 @@ public class BillboardOptions {
             Billboard billboard2 = new Billboard(username,billboardName.getText(), imgSRC.getText(), messageText.getText(), messageColour.getText(), backgroundColour.getText(), infoText.getText(), infoColour.getText());
             billboard2.setBillboardID(billboard.getBillboardID());
 
+            //error check billboard before sending to server
             try {
                 new BillboardToImage(billboard2,480,360).toImageIcon();
             } catch (Exception e) {

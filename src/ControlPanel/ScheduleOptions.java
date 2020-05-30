@@ -33,7 +33,7 @@ public class ScheduleOptions {
     private JComboBox<Object> intervals;
 
     /**
-     * Method which instantiates all the elements required for the Schedule Options window.
+     * Instantiates all the elements required for the Schedule Options window.
      * @param client Client object used to send message requests to the server.
      * @param username name reference.
      * @param token unique token for message requests.

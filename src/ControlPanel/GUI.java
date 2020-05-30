@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class GUI {
     public static JFrame SetupFrame() {
-        setLook();                     
+        setLook();
         JFrame frame = new JFrame();
         frame.setPreferredSize(new Dimension(1080, 620));
         return frame;
