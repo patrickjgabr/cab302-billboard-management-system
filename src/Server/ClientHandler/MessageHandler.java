@@ -472,45 +472,68 @@ public class MessageHandler {
         }
     }
 
-    //
+    //Function which removes User
     private void handleRemoveUser(User user) {
+
+        //Attempts to remove remove user
         try {
+
+            //Instantiate UserDatabase Object
             UserDatabase userDatabase = new UserDatabase(properties);
+
+            //Get User from the received messages data and get the actual User from the database
             User sentUser = (User)sentMessage.getData();
             User databaseUser = userDatabase.getUser(sentUser.getUserName(), true);
 
+            //If the sentUser matches the user returned by the database then remove the sentUser
             if(sentUser.getUserID().equals(databaseUser.getUserID())) {
+
+                //If the sentUser matches the given Session User and the user has the edit user permission remove the sentUser from the database
                 if(!sentUser.getUserID().equals(user.getUserID()) && user.getPermission().get(3) == 1) {
+
+                    //Remove user print a success message and set the response status as 200
                     userDatabase.removeUser(sentUser);
                     returnMessage.setCommunicationID(200);
                     consoleMessage.printGeneral("REQUEST ACCEPTED", "User removed", 75);
+
+                //If the sentUser doesn't match the given Session User or doesn't have the edit user permission than print a error message and set return status to 515
                 } else {
                     returnMessage.setCommunicationID(515);
                     consoleMessage.printWarning("User not permitted to remove user",75);
                 }
+
+            //If the sentUser doesnt exist in the database then print a error message and set return status to 516
             } else {
                 returnMessage.setCommunicationID(516);
                 consoleMessage.printWarning("Database failed to find user to remove",75);
             }
 
+        //If the database throws an exception print a error message and set return status to 500
         } catch (Throwable throwable) {
-            //Sets the return data to 500 if the Select is unsuccessful.
+
+            //Print error message and set response status as 500
             returnMessage.setCommunicationID(500);
             consoleMessage.printWarning("Database failed to select all users",75);
         }
     }
 
+    //Function which updates Billboards
     private void handleUpdateBillboard(User user) {
 
+        //Attempts to remove the given message Billboard
         try {
+
+            //If given User is has permission to edit the given Billboard
             if(checkEditPermission(user)) {
+
                 //Instantiates a new BillboardDatabase object connecting to the database specified by the Properties Object.
-                //  Uses the updateDatabase method to update database using the information contained within the Message object.
                 BillboardDatabase billboardDB = new BillboardDatabase(properties);
 
+                //Get the sent billboard from the received message data and request the databases copy of that current billboard
                 Billboard sentBillboard = (Billboard)sentMessage.getData();
                 Billboard billboard = billboardDB.getBillboard(sentBillboard.getBillboardID().toString(), true);
 
+                //If billboard isn't scheduled then update it
                 if(billboard.getScheduled() == 0) {
                     billboardDB.updateDatabase(sentBillboard);
                     //Sets the return data to 200 if the update is successful
