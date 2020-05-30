@@ -252,7 +252,7 @@ public class ScheduleOptions {
             else {
                 selectedHour = Integer.parseInt((String) Objects.requireNonNull(hour.getSelectedItem()));
             }
-            selectedPeriod = 1;
+            selectedPeriod = 0;
         }
         else {
             if (Integer.parseInt((String) Objects.requireNonNull(hour.getSelectedItem())) == 12) {
