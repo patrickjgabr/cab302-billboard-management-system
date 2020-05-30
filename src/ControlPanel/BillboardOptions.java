@@ -12,6 +12,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -40,13 +41,16 @@ public class BillboardOptions {
         billboard.setName("");
         billboard.setMessageText("");
         billboard.setBillboardID(0);
-        billboard.setBackgroundColour("");
+        billboard.setBackgroundColour("#ffffff");
+        billboard.setInformationTextColour("#000000");
+        billboard.setMessageTextColour("#000000");
+        billboard.setInformationText("");
         billboard.setImageUrl("");
 
         try {
             Scanner fileScanner = new Scanner(new File("externalResources/blank.txt"));
             blank = fileScanner.nextLine();
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -54,7 +58,6 @@ public class BillboardOptions {
             try {
                 billboard.setImageUrl(imgSRC.getText());
                 preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
-
             } catch (Exception ex) {
                 imgSRC.setText("");
                 billboard.setImageUrl(blank);
@@ -66,56 +69,66 @@ public class BillboardOptions {
             //import file here.
         });
 
-        billboard.setInformationText("");
-        billboard.setInformationTextColour("");
-        billboard.setMessageTextColour("");
+
+
         preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
         messageText.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent e) {
                 billboard.setMessageText(messageText.getText());
-                billboard.setImageUrl(blank);
+                if (!imgSRC.getText().equals("")) {
+                    billboard.setImageUrl(blank);
+                }
                 preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
-                preview.repaint();
+
             }
             @Override
             public void insertUpdate(DocumentEvent e) {
                 billboard.setMessageText(messageText.getText());
-                billboard.setImageUrl(blank);
+                if (!imgSRC.getText().equals("")) {
+                    billboard.setImageUrl(blank);
+                }
                 preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
-                preview.repaint();
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
                 billboard.setMessageText(messageText.getText());
-                billboard.setImageUrl(blank);
+                if (!imgSRC.getText().equals("")) {
+                    billboard.setImageUrl(blank);
+                }
                 preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
-                preview.repaint();
             }
         });
+
         infoText.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent e) {
                 billboard.setInformationText(infoText.getText());
-                billboard.setImageUrl(blank);
+                if (!imgSRC.getText().equals("")) {
+                    billboard.setImageUrl(blank);
+                }
                 preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
-                preview.repaint();
+                billboard.setImageUrl(imgSRC.getText());
             }
             @Override
             public void insertUpdate(DocumentEvent e) {
                 billboard.setInformationText(infoText.getText());
-                billboard.setImageUrl(blank);
+                if (!imgSRC.getText().equals("")) {
+                    billboard.setImageUrl(blank);
+                }
                 preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
-                preview.repaint();
+                billboard.setImageUrl(imgSRC.getText());
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
                 billboard.setInformationText(infoText.getText());
-                billboard.setImageUrl(blank);
+                if (!imgSRC.getText().equals("")) {
+                    billboard.setImageUrl(blank);
+                }
                 preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
-                preview.repaint();
+                billboard.setImageUrl(imgSRC.getText());
             }
         });
 
@@ -123,24 +136,30 @@ public class BillboardOptions {
             @Override
             public void changedUpdate(DocumentEvent e) {
                 billboard.setImageUrl(imgSRC.getText());
-                billboard.setImageUrl(blank);
+                if (!imgSRC.getText().equals("")) {
+                    billboard.setImageUrl(blank);
+                }
                 preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
-                preview.repaint();
+                billboard.setImageUrl(imgSRC.getText());
             }
             @Override
             public void insertUpdate(DocumentEvent e) {
                 billboard.setImageUrl(imgSRC.getText());
-                billboard.setImageUrl(blank);
+                if (!imgSRC.getText().equals("")) {
+                    billboard.setImageUrl(blank);
+                }
                 preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
-                preview.repaint();
+                billboard.setImageUrl(imgSRC.getText());
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
                 billboard.setImageUrl(imgSRC.getText());
-                billboard.setImageUrl(blank);
+                if (!imgSRC.getText().equals("")) {
+                    billboard.setImageUrl(blank);
+                }
                 preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
-                preview.repaint();
+                billboard.setImageUrl(imgSRC.getText());
             }
         });
 
@@ -148,9 +167,11 @@ public class BillboardOptions {
             @Override
             public void stateChanged(ChangeEvent arg0) {
                 billboard.setInformationTextColour(rgbToHex(infoColourPicker.getColor().getRGB()));
-                billboard.setImageUrl(blank);
+                if (!imgSRC.getText().equals("")) {
+                    billboard.setImageUrl(blank);
+                }
                 preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
-                preview.repaint();
+                billboard.setImageUrl(imgSRC.getText());
             }
         });
 
@@ -158,9 +179,11 @@ public class BillboardOptions {
             @Override
             public void stateChanged(ChangeEvent arg0) {
                 billboard.setBackgroundColour(rgbToHex(backgroundColourPicker.getColor().getRGB()));
-                billboard.setImageUrl(blank);
+                if (!imgSRC.getText().equals("")) {
+                    billboard.setImageUrl(blank);
+                }
                 preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
-                preview.repaint();
+                billboard.setImageUrl(imgSRC.getText());
             }
         });
 
@@ -168,9 +191,11 @@ public class BillboardOptions {
             @Override
             public void stateChanged(ChangeEvent arg0) {
                 billboard.setMessageTextColour(rgbToHex(messageColourPicker.getColor().getRGB()));
-                billboard.setImageUrl(blank);
+                if (!imgSRC.getText().equals("")) {
+                    billboard.setImageUrl(blank);
+                }
                 preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
-                preview.repaint();
+                billboard.setImageUrl(imgSRC.getText());
             }
         });
 
@@ -252,6 +277,7 @@ public class BillboardOptions {
         int result = JOptionPane.showOptionDialog(null, myPanel, "Billboard Editor", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
 
         if (result == 0) {
+            billboard.setImageUrl(billboard.getImageUrl());
             billboard.setCreatorName(username);
             billboard.setName(billboardName.getText());
             //error check billboard before sending to server
