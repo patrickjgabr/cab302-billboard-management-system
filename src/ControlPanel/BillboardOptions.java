@@ -194,7 +194,7 @@ public class BillboardOptions {
      */
 
     public Billboard editBillboard(Billboard billboard) {
-        this.billboard = billboard;
+        this.billboard.setBillboardID(billboard.getBillboardID());
         billboardName.setText(billboard.getName());
         billboardName.setEditable(false);
         imgSRC.setText(billboard.getPictureLink());
