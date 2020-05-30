@@ -28,7 +28,6 @@ public class Properties {
         databasePassword = fileScanner.nextLine().substring(19);
         databaseName = databaseURL.split("/")[3];
 
-        System.out.println("Properties file read");
     }
 
     public String getDatabaseURL() {

@@ -116,6 +116,9 @@ public class MessageHandler {
             } else if(sentMessage.getCommunicationID() == 33) {
                 handleRemoveUser(user);
 
+            } else if(sentMessage.getCommunicationID() == 34) {
+                handleUpdateUserPassword();
+
             //If communicationID is 40 handle request Scheduled
             } else if(sentMessage.getCommunicationID() == 40) {
                 handleRequestSchedule();
@@ -160,6 +163,8 @@ public class MessageHandler {
 
     //Function which handles user login requests, returning a token if a valid login request is made
     private void handleUserLogin() {
+
+        //Attempt to authenticate the user and set a valid session token
         try {
 
             //Get the login details contained in the data property of the received message
@@ -167,20 +172,28 @@ public class MessageHandler {
 
             //If the users credentials are valid then generate a token and return it along with the users permissions and return status 200
             if(checkCredentials(loginDetails)) {
+
+                //Instantiate a SessionDatabase Object and set the session for the given userName (loginDetails[0]) and set it as the session of the return message
                 SessionDatabase sessionDatabase = new SessionDatabase(properties);
                 String token = sessionDatabase.setSession(loginDetails[0]);
                 returnMessage.setSession(token);
 
+                //Instantiate a UserDatabase Object and get the user from the given userName (loginDetails[0]) and set the permissions of the user as the return data with a valid response code 200
                 UserDatabase userDatabase = new UserDatabase(properties);
                 User user = userDatabase.getUser(loginDetails[0], true);
                 returnMessage.setData(user.getPermission());
                 returnMessage.setCommunicationID(200);
+
+                //Print success message
                 consoleMessage.printGeneral("REQUEST ACCEPTED", "Login successful for username [" + loginDetails[0] + "]", 75);
+
+            //If the users credentials are invalid then set the response code to 502 and print an error message
             } else {
                 returnMessage.setCommunicationID(502);
                 consoleMessage.printWarning("Login Request Rejected for username [" + loginDetails[0] + "]                           Reason: Invalid Credentials", 75);
             }
 
+        //If the SessionDatabase or UserDatabase throw an exception then print and error message and set the response code to 500
         } catch (Throwable throwable) {
             //Sets the return data to 500 if the Select is unsuccessful.
             consoleMessage.printWarning("Login Request Rejected     |     Reason: DATABASE ERROR", 75);
@@ -188,37 +201,60 @@ public class MessageHandler {
         }
     }
 
+    //Function which handles user logout request, returning a valid response code if the user was successfully logged out
     private void handleUserLogout() {
+
+        //Gets the token contained in the data property of the received message and instantiate a SessionDatabase object
         String token = (String) sentMessage.getData();
         SessionDatabase sessionDatabase = new SessionDatabase(properties);
 
+        //If the session is successfully removed from the database then a valid response code is returned and success message printed
         if (sessionDatabase.removeSession(token, true)) {
             returnMessage.setCommunicationID(200);
             consoleMessage.printGeneral("REQUEST ACCEPTED", "Logout Successful for token", 75);
+
+        //If the session is unsuccessfully removed from the database then a invalid response code is returned and error message printed
         } else {
             returnMessage.setCommunicationID(503);
             consoleMessage.printWarning("Logout Request Rejected  Reason: Invalid Token", 75);
         }
     }
 
+    //Function which checks the credentials of given loginDetails returning true if the credentials are valid
     private boolean checkCredentials(String[] loginDetails) {
+
+        //Instantiate a UserDatabse Object
         UserDatabase userDB = new UserDatabase(properties);
+
+        //Attempt to get a User from the database that matches the given userName (loginDetails[0]) and check the given password hash with the actual hash
         try {
+
+            //Get the user corresponding to the given userName (loginDetails[0]) and compare the password hashes
             User user = userDB.getUser(loginDetails[0], true);
             MessageDigest passwordHash;
             try {
+
+                //Use a MessageDigest set to "SHA-256" to generate a byteArray of the sent password hash combined with the Users salt
                 passwordHash = MessageDigest.getInstance("SHA-256");
                 passwordHash.update((user.getSalt() + loginDetails[1]).getBytes());
                 byte [] byteArray = passwordHash.digest();
 
+                //Build a StringBuilder containing character output from the MessageDigest
                 StringBuilder sb = new StringBuilder();
                 for (byte b : byteArray) {
                     sb.append(String.format("%02x", b & 0xFF));
                 }
+
+                //Convert the StringBuilder into a String and compare it to the actual Users hashed password
                 String hashed = sb.toString();
+
+                //Return true if hashed passwords match
                 return user.getUserPassword().equals(hashed);
+
+            //If SHAR-256 algorithm fails return false
             } catch (NoSuchAlgorithmException e) {return false;}
 
+        //If a exception is thrown then return false
         } catch (Throwable throwable) {
             return false;
         }
@@ -230,8 +266,15 @@ public class MessageHandler {
             //  Uses the updateDatabase method to update the database using the information contained in the given User Object.
             UserDatabase userDB = new UserDatabase(properties);
             User user = (User) sentMessage.getData();
-            user.setUserPassword(generateNewPassword(user));
-            userDB.updateDatabase((User)sentMessage.getData());
+
+            User currentUser = userDB.getUser(user.getUserName(), true);
+            if(currentUser.getUserID().equals(user.getUserID()) && (user.getUserPassword().equals("") || user.getUserPassword().equals(" "))) {
+                user.setUserPassword(currentUser.getUserPassword());
+            } else {
+                user.setUserPassword(generateNewPassword(user));
+            }
+            
+            userDB.updateDatabase(user);
 
             //Sets return data to 200 if the Update is successful.
             returnMessage.setCommunicationID(200);
@@ -327,6 +370,32 @@ public class MessageHandler {
             //Sets the return data to 500 if the Select is unsuccessful.
             returnMessage.setCommunicationID(500);
             consoleMessage.printWarning("Database failed to select all users",75);
+        }
+    }
+
+    private void handleUpdateUserPassword() {
+        try {
+            String[] changePassword = (String[])sentMessage.getData();
+
+            UserDatabase userDatabase = new UserDatabase(properties);
+            User user = userDatabase.getUser(changePassword[0], true);
+
+            if(user.getUserID() != null) {
+                user.setUserPassword(changePassword[1]);
+                user.setUserPassword(generateNewPassword(user));
+
+                userDatabase.updateDatabase(user);
+                returnMessage.setCommunicationID(200);
+                consoleMessage.printGeneral("REQUEST ACCEPTED", "User password updated", 75);
+            } else {
+                //Sets return data to 500 if the Update is unsuccessful.
+                consoleMessage.printWarning("Database failed to find User to update",75);
+                returnMessage.setCommunicationID(518);
+            }
+        } catch (Throwable throwable) {
+            //Sets return data to 500 if the Update is unsuccessful.
+            consoleMessage.printWarning("Database failed to update users password",75);
+            returnMessage.setCommunicationID(500);
         }
     }
 
