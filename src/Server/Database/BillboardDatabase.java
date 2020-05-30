@@ -224,6 +224,8 @@ public class BillboardDatabase extends Database {
      */
     public void removeBillboard(Billboard billboard) throws Throwable {
 
+
+
         //If the given Billboard exists in the database then it can be removed as well as data that references it
         if(isInTable(billboard)) {
 
@@ -250,8 +252,7 @@ public class BillboardDatabase extends Database {
                 statement.close();
                 connection.close();
 
-                //Starts database connection and update all of the schedule values for each row of the billboards table and then close the connection
-                super.startConnection();
+                //Update all of the schedule values for each row of the billboards table and then close the connection
                 super.updateBillboardStatus();
                 super.closeConnection();
 

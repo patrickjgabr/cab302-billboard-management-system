@@ -231,6 +231,9 @@ public class ScheduleDatabase extends Database {
      */
     public void removeSchedule(Scheduled scheduled) throws Throwable {
 
+        //Start database connection
+        super.startConnection();
+
         //If the given Schedule exists in the database then it can be removed
         if(isInTable(scheduled)) {
 
@@ -252,8 +255,7 @@ public class ScheduleDatabase extends Database {
                 statement.close();
                 connection.close();
 
-                //Starts database connection and update all of the schedule values for each row of the billboards table and then close the connection
-                super.startConnection();
+                //Update all of the schedule values for each row of the billboards table and then close the connection
                 super.updateBillboardStatus();
                 super.closeConnection();
 

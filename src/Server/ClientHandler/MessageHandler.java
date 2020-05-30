@@ -1,25 +1,13 @@
 package Server.ClientHandler;
-import Server.ConsoleMessage.ConsoleMessage;
 import Server.ConsoleMessage.DatabaseMessage;
 import Server.Database.BillboardDatabase;
 import Server.Database.ScheduleDatabase;
 import Server.Database.SessionDatabase;
 import Server.Database.UserDatabase;
-import Server.Server;
 import Shared.*;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.sql.ResultSet;
-import java.sql.SQLSyntaxErrorException;
 import java.util.ArrayList;
-
-/**
- * MessageHandler class handles all of the Message packet received by the ClientHandler. This class contains
- * one main method, getReturnMessage() and a suite of accessory private methods, which handles each communicationID
- * the message packet my contain. Each private method handles one communicationID.
- */
 
 public class MessageHandler {
     
@@ -123,58 +111,61 @@ public class MessageHandler {
                     consoleMessage.printWarning("User not authorised to update User", 75);
                     returnMessage.setCommunicationID(504);
                 }
+
+            //If communicationID is 33 handle remove User
             } else if(sentMessage.getCommunicationID() == 33) {
                 handleRemoveUser(user);
+
+            //If communicationID is 40 handle request Scheduled
             } else if(sentMessage.getCommunicationID() == 40) {
                 handleRequestSchedule();
+
+            //If communicationID is 41 handle add Schedule
             } else if(sentMessage.getCommunicationID() == 41) {
+
+                //If user has schedule permission than handle add Schedule
                 if (user.getPermission().get(2) == 1) {
                     handleAddToSchedule(user.getUserID());
+
+                //If user doesn't have schedule permission than handle print error message and set return status as 504
                 } else {
                     consoleMessage.printWarning("User not authorised to add to schedule", 75);
                     returnMessage.setCommunicationID(504);
                 }
+
+            //If communicationID is 42 handle update Schedule
             } else if(sentMessage.getCommunicationID() == 42) {
                 handleUpdateSchedule(user);
+
+            //If communicationID is 43 handle remove Schedule
             } else if (sentMessage.getCommunicationID() == 43) {
                 handleRemoveSchedule(user);
+
+            //If communicationID doesn't match any of the above print error message and set return status as 501
             } else {
                 consoleMessage.printWarning("Invalid communicationID", 75);
                 returnMessage.setCommunicationID(501);
             }
+
+        //If request doesn't have a valid session print error message and set return status as 503
         } else {
             returnMessage.setCommunicationID(503);
             consoleMessage.printWarning("Invalid session", 75);
         }
 
-        //Prints a message to the console indicating that the message handler object is closed.
+        //Prints a message to the console indicating that the message handler object is closed and return returnMessage
         clientHandlerMessage.messageHandlerClose(returnMessage.getCommunicationID());
         return  returnMessage;
     }
 
-    private boolean checkPermissions(String token) {
-        SessionDatabase sessionDatabase = new SessionDatabase(properties);
-        User user = sessionDatabase.getUserFromSession(token);
-
-        boolean returnValue = true;
-
-        if(sentMessage.getCommunicationID() == 21 && user.getPermission().get(0) == 0) {
-            returnValue = false;
-        } else if (sentMessage.getCommunicationID() == 41 && user.getPermission().get(2) == 0) {
-            returnValue = false;
-        } else if (sentMessage.getCommunicationID() == 31 && user.getPermission().get(3) == 0) {
-            returnValue = false;
-        }
-
-        return returnValue;
-    }
-
+    //Function which handles user login requests, returning a token if a valid login request is made
     private void handleUserLogin() {
         try {
-            //Instantiates a new UserDatabase object connecting to the database specified by the Properties Object.
-            //  Uses the getUser method to get a User Object from the database.
 
+            //Get the login details contained in the data property of the received message
             String[] loginDetails = (String[]) sentMessage.getData();
+
+            //If the users credentials are valid then generate a token and return it along with the users permissions and return status 200
             if(checkCredentials(loginDetails)) {
                 SessionDatabase sessionDatabase = new SessionDatabase(properties);
                 String token = sessionDatabase.setSession(loginDetails[0]);

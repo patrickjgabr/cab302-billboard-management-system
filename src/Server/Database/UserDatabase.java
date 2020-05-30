@@ -255,6 +255,9 @@ public class UserDatabase extends Database {
      */
     public void removeUser(User user) throws Throwable {
 
+        //Start database connection
+        super.startConnection();
+
         //If the given User exists in the database then it can be removed as well as data that references it
         if(isInTable(user)) {
 
@@ -295,8 +298,7 @@ public class UserDatabase extends Database {
                 statement.close();
                 connection.close();
 
-                //Starts database connection and update all of the schedule values for each row of the billboards table and then close the connection
-                super.startConnection();
+                //Update all of the schedule values for each row of the billboards table and then close the connection
                 super.updateBillboardStatus();
                 super.closeConnection();
 
