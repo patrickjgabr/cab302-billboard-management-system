@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class UserManagementOptions {
     private JTextField name;
-    private JTextField userPassword;
+    private JPasswordField userPassword;
     private JCheckBox p0 = new JCheckBox("Create Billboards");
     private JCheckBox p1 = new JCheckBox("Edit Billboards");
     private JCheckBox p2 = new JCheckBox("Schedule Billboards");
@@ -22,14 +22,14 @@ public class UserManagementOptions {
 
     public User newUser() {
         name = new JTextField();
-        userPassword = new JTextField();
+        userPassword = new JPasswordField();
         return UserEditorGUI(new User());
     }
 
     public User editUser(User user) {
         name = new JTextField(user.getUserName());
         name.setEditable(false);
-        userPassword = new JTextField(user.getUserPassword());
+        userPassword = new JPasswordField();
         p0 = new JCheckBox("Create Billboards");
         if(user.getPermission().get(0) == 1 ){p0.setSelected(true);}
         p1 = new JCheckBox("Edit Billboards");
@@ -47,7 +47,7 @@ public class UserManagementOptions {
         myPanel.add(new JLabel("User Name: "), GUI.generateGBC(0,0,1,1,1,1,0,5,GridBagConstraints.WEST));
         name.setPreferredSize(new Dimension(200, 20));
         myPanel.add(name, GUI.generateGBC(1,0,1,1,1,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(new JLabel("Password: "), GUI.generateGBC(0,1,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(new JLabel("New Password: "), GUI.generateGBC(0,1,1,1,1,1,0,5,GridBagConstraints.WEST));
         userPassword.setPreferredSize(new Dimension(200, 20));
         myPanel.add(userPassword, GUI.generateGBC(1,1,1,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(new JLabel("Permissions: "), GUI.generateGBC(0,2,2,1,1,1,0,5,GridBagConstraints.WEST));
@@ -55,7 +55,14 @@ public class UserManagementOptions {
         myPanel.add(p1, GUI.generateGBC(0,4,1,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(p2, GUI.generateGBC(0,5,1,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(p3, GUI.generateGBC(0,6,1,1,1,1,0,5,GridBagConstraints.WEST));
-        int result = JOptionPane.showConfirmDialog(null, myPanel, "New User", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+
+        //create dialogue window containing Billboard Options UI elements.
+        String[] options = new String[2];
+        options[0] = "Submit";
+        options[1] = "Cancel";
+        int result = JOptionPane.showOptionDialog(null, myPanel, "User Editor", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+
         if (result == JOptionPane.YES_OPTION) {
             if(name.getText().equals("") && userPassword.getText().equals("")){
                 JOptionPane.showMessageDialog(JOptionPane.getRootFrame(),"Both a Username and Password are required", "Missing Fields",JOptionPane.WARNING_MESSAGE);
