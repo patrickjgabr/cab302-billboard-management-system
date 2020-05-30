@@ -1,13 +1,11 @@
 package Shared;
 
 import java.io.*;
-import java.util.TreeMap;
 
 /**
- * v1
- * Class used to create billboard objects
+ * The Billboard class provides a storage structure for Billboard objects which need to be networked between components including the Server, Control Panel and Viewer.
+ * This class provides a highly pliable method to instantiating, storing and editing Billboards and their characters through its set of constructors and getter setter methods.
  */
-
 public class Billboard implements Serializable {
 
     private String name;
@@ -22,7 +20,15 @@ public class Billboard implements Serializable {
     private Integer scheduled;
 
     /**
-     * Constructs and initalizes a Billboard object
+     * Constructor which instantiates a Billboard Object containing the input data
+     * @param creatorName User name of Billboard Creator
+     * @param name Billboard Name
+     * @param imageUrl Image URL or data
+     * @param msgText Billboard main message text (Top)
+     * @param msgColour Billboard main message colour (Top)
+     * @param bgColour Billboard background colour
+     * @param infoText Billboard information text (Bottom)
+     * @param infoColour Billboard information text colour (Bottom)
      */
     public Billboard(String creatorName, String name, String imageUrl, String msgText, String msgColour, String bgColour, String infoText, String infoColour) {
         this.creatorName = creatorName;
@@ -35,12 +41,24 @@ public class Billboard implements Serializable {
         this.informationTextColour = infoColour;
     }
 
+    /**
+     * Constructor which instantiates a Billboard Object from a byte array containing the relevant Billboard properties.
+     * This method is designed to recreate Billboards from the output of the getByteArray method
+     * @param bytes Billboard Object as a byte array
+     */
     public Billboard(byte[] bytes){
         try {
+
+            //Instantiate a ObjectInputStream using the given byte array
             ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(bytes));
+
+            //Read the given object
             Object bb = inputStream.readObject();
+
+            //Cast the Object to Billboard
             Billboard billboard = (Billboard) bb;
 
+            //Assign the properties of Billboard to the properties of this
             this.creatorName = billboard.creatorName;
             this.name = billboard.name;
             this.imageUrl = billboard.imageUrl;
@@ -52,17 +70,18 @@ public class Billboard implements Serializable {
             this.billboardID = billboard.billboardID;
             this.scheduled = billboard.scheduled;
 
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException | ClassNotFoundException e) { }
     }
 
+    /**
+     * Default constructor used to instantiate a Billboard Object with no properties
+     */
     public Billboard() {
 
     }
 
     /**
-     * Generates and returns an XML String containing all of the billboards information.
+     * Generates and returns a XML String containing all of the billboards information.
      * @return XML Billboard String
      */
     public String generateXML() {
@@ -76,98 +95,120 @@ public class Billboard implements Serializable {
     }
 
     /**
-     * Returns the billboards name
-     * @return Billboards Name
+     * Returns the Billboards name
+     * @return Billboard Name
      */
-
     public String getName() {
         return name;
     }
 
     /**
-     * Returns the billboards background colour
-     * @return Billboards background colour
+     * Returns the Billboards background colour in the format #000000
+     * @return Billboard background colour
      */
-
     public String getBackgroundColour() {
         return backgroundColour;
     }
 
     /**
-     * Returns the billboards information text
-     * @return Billboards information text
+     * Returns the Billboards information text
+     * @return Billboard information text
      */
-
     public String getInformationText() {
         return informationText;
     }
 
     /**
-     * Returns the billboards information text colour in the format #000000
-     * @return Billboards information text
+     * Returns the Billboards information text colour in the format #000000
+     * @return Billboard information text
      */
-
     public String getInformationTextColour() {
         return informationTextColour;
     }
 
     /**
-     * Returns the billboards picture link
-     * @return Billboards picture link
+     * Returns the Billboards image link or data
+     * @return Billboard picture link or data
      */
-
     public String getPictureLink() {
         return imageUrl;
     }
 
     /**
-     * Returns the ID of the user who created the billboard
-     * @return Billboards creatorID
+     * Returns the Billboards message text
+     * @return Billboard message text
      */
-
     public String getMessageText() { return messageText; }
 
     /**
-     * Returns the billboards message text colour in the format #000000
-     * @return Billboards message text colour
+     * Returns the Billboards message text colour in the format #000000
+     * @return Billboard message text colour
      */
-
     public String getMessageTextColour() { return messageTextColour; }
 
     /**
-     * Returns all of the information about the billboard in a TreeMap
-     * @return TreeMap<String, String> where the Key and value pair represents the billboards information
+     * Returns the username of the Billboards creator
+     * @return Billboard creators username
      */
-
     public String getCreatorName() { return creatorName; }
 
+    /**
+     * Returns the Billboards billboardID
+     * @return Billboard billboardID
+     */
     public Integer getBillboardID() { return billboardID; }
 
-    public void setBillboardID(Integer billboardID) { this.billboardID = billboardID; }
-
-    //public TreeMap<String, String> getBillboardExport() { return billboardExport; }
-
-    public byte [] getByteArray(){
-        ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
-        ObjectOutputStream objOutput = null;
-        byte [] data;
-        try {
-            objOutput = new ObjectOutputStream(byteOutput);
-            objOutput.writeObject(this);
-            data = byteOutput.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
-            data = new byte[]{0};
-        }
-
-        return data;
-    }
-
+    /**
+     * Returns the schedule status of the Billboard
+     * @return Billboard schedule status (1 scheduled)
+     */
     public Integer getScheduled() {
         return scheduled;
     }
 
+    /**
+     * Returns a byte array representing the Billboard Object
+     * @return Billboard byte array
+     */
+    public byte [] getByteArray(){
+
+        //Instantiates a ByteArrayOutputStream, ObjectOutputStream and bye array
+        ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
+        ObjectOutputStream objOutput = null;
+        byte [] data;
+
+        //Attempt to convert write this object to the ObjectOutputStream and covert it into a byte array
+        try {
+
+            //Ingratiate the ObjectOutputStream to use byteOutput
+            objOutput = new ObjectOutputStream(byteOutput);
+
+            //Write this object to it and get the resulting bytes
+            objOutput.writeObject(this);
+            data = byteOutput.toByteArray();
+        } catch (IOException e) {
+            data = new byte[]{0};
+        }
+
+        //Return byte array
+        return data;
+    }
+
+    /**
+     * Sets the billboardID of the Billboard Object to the given value
+     * @param billboardID New billboardID
+     */
+    public void setBillboardID(Integer billboardID) { this.billboardID = billboardID; }
+
+    /**
+     * Sets the scheduled status of the Billboard Object to the given value (Must be 1 or 0)
+     * @param scheduled New scheduled status
+     */
     public void setScheduled(Integer scheduled) {
-        this.scheduled = scheduled;
+
+        //If the scheduled value is valid (1 or 0) then set it to the scheduled value
+        if(scheduled == 0 || scheduled == 1) {
+            this.scheduled = scheduled;
+        }
     }
 }

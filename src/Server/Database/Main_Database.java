@@ -17,6 +17,15 @@ public class Main_Database {
 
     public static void main(String[] args) {
 
+        try {
+            Properties properties = new Properties();
+            System.out.println(properties.getDatabaseURL());
+
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+
+
 //        try {
 //            Properties properties = new Properties();
 //

@@ -1,10 +1,8 @@
 package ControlPanel;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
 import java.net.Socket;
 import Shared.*;
 
@@ -20,7 +18,7 @@ public class Client {
         try {
             properties = new Properties();
 
-        } catch (FileNotFoundException e) {
+        } catch (Throwable e) {
             System.out.println("Properties file failed to be read. Please ensure file named \"Properties.txt\" is in \"externalResources\" folder");
         }
 
@@ -35,7 +33,7 @@ public class Client {
         try {
             outputStream.writeObject(message);
             returnMessage = (Message)inputStream.readObject();
-        } catch (IOException | ClassNotFoundException errorMessage) { }
+        } catch (IOException | ClassNotFoundException ignored) { }
 
         return returnMessage;
     }
@@ -44,29 +42,20 @@ public class Client {
         try{
             socket = new Socket(properties.getServerAddress(), Integer.parseInt(properties.getServerPort()));
         }
-        //NEED TO HANDLE THIS EXCEPTION
-        catch (IOException errorMessage){
-            System.out.println(errorMessage);
-        }
+        catch (IOException ignored){ }
     }
 
     private void setOutputStream() {
         try {
             outputStream = new ObjectOutputStream(socket.getOutputStream());
         }
-        //NEED TO HANDLE THIS EXCEPTION
-        catch (IOException errorMessage) {
-            System.out.println(errorMessage.getMessage());
-        }
+        catch (IOException ignored) { }
     }
 
     private void setInputStream() {
         try {
             inputStream = new ObjectInputStream(socket.getInputStream());
         }
-        //NEED TO HANDLE THIS EXCEPTION
-        catch (IOException errorMessage) {
-            System.out.println(errorMessage.getMessage());
-        }
+        catch (IOException ignored) { }
     }
 }

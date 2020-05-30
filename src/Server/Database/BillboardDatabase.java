@@ -6,7 +6,10 @@ import Shared.Properties;
 import java.sql.*;
 import java.util.ArrayList;
 
-
+/**
+ * The BillboardDatabase class extends Database and provides a method set which handles all database actions relevant to the billboards table.
+ * This class mostly accepts inputs and returns outputs of the type Billboard by formatting predefined SQL queries with properties of the Billboard Class, which are executed by the parent Database class.
+ */
 public class BillboardDatabase extends Database {
 
     private ResultSet results;
@@ -14,8 +17,7 @@ public class BillboardDatabase extends Database {
     private Properties properties;
 
     /**
-     * The BillboardDatabase class extends Database and provides a method set which handles all database actions relevant to the billboards table.
-     * This class mostly accepts inputs and returns outputs of the type Billboard by formatting predefined SQL queries with properties of the Billboard Class, which are executed by the parent Database class.
+     * Default constructor used to instantiate a BillboardDatabase Object
      * @param properties Properties object containing all of the database connection information contained in "properties.txt"
      */
     public BillboardDatabase(Properties properties) {

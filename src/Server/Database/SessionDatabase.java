@@ -9,13 +9,16 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 
+/**
+ * The SessionDatabase class extends Database and provides a method set which handles all database actions relevant to the session table.
+ */
 public class SessionDatabase extends Database {
 
     private Properties properties;
     private DatabaseMessage databaseMessage;
 
     /**
-     * The SessionDatabase class extends Database and provides a method set which handles all database actions relevant to the session table.
+     * Default constructor used to instantiate a SessionDatabase Object
      * @param properties Properties object containing all of the database connection information contained in "properties.txt"
      */
     public SessionDatabase(Properties properties) {

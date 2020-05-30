@@ -1,5 +1,2 @@
-Server Address: 127.0.0.1
-Server Port: 8080
-Database URL: jdbc:mariadb://localhost:3306/applicationdatabase
-Database Username: root
-Database Password: password
+server.address=127.0.0.1
+server.port=8080

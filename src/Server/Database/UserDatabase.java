@@ -2,9 +2,12 @@ package Server.Database;
 
 import java.sql.*;
 import java.util.ArrayList;
-
 import Shared.*;
 
+/**
+ * The UserDatabase class extends Database and provides a method set which handles all database actions relevant to the users table.
+ * This class mostly accepts inputs and returns outputs of the type User by formatting predefined SQL queries with properties of the User Class, which are executed by the parent Database class.
+ */
 public class UserDatabase extends Database {
 
     private ResultSet results;
@@ -12,8 +15,7 @@ public class UserDatabase extends Database {
     private Properties properties;
 
     /**
-     * The UserDatabase class extends Database and provides a method set which handles all database actions relevant to the users table.
-     * This class mostly accepts inputs and returns outputs of the type User by formatting predefined SQL queries with properties of the User Class, which are executed by the parent Database class.
+     * Default constructor used to instantiate a UserDatabase Object
      * @param properties Properties object containing all of the database connection information contained in "properties.txt"
      */
     public UserDatabase(Properties properties) {

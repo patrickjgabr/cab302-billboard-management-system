@@ -6,6 +6,10 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+/**
+ * The ScheduleDatabase class extends Database and provides a method set which handles all database actions relevant to the schedule table.
+ * This class mostly accepts inputs and returns outputs of the type Schedule by formatting predefined SQL queries with properties of the Schedule Class, which are executed by the parent Database class.
+ */
 public class ScheduleDatabase extends Database {
 
     private ResultSet results;
@@ -13,8 +17,7 @@ public class ScheduleDatabase extends Database {
     private Properties properties;
 
     /**
-     * The ScheduleDatabase class extends Database and provides a method set which handles all database actions relevant to the schedule table.
-     * This class mostly accepts inputs and returns outputs of the type Schedule by formatting predefined SQL queries with properties of the Schedule Class, which are executed by the parent Database class.
+     * Default constructor used to instantiate a ScheduleDatabase Object
      * @param properties Properties object containing all of the database connection information contained in "properties.txt"
      */
     public ScheduleDatabase(Properties properties) {
@@ -226,8 +229,8 @@ public class ScheduleDatabase extends Database {
     /**
      *Method which removes a Schedule Object from database. This method uses a SQL DELETE statement to removes rows within the database containing the given Schedules scheduleID.
      *As the database has a uniqueness constraint on scheduleID only one row can possibly be removed.
-     * @param scheduled
-     * @throws Throwable
+     * @param scheduled Schedule Object to be removed
+     * @throws Throwable Exception is thrown if the parent Database throws an exception while executing the delete query
      */
     public void removeSchedule(Scheduled scheduled) throws Throwable {
 

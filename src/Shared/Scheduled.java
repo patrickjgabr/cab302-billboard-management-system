@@ -1,12 +1,6 @@
 package Shared;
 
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.lang.reflect.Array;
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 public class Scheduled implements Serializable{
     private int ID;

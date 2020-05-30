@@ -8,6 +8,12 @@ import Server.ConsoleMessage.DatabaseMessage;
 import Shared.*;
 import Shared.Properties;
 
+/**
+ * The Database class provides all of the low level database functionality including Select, update, insert and delete.
+ * This class is designed to be extended by other classes, however is still functional as a stand alone class.
+ * The Select, update, insert and delete methods contained within this are class are directly related to the SQL commands they reference.
+ * The other Methods are largely responsible for maintaining the state of the database connection and checking its configuration.
+ */
 public class Database {
 
     private Properties properties;
@@ -19,10 +25,7 @@ public class Database {
     private Object Exception;
 
     /**
-     * The Database class provides all of the low level database functionality including Select, update, insert and delete.
-     * This class is designed to be extended by other classes, however is still functional as a stand alone class.
-     * The Select, update, insert and delete methods contained within this are class are directly related to the SQL commands they reference.
-     * The other Methods are largely responsible for maintaining the state of the database connection and checking its configuration.
+     * Default constructor used to instantiate a Database Object
      * @param properties Object containing all of the database connection parameters
      */
     public Database(Properties properties) {
@@ -473,7 +476,7 @@ public class Database {
 
         //Attempts to start a connection with the specified database and set connectionStatus to true
         try {
-            connection = DriverManager.getConnection(properties.getDatabaseURL(), properties.getDatabaseUser(), properties.getDatabasePassword());
+            connection = DriverManager.getConnection(properties.getDatabaseURL() + '/' + properties.getDatabaseName(), properties.getDatabaseUser(), properties.getDatabasePassword());
             statement = connection.createStatement();
             connectionStatus = true;
 

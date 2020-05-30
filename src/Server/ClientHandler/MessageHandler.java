@@ -9,6 +9,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
+/**
+ * The MessageHandler class provides all of the Message response functionality for Control Panel requests.
+ * This class is designed to take a received Message and preform specific actions and return a response Message.
+ * Response Messages can either have a valid response status (CommunicationID 200) indicating a valid request was made or a invalid response status (CommunicationID 500 or greater).
+ */
 public class MessageHandler {
     
     private Message sentMessage;
@@ -17,9 +22,7 @@ public class MessageHandler {
     private DatabaseMessage consoleMessage;
 
     /**
-     * The MessageHandler class provides all of the Message response functionality for Control Panel requests.
-     * This class is designed to take a received Message and preform specific actions and return a response Message.
-     * Response Messages can either have a valid response status (CommunicationID 200) indicating a valid request was made or a invalid response status (CommunicationID 500 or greater).
+     * Default constructor used to instantiate a MessageHandler Object
      * @param sentMessage Message object received by sever containing the clients request.
      * @param properties Object containing all of the database connection parameters
      */

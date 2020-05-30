@@ -43,7 +43,7 @@ public class Server {
     public boolean runServer;
 
     /**
-     * Method which instantiates a Server object.
+     * Default constructor used to instantiate a Sever Object
      */
     public Server() {
         try {
@@ -76,7 +76,7 @@ public class Server {
                 System.out.println("Server failed to start on port:" + properties.getServerPort());
                 runServer = false;
             }
-        } catch (FileNotFoundException e) {
+        } catch (Throwable e) {
             //If the properties file fails to be read than this error message is printed to the console. Instructs the user to ensure
             //  that the Properties.txt is setup in the specified location with the correct name
             System.out.println("Properties file failed to be read. Please ensure file named \"Properties.txt\" is in \"externalResources\" folder");
