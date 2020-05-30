@@ -200,6 +200,7 @@ public class UserManagementTab {
                     JOptionPane.showMessageDialog(JOptionPane.getRootFrame(),"Please enter a valid password.", "Empty Password",JOptionPane.WARNING_MESSAGE);
                     return;
                 }
+
                 try {
                     MessageDigest passwordHash = MessageDigest.getInstance("SHA-256");
                     passwordHash.update(new String(password).getBytes());
@@ -210,8 +211,7 @@ public class UserManagementTab {
                         sb.append(String.format("%02x", b & 0xFF));
                     }
                     String hashed = sb.toString();
-                    //sendmessage
-
+                    client.sendMessage(new Message(token).updatePassword(username,hashed));
 
                 } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();

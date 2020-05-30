@@ -78,6 +78,12 @@ public class Message implements Serializable {
         return this;
     }
 
+    public Message updatePassword(String username, String password) {
+        this.communicationID = 34;
+        this.data= new String[]{username,password};
+        return this;
+    }
+
     public Message requestSchedule() {
         this.communicationID = 40;
         return this;
@@ -104,6 +110,8 @@ public class Message implements Serializable {
         this.communicationID = 50;
         return this;
     }
+
+
 
    
 
