@@ -2,7 +2,9 @@ package ControlPanel;
 
 import Shared.Billboard;
 import Shared.BillboardToImage;
+import Shared.Message;
 
+import javax.lang.model.util.SimpleAnnotationValueVisitor6;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -10,11 +12,13 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.io.File;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class BillboardOptions {
     private Billboard billboard = new Billboard();
     private JTextField billboardName = new JTextField();
+    private JButton showPreview = new JButton("Preview");
     private JTextField imgSRC = new JTextField();
     private JTextField messageText = new JTextField();
     private JColorChooser messageColourPicker = new JColorChooser();
@@ -44,6 +48,19 @@ public class BillboardOptions {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        showPreview.addActionListener(e -> {
+            try {
+                billboard.setImageUrl(imgSRC.getText());
+                preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
+
+            } catch (Exception ex) {
+                imgSRC.setText("");
+                billboard.setImageUrl(blank);
+                JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Image/Data invalid", "Error",JOptionPane.WARNING_MESSAGE);
+            }
+
+        });
 
         billboard.setInformationText("");
         billboard.setInformationTextColour("");
@@ -192,33 +209,35 @@ public class BillboardOptions {
 
     private Billboard BillboardEditorGUI(){
         myPanel.setLayout(new GridBagLayout());
-        myPanel.add(new JLabel("Billboard Name: "),GUI.generateGBC(0,0,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(new JLabel("Billboard Name: "),GUI.generateGBC(0,0,3,1,1,1,0,5,GridBagConstraints.WEST));
         billboardName.setPreferredSize(new Dimension(400,20));
         myPanel.add(billboardName, GUI.generateGBC(0,1,3,1,1,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(new JLabel("Image Source: "), GUI.generateGBC(0,2,1,1,1,1,0,5,GridBagConstraints.WEST));
-        imgSRC.setPreferredSize(new Dimension(400,20));
-        myPanel.add(imgSRC, GUI.generateGBC(0,3,3,1,1,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(new JLabel("Message Text: "), GUI.generateGBC(0,4,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(new JLabel("Image Source: "), GUI.generateGBC(0,2,3,1,1,1,0,5,GridBagConstraints.WEST));
+        imgSRC.setPreferredSize(new Dimension(250,20));
+        myPanel.add(new JButton("Import"), GUI.generateGBC(0,3,1,1,0,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(imgSRC, GUI.generateGBC(1,3,1,1,0,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(showPreview, GUI.generateGBC(2,3,1,1,0,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(new JLabel("Message Text: "), GUI.generateGBC(0,4,3,1,1,1,0,5,GridBagConstraints.WEST));
         messageText.setPreferredSize(new Dimension(400,20));
         myPanel.add(messageText, GUI.generateGBC(0,5,3,1,1,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(new JLabel("Info Text: "), GUI.generateGBC(0,6,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(new JLabel("Info Text: "), GUI.generateGBC(0,6,3,1,1,1,0,5,GridBagConstraints.WEST));
 
         infoText.setPreferredSize(new Dimension(400,20));
         myPanel.add(infoText, GUI.generateGBC(0,7,3,1,1,1,0,5,GridBagConstraints.WEST));
 
 
         preview.setPreferredSize(new Dimension(352,240));
-        myPanel.add(preview, GUI.generateGBC(2,0,1,11,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(preview, GUI.generateGBC(5,0,1,11,1,1,0,5,GridBagConstraints.WEST));
 
 
-        myPanel.add(new JLabel("Background Colour: "), GUI.generateGBC(1,0,1,1,1,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(backgroundColourPicker, GUI.generateGBC(1,1,1,8,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(new JLabel("Background Colour: "), GUI.generateGBC(3,0,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(backgroundColourPicker, GUI.generateGBC(3,1,1,8,1,1,0,5,GridBagConstraints.WEST));
         backgroundColourPicker.setPreferredSize(new Dimension(450, 280));
-        myPanel.add(new JLabel("Message Colour: "), GUI.generateGBC(0,9,1,1,1,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(messageColourPicker, GUI.generateGBC(0,10,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(new JLabel("Message Colour: "), GUI.generateGBC(0,9,3,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(messageColourPicker, GUI.generateGBC(0,10,3,1,3,1,0,5,GridBagConstraints.WEST));
         messageColourPicker.setPreferredSize(new Dimension(450, 280));
-        myPanel.add(new JLabel("Info Colour: "), GUI.generateGBC(1,9,1,1,1,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(infoColourPicker, GUI.generateGBC(1,10,1,7,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(new JLabel("Info Colour: "), GUI.generateGBC(3,9,1,1,1,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(infoColourPicker, GUI.generateGBC(3,10,1,7,1,1,0,5,GridBagConstraints.WEST));
         infoColourPicker.setPreferredSize(new Dimension(450, 280));
 
 
