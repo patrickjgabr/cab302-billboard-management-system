@@ -20,7 +20,7 @@ public class ControlPanel {
         JTabbedPane pane = new JTabbedPane();
         BillboardTab billboardsPane = new BillboardTab(pane, permissions, client, token, username);
         ScheduleTab userManagementPane = new ScheduleTab(pane, permissions, client, token, username);
-        UserManagementTab schedulePane = new UserManagementTab(pane, permissions, client, token);
+        UserManagementTab schedulePane = new UserManagementTab(pane, permissions, client, token, username);
         pane.setFont(tabs);
         frame.getContentPane().add(pane);
         frame.pack();
