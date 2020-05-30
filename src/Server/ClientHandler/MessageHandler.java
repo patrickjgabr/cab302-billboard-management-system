@@ -29,11 +29,12 @@ public class MessageHandler {
     private DatabaseMessage consoleMessage;
 
     /**
-     * 
-     * @param sentMessage Message object received by the ClientHandler thread containing the clients request.
-     * @param properties Properties object containing all the client, server and database information.
+     * The MessageHandler class provides all of the Message response functionality for Control Panel requests.
+     * This class is designed to take a received Message and preform specific actions and return a response Message.
+     * Response Messages can either have a valid response status (CommunicationID 200) indicating a valid request was made or a invalid response status (CommunicationID 500 or greater).
+     * @param sentMessage Message object received by sever containing the clients request.
+     * @param properties Object containing all of the database connection parameters
      */
-
     public MessageHandler(Message sentMessage, Properties properties) {
         this.sentMessage = sentMessage;
         this.returnMessage = new Message(this.sentMessage.getSession());
@@ -42,53 +43,82 @@ public class MessageHandler {
     }
 
     /**
-     * Method which gets the appropriate return message based off the specific communicatedID of the received
-     * Message Object from the client. Each communicationID has a different handle function.
-     * @return Message Object containing data requested by the Client and return status.
+     * Method which gets the appropriate return message dependent on the given Messages communicatedID, session and data.
+     * Requests are parsed to a series of handle methods based on their communicationID, however in most cases also require a valid session and user permissions to be processed.
+     * @return Message Object containing a return status and data if requested and processed successfully.
      */
-    
     public Message getReturnMessage() {
         //Prints a message to the console indicating that a new message handler is opened.
-
         ClientHandlerMessage clientHandlerMessage = new ClientHandlerMessage();
         clientHandlerMessage.messageHandlerStart(sentMessage.getCommunicationID(), sentMessage.getSession());
 
+        //Instantiates a new SessionDatabase object
         SessionDatabase sessionDatabase = new SessionDatabase(properties);
 
-        //Group of if statements which directs the class to return a specific Message object based off the communicationID
+        //If communicationID is 10 then handle User login
         if (sentMessage.getCommunicationID() == 10) {
             handleUserLogin();
+
+        //If communicationID is 11 then handle User logout
         } else if (sentMessage.getCommunicationID() == 11) {
             handleUserLogout();
+
+        //If communicationID is not 10 or 11 ensure the request has a valid session
         } else if(sessionDatabase.checkSession(sentMessage.getSession())) {
 
+            //Instantiate a User Object for requesting User that is making the request
             User user = sessionDatabase.getUserFromSession(sentMessage.getSession());
 
+            //If communicationID is 20 handle get Billboards
             if (sentMessage.getCommunicationID() == 20 ) {
                 handleGetBillboards();
+
+            //If communicationID is 21 handle add Billboard
             } else if (sentMessage.getCommunicationID() == 21) {
+
+                //If user has add Billboard permission then handle add Billboard
                 if(user.getPermission().get(0) == 1) {
                     handleAddBillboard(user);
+
+                //If user does not have add Billboard permission print error message and set return status as 504
                 } else {
                     consoleMessage.printWarning("User not authorised to add Billboards", 75);
                     returnMessage.setCommunicationID(504);
                 }
+
+            //If communicationID is 22 handle update Billboard
             } else if (sentMessage.getCommunicationID() == 22) {
                 handleUpdateBillboard(user);
+
+            //If communicationID is 23 handle remove Billboard
             } else if(sentMessage.getCommunicationID() == 23) {
                 handleRemoveBillboard(user);
+
+            //If communicationID is 30 handle get Users
             } else if (sentMessage.getCommunicationID() == 30) {
                 handleGetUsers();
+
+            //If communicationID is 31 handle create User
             } else if (sentMessage.getCommunicationID() == 31) {
+
+                //If user has edit user permission then handle create User
                 if(user.getPermission().get(3) == 1) {
                     handleCreateUser();
+
+                //If user doesn't have edit user permission print error message and set return status as 504
                 } else {
                     consoleMessage.printWarning("User not authorised to add User", 75);
                     returnMessage.setCommunicationID(504);
                 }
+
+            //If communicationID is 32 handle update User
             } else if (sentMessage.getCommunicationID() == 32) {
+
+                //If user has edit user permission then handle update User
                 if (user.getPermission().get(3) == 1) {
                     handleUpdateUser();
+
+                //If user doesn't have edit user permission print error message and set return status as 504
                 } else {
                     consoleMessage.printWarning("User not authorised to update User", 75);
                     returnMessage.setCommunicationID(504);
