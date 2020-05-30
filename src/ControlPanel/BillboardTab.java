@@ -3,7 +3,9 @@ import Shared.Billboard;
 import Shared.Message;
 import Shared.BillboardToImage;
 import Viewer.GenerateBillboardFromXML;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import static ControlPanel.CustomFont.*;
@@ -11,9 +13,15 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.html.parser.Parser;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -34,6 +42,14 @@ public class BillboardTab{
     private int selected;
     private JPanel information;
     private ArrayList<Integer> permissions;
+
+
+    //xml variables
+    private String role1 = null;
+    private String role2 = null;
+    private String role3 = null;
+    private String role4 = null;
+    private ArrayList<String> rolev;
 
 
     public BillboardTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client, String token, String username){
@@ -241,6 +257,56 @@ public class BillboardTab{
             f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             f.showSaveDialog(null);
             System.out.println(f.getSelectedFile());
+
+
+            try {
+                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                Document doc = dBuilder.newDocument();
+
+                //Billboard root element
+                Element root = doc.createElement("billboard");
+                Attr backgroundColour = doc.createAttribute("background");
+                backgroundColour.setValue(billboards.get(selected).getBackgroundColour());
+                root.setAttributeNode(backgroundColour);
+                doc.appendChild(root);
+
+                //Message Child Element
+                Element messageElement = doc.createElement("message");
+                Attr messageColour = doc.createAttribute("color");
+                messageColour.setValue(billboards.get(selected).getMessageTextColour());
+                root.setAttributeNode(messageColour);
+
+
+                //Information Child Element
+                Element infoElement = doc.createElement("information");
+                Attr infoColor = doc.createAttribute("color");
+                infoColor.setValue(billboards.get(selected).getInformationTextColour());
+                root.setAttributeNode(infoColor);
+
+
+                //Picture Child Element
+                Element pictureElement = doc.createElement("picture");
+                Attr imgURL = doc.createAttribute("url");
+                imgURL.setValue(billboards.get(selected).getPictureLink());
+                root.setAttributeNode(imgURL);
+
+                //Create XML file
+                TransformerFactory tFactory = TransformerFactory.newInstance();
+                Transformer tFormer = tFactory.newTransformer();
+                DOMSource source = new DOMSource(doc);
+
+                String xmlFilepath = f.getSelectedFile() + "Billboard" + billboards.get(selected).getBillboardID() + ".xml";
+                StreamResult sResult = new StreamResult(new File(xmlFilepath));
+
+                tFormer.transform(source, sResult);
+
+                System.out.println("Successfully Exported Billboard");
+            } catch (ParserConfigurationException pce) {
+                pce.printStackTrace();
+            } catch (TransformerException tfe) {
+                tfe.printStackTrace();
+            }
         });
 
 
