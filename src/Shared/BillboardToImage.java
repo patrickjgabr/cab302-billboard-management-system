@@ -64,7 +64,6 @@ public class BillboardToImage {
         boolean picture = !billboard.getPictureLink().equals("");
         boolean info = !billboard.getInformationText().equals("");
         boolean message = !billboard.getMessageText().equals("");    //boolean determining whether text is present.
-
         BufferedImage bi = new BufferedImage(resolutionx, resolutiony, BufferedImage.TYPE_INT_RGB);
         Rectangle screen = new Rectangle(bi.getWidth(),bi.getHeight());
         Graphics gr = bi.getGraphics();

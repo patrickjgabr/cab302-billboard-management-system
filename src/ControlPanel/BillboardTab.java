@@ -226,7 +226,7 @@ public class BillboardTab{
                 Billboard created = new BillboardOptions(username).editBillboard(billboards.get(selected));
                 if(created != null) {
                     Message request = client.sendMessage(new Message(token).updateBillboard(created));
-                    GUI.ServerDialogue(request.getCommunicationID(),"Delete billboard successful.");
+                    GUI.ServerDialogue(request.getCommunicationID(),"Edit billboard successful.");
                     updateTable();
                     information.removeAll();
                     preview.setIcon(null);

@@ -6,6 +6,7 @@ import java.io.*;
  * The Billboard class provides a storage structure for Billboard objects which need to be networked between components including the Server, Control Panel and Viewer.
  * This class provides a highly pliable method to instantiating, storing and editing Billboards and their characters through its set of constructors and getter setter methods.
  */
+
 public class Billboard implements Serializable {
 
     private String name;
@@ -138,6 +139,7 @@ public class Billboard implements Serializable {
      * Returns the Billboards message text
      * @return Billboard message text
      */
+
     public String getMessageText() { return messageText; }
 
     /**
@@ -164,6 +166,42 @@ public class Billboard implements Serializable {
      */
     public Integer getScheduled() {
         return scheduled;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
+
+    public void setBackgroundColour(String backgroundColour) {
+        this.backgroundColour = backgroundColour;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void setInformationText(String informationText) {
+        this.informationText = informationText;
+    }
+
+    public void setInformationTextColour(String informationTextColour) {
+        this.informationTextColour = informationTextColour;
+    }
+
+    public void setMessageText(String messageText) {
+        this.messageText = messageText;
+    }
+
+    public void setMessageTextColour(String messageTextColour) {
+        this.messageTextColour = messageTextColour;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**

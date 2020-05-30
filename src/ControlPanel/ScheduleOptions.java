@@ -56,7 +56,7 @@ public class ScheduleOptions {
         for (int x = 1; x <=60; x++) {
             rawdurationminutes.add(Integer.toString(x));
         }
-        this.intervalminutes = new JComboBox<>(rawminutes.toArray());
+        this.intervalminutes = new JComboBox<>(rawdurationminutes.toArray());
         this.durationminutes = new JComboBox<>(rawdurationminutes.toArray());
 
 
@@ -110,14 +110,17 @@ public class ScheduleOptions {
                 break;
         }
         
-        hour.setSelectedItem("" + scheduled.getStartTime()/60);
-        minutes.setSelectedItem(""+ scheduled.getStartTime()% 60);
+
+
         if(scheduled.getStartTime() >= 720) {
+            hour.setSelectedItem("" + (scheduled.getStartTime()-720)/60);
             period.setSelectedItem("PM");
         }
         else {
+            hour.setSelectedItem("" + scheduled.getStartTime()/60);
             period.setSelectedItem("AM");
         }
+        minutes.setSelectedItem(""+ scheduled.getStartTime()% 60);
         durationminutes.setSelectedItem("" + scheduled.getDuration());
 
         if (scheduled.getInterval(0) == 1) {
@@ -203,7 +206,7 @@ public class ScheduleOptions {
         options[0] = "Submit";
         options[1] = "Cancel";
         int result = JOptionPane.showOptionDialog(null, myPanel, "Schedule Billboard", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
-        if (result == JOptionPane.YES_OPTION) {
+        if (result == 0) {
             Scheduled newschedule = createSchedule(scheduled);
             if (newschedule != null) {
                 return newschedule;
@@ -212,6 +215,10 @@ public class ScheduleOptions {
                 JOptionPane.showConfirmDialog(null, "Duration exceeds interval duration", "Error", JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE);
             }
         }
+        if (result == 1) {
+            return null;
+        }
+
         return null;
 
 
