@@ -80,7 +80,11 @@ public class BillboardOptions {
         infoColourPicker.setPreferredSize(new Dimension(450, 280));
 
 
-        int result = JOptionPane.showConfirmDialog(null, myPanel, "Please Enter Billboard options", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE);
+        //create dialogue window containing Billboard Options UI elements.
+        String[] options = new String[2];
+        options[0] = "Submit";
+        options[1] = "Cancel";
+        int result = JOptionPane.showOptionDialog(null, myPanel, "Billboard Editor", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
 
         if (result == JOptionPane.YES_OPTION) {
             String messageColourHex = Integer.toHexString(messageColourPicker.getColor().getRGB() & 0xffffff);

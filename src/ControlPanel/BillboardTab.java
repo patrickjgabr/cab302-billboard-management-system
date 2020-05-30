@@ -111,6 +111,15 @@ public class BillboardTab{
         importButton.setEnabled(false);
         importButton.addActionListener(e -> {
             fileSelection();
+            updateTable();
+            information.removeAll();
+            preview.setIcon(null);
+            information.add(new JLabel("Select a billboard."));
+            editButton.setEnabled(false);
+            deleteButton.setEnabled(false);
+            exportButton.setEnabled(false);
+            pane.validate();
+            pane.repaint();
         });
         TopButtons.add(importButton);
 
@@ -277,7 +286,8 @@ public class BillboardTab{
             Billboard selected = GenerateBillboardFromXML.XMLToBillboard(selectedFile, selectedFile.getName(), username);
             Billboard preview = new BillboardOptions(username).editBillboard(selected);
             if (preview != null) {
-                client.sendMessage(new Message(token).createBillboard(preview));
+                Message request = client.sendMessage(new Message(token).createBillboard(preview));
+                GUI.ServerDialogue(request.getCommunicationID(),"Create billboard successful.");
             }
             updateTable();
         }
