@@ -260,26 +260,35 @@ public class MessageHandler {
         }
     }
 
+    //Function which updates User in the database
     private void handleUpdateUser() {
         try {
             //Instantiates a new UserDatabase object connecting to the database specified by the Properties Object.
-            //  Uses the updateDatabase method to update the database using the information contained in the given User Object.
             UserDatabase userDB = new UserDatabase(properties);
+
+            //Gets the User object from the received message
             User user = (User) sentMessage.getData();
 
+            //Get the current copy of the User from the database
             User currentUser = userDB.getUser(user.getUserName(), true);
-            if(currentUser.getUserID().equals(user.getUserID()) && (user.getUserPassword().equals("") || user.getUserPassword().equals(" "))) {
+
+            //If the password has not changed set user password to the current copies password
+            if(user.getUserPassword().equals("") || user.getUserPassword().equals(" ") || user.getUserPassword() == null) {
                 user.setUserPassword(currentUser.getUserPassword());
+
+            //If the password has changed then generate the new password
             } else {
                 user.setUserPassword(generateNewPassword(user));
             }
-            
+
+            //Update the currentUser to user
             userDB.updateDatabase(user);
 
             //Sets return data to 200 if the Update is successful.
             returnMessage.setCommunicationID(200);
             consoleMessage.printGeneral("REQUEST ACCEPTED", "User updated   |   userID [" + ((User) sentMessage.getData()).getUserID() + "]", 75);
 
+        //If a exception is thrown print an error message
         } catch (Throwable throwable) {
             //Sets return data to 500 if the Update is unsuccessful.
             consoleMessage.printWarning("Database failed to update user",75);
@@ -287,29 +296,41 @@ public class MessageHandler {
         }
     }
 
+    //Function which adds a User to the database
     private void handleCreateUser() {
         try {
             //Instantiates a new UserDatabase object connecting to the database specified by the Properties Object.
-            // Uses the addToDatabase method to add the information contained in the User Object to the users and permissions table.
             UserDatabase userDB = new UserDatabase(properties);
+
+            //Gets the User data from the received message
             User user = (User)sentMessage.getData();
+
+            //Generates a salt and hashes the given password hash with this value
             user.setSalt(generateSalt());
             user.setUserPassword(generateNewPassword(user));
 
+            //If userPassword doesn't equal nothing than add the user to the database
             if(!user.getUserPassword().equals("")) {
+
+                //Attempt to add the given User to the database
                 try {
                     userDB.addToDatabase(user);
-                    //Sets return data to 200 if the Add is successful.
+
+                    //Print a success message and set the return status to 200
                     returnMessage.setCommunicationID(200);
                     consoleMessage.printGeneral("REQUEST ACCEPTED", "User add   |   userID [" + ((User) sentMessage.getData()).getUserID() + "]", 75);
+
+                //If a exception is thrown print an error message
                 } catch (Throwable throwable) {
-                    //Sets return data to 500 if the Add is unsuccessful.
+
+                    //Print a error message and set the return status to 500
                     returnMessage.setCommunicationID(500);
                     consoleMessage.printWarning("Database failed to add user",75);
                 }
 
+            //
             } else {
-                //Sets return data to 508 if the Add is unsuccessful due to password being null.
+
                 returnMessage.setCommunicationID(508);
                 consoleMessage.printWarning("Database failed to add user",75);
             }
