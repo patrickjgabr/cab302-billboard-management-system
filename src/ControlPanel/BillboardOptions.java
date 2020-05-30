@@ -19,6 +19,7 @@ public class BillboardOptions {
     private Billboard billboard = new Billboard();
     private JTextField billboardName = new JTextField();
     private JButton showPreview = new JButton("Preview");
+    private JButton importFile = new JButton("Import");
     private JTextField imgSRC = new JTextField();
     private JTextField messageText = new JTextField();
     private JColorChooser messageColourPicker = new JColorChooser();
@@ -59,7 +60,10 @@ public class BillboardOptions {
                 billboard.setImageUrl(blank);
                 JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Image/Data invalid", "Error",JOptionPane.WARNING_MESSAGE);
             }
+        });
 
+        importFile.addActionListener(e -> {
+            //import file here.
         });
 
         billboard.setInformationText("");
@@ -214,7 +218,7 @@ public class BillboardOptions {
         myPanel.add(billboardName, GUI.generateGBC(0,1,3,1,1,1,0,5,GridBagConstraints.WEST));
         myPanel.add(new JLabel("Image Source: "), GUI.generateGBC(0,2,3,1,1,1,0,5,GridBagConstraints.WEST));
         imgSRC.setPreferredSize(new Dimension(250,20));
-        myPanel.add(new JButton("Import"), GUI.generateGBC(0,3,1,1,0,1,0,5,GridBagConstraints.WEST));
+        myPanel.add(importFile, GUI.generateGBC(0,3,1,1,0,1,0,5,GridBagConstraints.WEST));
         myPanel.add(imgSRC, GUI.generateGBC(1,3,1,1,0,1,0,5,GridBagConstraints.WEST));
         myPanel.add(showPreview, GUI.generateGBC(2,3,1,1,0,1,0,5,GridBagConstraints.WEST));
         myPanel.add(new JLabel("Message Text: "), GUI.generateGBC(0,4,3,1,1,1,0,5,GridBagConstraints.WEST));
