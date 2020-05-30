@@ -116,18 +116,9 @@ public class MessageHandler {
             } else if(sentMessage.getCommunicationID() == 33) {
                 handleRemoveUser(user);
 
+            //If communiationID is 34 handle password Update
             } else if(sentMessage.getCommunicationID() == 34) {
-
-                //If user has edit user permission then handle password update
-                if(user.getPermission().get(3) == 1) {
-                    handleUpdateUserPassword();
-
-                //If user doesn't have edit user permission then print and error message and set return to 504
-                } else {
-                    consoleMessage.printWarning("User not authorised edit other users passwords", 75);
-                    returnMessage.setCommunicationID(504);
-                }
-
+                handleUpdateUserPassword();
 
             //If communicationID is 40 handle request Scheduled
             } else if(sentMessage.getCommunicationID() == 40) {

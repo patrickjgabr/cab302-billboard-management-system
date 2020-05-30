@@ -2,21 +2,46 @@ package Server.ConsoleMessage;
 
 public abstract class ConsoleMessage {
 
+    /**
+     *Console Message class formats specific types of console messages into a standard format. Producing clean console messages
+     */
     public ConsoleMessage() {}
 
+    /**
+     * Formats and prints a general message over a specific line length.
+     * @param header Header of the message
+     * @param message Message body
+     * @param lineSize Message line size
+     */
     public void printGeneral(String header, String message, Integer lineSize) {
+
+        //Print top of the message box
         startMidEndLine(lineSize);
 
+        //Format main message line
         String line = "| " + header + ": ";
 
+        //Print message body
         line = iterateLine(line, message, "|" + " ".repeat(line.length()),lineSize);
+
+        //Print end of message body
         finishLine(line, lineSize);
+
+        //Print bottom of message box
         startMidEndLine(lineSize);
     }
 
+    /**
+     * Formats and prints a warning message over a specific line length
+     * @param message Message body
+     * @param lineSize Message line size
+     */
     public void printWarning(String message, Integer lineSize) {
 
+        //Print top of the message box
         startMidEndLine(lineSize);
+
+        //Format start of message
         String line = "| WARNING! ";
         line = iterateLine(line, message, "|          ", lineSize);
 
