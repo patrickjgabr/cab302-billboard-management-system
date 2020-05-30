@@ -523,82 +523,87 @@ public class MessageHandler {
         //Attempts to remove the given message Billboard
         try {
 
-            //If given User is has permission to edit the given Billboard
-            if(checkEditPermission(user)) {
+            //Instantiates a new BillboardDatabase object connecting to the database specified by the Properties Object.
+            BillboardDatabase billboardDB = new BillboardDatabase(properties);
 
-                //Instantiates a new BillboardDatabase object connecting to the database specified by the Properties Object.
-                BillboardDatabase billboardDB = new BillboardDatabase(properties);
+            //Get the sent billboard from the received message data and request the databases copy of that current billboard
+            Billboard sentBillboard = (Billboard) sentMessage.getData();
+            Billboard billboard = billboardDB.getBillboard(sentBillboard.getBillboardID().toString(), true);
 
-                //Get the sent billboard from the received message data and request the databases copy of that current billboard
-                Billboard sentBillboard = (Billboard)sentMessage.getData();
-                Billboard billboard = billboardDB.getBillboard(sentBillboard.getBillboardID().toString(), true);
+            //If billboard isn't scheduled then update it
+            if (billboard.getScheduled() == 0) {
 
-                //If billboard isn't scheduled then update it
-                if(billboard.getScheduled() == 0) {
-                    billboardDB.updateDatabase(sentBillboard);
-                    //Sets the return data to 200 if the update is successful
-                    returnMessage.setCommunicationID(200);
-                    consoleMessage.printGeneral("REQUEST ACCEPTED", "Billboard updated   |   billboardID [" + ((Billboard) sentMessage.getData()).getBillboardID() + "]", 75);
-                } else if(billboard.getScheduled() == 1 && user.getPermission().get(1) == 1) {
-                    billboardDB.updateDatabase(sentBillboard);
-                    //Sets the return data to 200 if the update is successful
-                    returnMessage.setCommunicationID(200);
-                    consoleMessage.printGeneral("REQUEST ACCEPTED", "Billboard updated   |   billboardID [" + ((Billboard) sentMessage.getData()).getBillboardID() + "]", 75);
-                } else {
-                    returnMessage.setCommunicationID(512);
-                    consoleMessage.printWarning("User not authorised to update billboard [" + ((Billboard)sentMessage.getData()).getBillboardID() +"] (Scheduled)", 75);
-                }
+                //Update the Billboard using sentBillboard print a success message and set the response status to 200
+                billboardDB.updateDatabase(sentBillboard);
+                returnMessage.setCommunicationID(200);
+                consoleMessage.printGeneral("REQUEST ACCEPTED", "Billboard updated   |   billboardID [" + ((Billboard) sentMessage.getData()).getBillboardID() + "]", 75);
+
+                //If billboard is scheduled and given User has edit all permission then update it
+            } else if (billboard.getScheduled() == 1 && user.getPermission().get(1) == 1) {
+
+                //Update the Billboard using sentBillboard print a success message and set the response status to 200
+                billboardDB.updateDatabase(sentBillboard);
+                returnMessage.setCommunicationID(200);
+                consoleMessage.printGeneral("REQUEST ACCEPTED", "Billboard updated   |   billboardID [" + ((Billboard) sentMessage.getData()).getBillboardID() + "]", 75);
+
+                //If user is not permitted to to edit the Billboard then an error message is printed and return status set to 512
+            } else if (billboard.getScheduled() == 1 && user.getPermission().get(1) != 1) {
+                returnMessage.setCommunicationID(512);
+                consoleMessage.printWarning("User not authorised to update billboard [" + ((Billboard) sentMessage.getData()).getBillboardID() + "] (Scheduled)", 75);
+
+            //If user is not permitted to to edit the Billboard then an error message is printed and return status set to 504
             } else {
                 consoleMessage.printWarning("User not authorised to update billboard [" + ((Billboard)sentMessage.getData()).getBillboardID() +"]", 75);
                 returnMessage.setCommunicationID(504);
             }
+
+        //If the database throws an exception print a error message and set return status to 500
         } catch (Throwable throwable) {
 
-            //Sets the return data to 500 if the update is unsuccessful
             returnMessage.setCommunicationID(500);
             consoleMessage.printWarning("Database failed to update billboard",75);
         }
     }
 
-    private boolean checkEditPermission(User user) throws Throwable {
-        BillboardDatabase billboardDatabase = new BillboardDatabase(properties);
-        Billboard billboard = (Billboard)sentMessage.getData();
-        billboardDatabase.getBillboard(billboard.getBillboardID().toString(), true);
-
-        if(user.getPermission().get(1) == 1) {
-            return true;
-        } else {
-            if(billboard.getScheduled() == 0 && billboard.getCreatorName().equals(user.getUserName())) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
+    //Function which adds received Billboard to the database
     private void handleAddBillboard(User user) {
+
+        //Attempts to add the received billboard to the database
         try {
+
+            //Get the sent billboard from the received message data
             Billboard billboard = (Billboard)sentMessage.getData();
+
+            //If the given session User matches the creator name assigned to the Billboard
             if(user.getUserName().equals(billboard.getCreatorName())) {
+
                 //Instantiates a new BillboardDatabase object connecting to the database specified by the Properties Object.
-                //  Uses the addToDatabase method to add the information contained within the Message object to the database.
                 BillboardDatabase billboardDB = new BillboardDatabase(properties);
+
+                //Adds the Billboard to the database which returns true if the Billboard was added and has a unique name
                 boolean unique = billboardDB.addToDatabase(billboard, user.getUserID());
 
+                //If Billboard was added successfully print success message and set response status as 200
                 if(unique) {
-                    //Sets the return data to 200 if the add is successful
                     returnMessage.setCommunicationID(200);
                     consoleMessage.printGeneral("REQUEST ACCEPTED", "Billboard Added   |   billboardID [" + ((Billboard) sentMessage.getData()).getBillboardID() + "]", 75);
+
+                //If Billboard wasn't added successfully a error message is printed and sets the response status as 506
                 } else  {
+
                     //Sets the return data to 506 if billboard name already exists
                     returnMessage.setCommunicationID(506);
                     consoleMessage.printWarning("Billboard name not unique",75);
                 }
+
+            //If given User doesn't match the Billboards creatorName then print an error message and set the status as 505
             } else {
                 //Sets the return data to 505 if the add is unsuccessful due to non matching session and creator
                 returnMessage.setCommunicationID(505);
                 consoleMessage.printWarning("Billboard creator doesn't match token",75);
             }
+
+        //If the database throws an exception print a error message and set return status to 500
         } catch (Throwable throwable) {
 
             //Sets the return data to 500 if the add is unsuccessful
@@ -607,110 +612,166 @@ public class MessageHandler {
         }
     }
 
+    //Function which gets all of the Billboards from the database
     private void handleGetBillboards() {
+
+        //Attempts to get all of the Billboards from the database
         try {
+
             //Instantiates a new BillboardDatabase object connecting to the database specified by the Properties Object.
-            //  Uses the getBillboards method to get a ArrayList<Billboard> from the database.
             BillboardDatabase billboardDB = new BillboardDatabase(properties);
+
+            //Gets all of the Billboards from the database
             ArrayList<Billboard> requestedBillboards = billboardDB.getBillboards();
 
-            //Sets the return data to the Arraylist<Billboard> returned from the database.
+            //Sets returnMessage data to Billboard Array prints success message and sets response status as 200
             returnMessage.setData(requestedBillboards);
             returnMessage.setCommunicationID(200);
             consoleMessage.printGeneral("REQUEST ACCEPTED", "All billboards selected", 75);
-        } catch (Throwable throwable) {
 
-            //Sets the return data to 500 if the select is unsuccessful
+        //If the database throws an exception print a error message and set return status to 500
+        } catch (Throwable throwable) {
             returnMessage.setCommunicationID(500);
             consoleMessage.printWarning("Database failed to select billboards",75);
         }
     }
 
+    //Function which removes given Billboard
     private void handleRemoveBillboard(User user) {
+
+        //Attempts to remove received Billboard
         try {
+
+            //Instantiates a new BillboardDatabase object connecting to the database specified by the Properties Object.
             BillboardDatabase billboardDatabase = new BillboardDatabase(properties);
+
+            //Get the sent billboard from the received message data and the database copy of received Billboard
             Billboard sentBillboard = (Billboard)sentMessage.getData();
             Billboard billboard = billboardDatabase.getBillboard(sentBillboard.getBillboardID().toString(), true);
 
+            //If the sentBillboard exists in the database then remove it
             if(billboard.getBillboardID().equals(sentBillboard.getBillboardID())) {
+
+                //If the given User created the Billboard or has the edit all permission then remove the Billboard
                 if((billboard.getCreatorName().equals(user.getUserName())) || user.getPermission().get(1) == 1) {
                     billboardDatabase.removeBillboard(sentBillboard);
                     returnMessage.setCommunicationID(200);
                     consoleMessage.printGeneral("REQUEST ACCEPTED", "Billboard removed", 75);
+
+                //If the given User didn't created the Billboard and doesn't have the edit all permission then print an error message and set the response status as 511
                 } else {
                     returnMessage.setCommunicationID(511);
                     consoleMessage.printWarning("User not permitted to remove billboard",75);
                 }
 
+            //If then sentBillboard doesn't exist in the database print an error message and set the response status as 510
             } else {
                 returnMessage.setCommunicationID(510);
                 consoleMessage.printWarning("Database failed to find billboard to remove",75);
             }
 
+        //If the database throws an exception print a error message and set return status to 500
         } catch (Throwable throwable) {
-            //Sets the return data to 500 if the select is unsuccessful
             returnMessage.setCommunicationID(500);
             consoleMessage.printWarning("Database failed to remove billboard",75);
         }
     }
 
+    //Function which handles a schedule request
     private void handleRequestSchedule() {
+
+        //Attempts to get all of the Schedule Objects from the database
         try {
+
+            //Instantiates a new ScheduleDatabase object connecting to the database specified by the Properties Object.
             ScheduleDatabase scheduleDatabase = new ScheduleDatabase(properties);
+
+            //Gets an ArrayList of all the Scheduled Objects in the database
             ArrayList<Scheduled> scheduled = scheduleDatabase.getSchedule();
+
+            //Sets returnMessage data to Schedule Array prints success message and sets response status as 200
             returnMessage.setData(scheduled);
             returnMessage.setCommunicationID(200);
             consoleMessage.printGeneral("REQUEST ACCEPTED", "Schedule selected", 75);
-        } catch (Throwable throwable) {
 
-            //Sets the return data to 500 if the select is unsuccessful
+        //If the database throws an exception print a error message and set return status to 500
+        } catch (Throwable throwable) {
             returnMessage.setCommunicationID(500);
             consoleMessage.printWarning("Database failed to select schedule",75);
         }
     }
 
+    //Function which adds a Schedule Object to the database
     private void handleAddToSchedule(Integer userID) {
+
+        //Attempts to add the given Schedule Object
         try {
+
+            //Get the sent Schedule from the received message data
             Scheduled scheduled = (Scheduled)sentMessage.getData();
+
+            //If the given userID equals the scheduled creatorID then add the schedule to the database
             if(userID.equals(scheduled.getCreatorID())) {
+
+                //Instantiates a ScheduleDatabase Object
                 ScheduleDatabase scheduleDatabase = new ScheduleDatabase(properties);
+
+                //Adds the Schedule to the database which returns true if the Schedule was added
                 boolean success = scheduleDatabase.addToDatabase(scheduled, userID);
+
+                //If the Schedule was successfully added then print a success message and set the response status as 200
                 if(success) {
-                    //Sets the return data to 200 if the add is successful
                     returnMessage.setCommunicationID(200);
                     consoleMessage.printGeneral("REQUEST ACCEPTED", "Billboard Added", 75);
+
+                //If the Schedule was not successfully added then print a error message and set the response status as 500
                 } else  {
-                    //Sets the return data to 506 if billboard name already exists
                     returnMessage.setCommunicationID(500);
                     consoleMessage.printWarning("Database failed to schedule add to database",75);
                 }
+
+            //If the given userID doesn't match the scheduled creatorId then print a error message and set the response status as 507
             } else {
-                //Sets the return data to 505 if the add is unsuccessful due to non matching session and creator
                 returnMessage.setCommunicationID(507);
                 consoleMessage.printWarning("Schedule creator doesn't match token",75);
             }
 
+        //If the database throws an exception print a error message and set return status to 500
         } catch (Throwable throwable) {
-            //Sets the return data to 500 if the select is unsuccessful
             returnMessage.setCommunicationID(500);
             consoleMessage.printWarning("Database failed to schedule add to database",75);
         }
     }
 
+    //Function which updates a Schedule Object in the database
     private void handleUpdateSchedule(User user) {
+
+        //Attempts to update the data with the received Schedule Object
         try {
+
+            //Instantiates a ScheduleDatabase Object
             ScheduleDatabase scheduleDatabase = new ScheduleDatabase(properties);
 
+            //Get the sent Schedule from the received message data
             Scheduled scheduled = (Scheduled)sentMessage.getData();
-            if(scheduled.getCreatorID().equals(user.getUserID())) {
+
+            //If given User has the schedule permission update the Schedule
+            if(user.getPermission().get(2) == 1) {
+
+                //Update the Schedule Object in the database to the received Schedule Object
                 scheduleDatabase.updateDatabase(scheduled);
+
+                //Print a success message and set return status as 200
                 returnMessage.setCommunicationID(200);
                 consoleMessage.printGeneral("REQUEST ACCEPTED", "Schedule updated", 75);
+
+            //If the received Schedule doesn't have the same creatorID as the given User than print an error message and set the return status as 517
             } else {
                 returnMessage.setCommunicationID(517);
                 consoleMessage.printWarning("User not permitted to update schedule",75);
             }
 
+        //If the database throws an exception print a error message and set return status to 500
         } catch (Throwable throwable) {
             //Sets the return data to 500 if the select is unsuccessful
             returnMessage.setCommunicationID(500);
@@ -718,33 +779,48 @@ public class MessageHandler {
         }
     }
 
+    //Function which removes a received Schedule Object
     private void handleRemoveSchedule(User user) {
+
+        //Attempts to remove received Schedule
         try {
+
+            //Instantiates a ScheduleDatabase Object
             ScheduleDatabase scheduleDatabase = new ScheduleDatabase(properties);
+
+            //Get the sent Schedule from the received message data
             Scheduled sentSchedule = (Scheduled)sentMessage.getData();
 
+            //Get database copy of the current Scheduled Object
             Scheduled scheduled = scheduleDatabase.getScheduled(String.valueOf(sentSchedule.getID()));
 
+            //If the sent Schedule object exists in the database then remove it
             if(sentSchedule.getID() == scheduled.getID()) {
-                if (user.getUserID().equals(scheduled.getCreatorID()) || user.getPermission().get(1) == 1) {
+
+                //If the given User has the schedule billboard permission then remove the received Schedule Object
+                if (user.getPermission().get(2) == 1) {
+
+                    //Remove the received Schedule from the database
                     scheduleDatabase.removeSchedule(sentSchedule);
 
-                    //Sets the return data to 200 if the remove is successful
+                    //Print a success message and set the response status to 200
                     returnMessage.setCommunicationID(200);
                     consoleMessage.printGeneral("REQUEST ACCEPTED", "Scheduled removed", 75);
+
+                //If the given User does not have the schedule billboard permission then print a error message and set the response status as 513
                 } else {
-                    //Sets the return data to 200 if the remove is successful
                     returnMessage.setCommunicationID(513);
                     consoleMessage.printWarning("User not permitted to remove Scheduled", 75);
                 }
+
+            //If the sent Schedule object doesn't exist in the database print a error message and set the response status as 514
             } else {
-                //Sets the return data to 200 if the remove is successful
                 returnMessage.setCommunicationID(514);
                 consoleMessage.printWarning("Database failed to find schedule to remove", 75);
             }
 
+        //If the database throws an exception print a error message and set return status to 500
         } catch (Throwable throwable) {
-            //Sets the return data to 500 if the select is unsuccessful
             returnMessage.setCommunicationID(500);
             consoleMessage.printWarning("Database failed to select billboard",75);
         }
