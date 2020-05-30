@@ -145,6 +145,42 @@ public class Billboard implements Serializable {
 
     public void setBillboardID(Integer billboardID) { this.billboardID = billboardID; }
 
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
+
+    public void setBackgroundColour(String backgroundColour) {
+        this.backgroundColour = backgroundColour;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void setInformationText(String informationText) {
+        this.informationText = informationText;
+    }
+
+    public void setInformationTextColour(String informationTextColour) {
+        this.informationTextColour = informationTextColour;
+    }
+
+    public void setMessageText(String messageText) {
+        this.messageText = messageText;
+    }
+
+    public void setMessageTextColour(String messageTextColour) {
+        this.messageTextColour = messageTextColour;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     //public TreeMap<String, String> getBillboardExport() { return billboardExport; }
 
     public byte [] getByteArray(){

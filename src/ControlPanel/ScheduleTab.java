@@ -95,9 +95,12 @@ public class ScheduleTab {
             for (Scheduled x : schedule) {
                 if(selected == x.getID()) {
                     Scheduled edited = new ScheduleOptions(client, username, token).editSchedule(x);
-                    client.sendMessage(new Message(token).updateSchedule(edited));
-                    refresh();
-                    break;
+                    if (edited != null) {
+                        Message request = client.sendMessage(new Message(token).updateSchedule(edited));
+                        GUI.ServerDialogue(request.getCommunicationID(),"Edit billboard successful.");
+                        refresh();
+                        break;
+                    }
                 }
             }
         });
