@@ -13,9 +13,9 @@ public class ControlPanel {
     private static void ShowControlPanel(ArrayList<Integer> permissions, String token, Client client, String username) {
         JFrame frame = GUI.SetupFrame();        //call to setup frame method to set size and instantiate frame.
         JTabbedPane pane = new JTabbedPane();
-        BillboardTab billboardsPane = new BillboardTab(pane, permissions, client, token, username);     //render billboard tab based on current user permissions
-        ScheduleTab schedulePane = new ScheduleTab(pane, permissions, client, token, username);   //render schedule tab based on current user permissions
-        UserManagementTab userManagementPane = new UserManagementTab(pane, permissions, client, token, username);     //render user management tab based on current user permissions
+        new BillboardTab(pane, permissions, client, token, username);     //render billboard tab based on current user permissions
+        new ScheduleTab(pane, permissions, client, token, username);   //render schedule tab based on current user permissions
+        new UserManagementTab(pane, permissions, client, token, username);     //render user management tab based on current user permissions
         pane.setFont(tabs);
         frame.getContentPane().add(pane);
         frame.pack();
