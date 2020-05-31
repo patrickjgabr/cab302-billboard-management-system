@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
@@ -33,6 +35,19 @@ public class ScheduleTab {
         pane.setLayout(new GridBagLayout());
         refresh();
         mainPane.addTab("Schedule", pane);
+        mainPane.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (e.getSource() instanceof JTabbedPane) {
+                    JTabbedPane panel = (JTabbedPane) e.getSource();
+                    if (panel.getSelectedIndex() == 1) {
+                        refresh();
+                        pane.validate();
+                        pane.repaint();
+                    }
+                }
+            }
+        });
     }
 
     private String toTime(int min) {

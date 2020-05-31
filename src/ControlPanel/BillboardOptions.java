@@ -2,11 +2,7 @@ package ControlPanel;
 
 import Shared.Billboard;
 import Shared.BillboardToImage;
-import Shared.Message;
-import Viewer.GenerateBillboardFromXML;
 
-import javax.imageio.ImageIO;
-import javax.lang.model.util.SimpleAnnotationValueVisitor6;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -14,13 +10,18 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.net.URL;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Base64;
-import java.util.Objects;
 import java.util.Scanner;
 
+
+/**
+ * The BillboardOptions class is used to create or modify billboards
+ *
+ */
 public class BillboardOptions {
     private Billboard billboard = new Billboard();
     private JTextField billboardName = new JTextField();
@@ -33,14 +34,17 @@ public class BillboardOptions {
     private JTextField infoText = new JTextField();
     private JColorChooser infoColourPicker = new JColorChooser();
     private JLabel preview = new JLabel("");
-    private JPanel myPanel = new JPanel();
+    private JPanel panel = new JPanel();
     private String blank;
 
     /**
      * Setup BillboardOptions object. Required to create or edit billboard.
+     *
      * @param username username of user editing/creating billboard.
      */
     public BillboardOptions(String username) {
+
+        //set Defaults
         billboard.setName("");
         billboard.setMessageText("");
         billboard.setBillboardID(0);
@@ -50,7 +54,9 @@ public class BillboardOptions {
         billboard.setInformationText("");
         billboard.setImageUrl("");
         billboard.setCreatorName(username);
+        preview.setIcon(new BillboardToImage(billboard, 352, 240).toImageIcon());
 
+        //load base64 image from file
         try {
             Scanner fileScanner = new Scanner(new File("externalResources/blank.txt"));
             blank = fileScanner.nextLine();
@@ -61,11 +67,11 @@ public class BillboardOptions {
         showPreview.addActionListener(e -> {
             try {
                 billboard.setImageUrl(imgSRC.getText());
-                preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
+                preview.setIcon(new BillboardToImage(billboard, 352, 240).toImageIcon());
             } catch (Exception ex) {
                 imgSRC.setText("");
                 billboard.setImageUrl(blank);
-                JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Image/Data invalid", "Error",JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Image/Data invalid", "Error", JOptionPane.WARNING_MESSAGE);
             }
         });
 
@@ -82,15 +88,11 @@ public class BillboardOptions {
             fileChooser.addChoosableFileFilter(jpeg);
             fileChooser.addChoosableFileFilter(jpg);
             int result = fileChooser.showOpenDialog(JOptionPane.getRootFrame());
-
             if (result == JFileChooser.APPROVE_OPTION) {
                 imgSRC.setText(encodeImage(fileChooser.getSelectedFile()));
             }
         });
 
-
-
-        preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
         messageText.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent e) {
@@ -98,17 +100,18 @@ public class BillboardOptions {
                 if (!imgSRC.getText().equals("")) {
                     billboard.setImageUrl(blank);
                 }
-                preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
+                preview.setIcon(new BillboardToImage(billboard, 352, 240).toImageIcon());
                 billboard.setImageUrl(imgSRC.getText());
 
             }
+
             @Override
             public void insertUpdate(DocumentEvent e) {
                 billboard.setMessageText(messageText.getText());
                 if (!imgSRC.getText().equals("")) {
                     billboard.setImageUrl(blank);
                 }
-                preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
+                preview.setIcon(new BillboardToImage(billboard, 352, 240).toImageIcon());
                 billboard.setImageUrl(imgSRC.getText());
             }
 
@@ -118,7 +121,7 @@ public class BillboardOptions {
                 if (!imgSRC.getText().equals("")) {
                     billboard.setImageUrl(blank);
                 }
-                preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
+                preview.setIcon(new BillboardToImage(billboard, 352, 240).toImageIcon());
                 billboard.setImageUrl(imgSRC.getText());
             }
         });
@@ -130,16 +133,17 @@ public class BillboardOptions {
                 if (!imgSRC.getText().equals("")) {
                     billboard.setImageUrl(blank);
                 }
-                preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
+                preview.setIcon(new BillboardToImage(billboard, 352, 240).toImageIcon());
                 billboard.setImageUrl(imgSRC.getText());
             }
+
             @Override
             public void insertUpdate(DocumentEvent e) {
                 billboard.setInformationText(infoText.getText());
                 if (!imgSRC.getText().equals("")) {
                     billboard.setImageUrl(blank);
                 }
-                preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
+                preview.setIcon(new BillboardToImage(billboard, 352, 240).toImageIcon());
                 billboard.setImageUrl(imgSRC.getText());
             }
 
@@ -149,7 +153,7 @@ public class BillboardOptions {
                 if (!imgSRC.getText().equals("")) {
                     billboard.setImageUrl(blank);
                 }
-                preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
+                preview.setIcon(new BillboardToImage(billboard, 352, 240).toImageIcon());
                 billboard.setImageUrl(imgSRC.getText());
             }
         });
@@ -161,16 +165,17 @@ public class BillboardOptions {
                 if (!imgSRC.getText().equals("")) {
                     billboard.setImageUrl(blank);
                 }
-                preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
+                preview.setIcon(new BillboardToImage(billboard, 352, 240).toImageIcon());
                 billboard.setImageUrl(imgSRC.getText());
             }
+
             @Override
             public void insertUpdate(DocumentEvent e) {
                 billboard.setImageUrl(imgSRC.getText());
                 if (!imgSRC.getText().equals("")) {
                     billboard.setImageUrl(blank);
                 }
-                preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
+                preview.setIcon(new BillboardToImage(billboard, 352, 240).toImageIcon());
                 billboard.setImageUrl(imgSRC.getText());
             }
 
@@ -180,7 +185,7 @@ public class BillboardOptions {
                 if (!imgSRC.getText().equals("")) {
                     billboard.setImageUrl(blank);
                 }
-                preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
+                preview.setIcon(new BillboardToImage(billboard, 352, 240).toImageIcon());
                 billboard.setImageUrl(imgSRC.getText());
             }
         });
@@ -192,7 +197,7 @@ public class BillboardOptions {
                 if (!imgSRC.getText().equals("")) {
                     billboard.setImageUrl(blank);
                 }
-                preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
+                preview.setIcon(new BillboardToImage(billboard, 352, 240).toImageIcon());
                 billboard.setImageUrl(imgSRC.getText());
             }
         });
@@ -204,7 +209,7 @@ public class BillboardOptions {
                 if (!imgSRC.getText().equals("")) {
                     billboard.setImageUrl(blank);
                 }
-                preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
+                preview.setIcon(new BillboardToImage(billboard, 352, 240).toImageIcon());
                 billboard.setImageUrl(imgSRC.getText());
             }
         });
@@ -216,29 +221,18 @@ public class BillboardOptions {
                 if (!imgSRC.getText().equals("")) {
                     billboard.setImageUrl(blank);
                 }
-                preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
+                preview.setIcon(new BillboardToImage(billboard, 352, 240).toImageIcon());
                 billboard.setImageUrl(imgSRC.getText());
             }
         });
 
     }
 
-    public static String encodeImage(File image){
-        String base64Encoded = "";
-        try(FileInputStream inputStream = new FileInputStream(image)){
-            byte[] imageBytes = new byte[(int)image.length()];
-            inputStream.read(imageBytes);
-            base64Encoded = Base64.getEncoder().encodeToString(imageBytes);
-        }catch (FileNotFoundException fnfe){
-            System.out.println("Error selecting image file. Please ensure it is available and not corrupt.");
-        }catch(IOException ioex){
 
-        }
-        return base64Encoded;
-    }
 
     /**
      * Instantiates the billboard editor with new Billboard object
+     *
      * @return returns billboard object with edited fields.
      */
     public Billboard newBillboard() {
@@ -248,6 +242,7 @@ public class BillboardOptions {
 
     /**
      * Instantiates the billboard editor with existing billboard
+     *
      * @param billboard Billboard object used to obtain parameters to edit a billboard
      * @return returns edited billboard object with new fields.
      */
@@ -266,41 +261,39 @@ public class BillboardOptions {
     }
 
     private String rgbToHex(int rgb) {
-        String messageColourHex = Integer.toHexString( rgb & 0xffffff);
+        String messageColourHex = Integer.toHexString(rgb & 0xffffff);
         return '#' + messageColourHex;
     }
 
-    private Billboard BillboardEditorGUI(){
-        myPanel.setLayout(new GridBagLayout());
-        myPanel.add(new JLabel("Billboard Name: "),GUI.generateGBC(0,0,3,1,1,1,0,5,GridBagConstraints.WEST));
-        billboardName.setPreferredSize(new Dimension(400,20));
-        myPanel.add(billboardName, GUI.generateGBC(0,1,3,1,1,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(new JLabel("Image Source: "), GUI.generateGBC(0,2,3,1,1,1,0,5,GridBagConstraints.WEST));
-        imgSRC.setPreferredSize(new Dimension(250,20));
-        myPanel.add(importFile, GUI.generateGBC(0,3,1,1,0,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(imgSRC, GUI.generateGBC(1,3,1,1,0,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(showPreview, GUI.generateGBC(2,3,1,1,0,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(new JLabel("Message Text: "), GUI.generateGBC(0,4,3,1,1,1,0,5,GridBagConstraints.WEST));
-        messageText.setPreferredSize(new Dimension(400,20));
-        myPanel.add(messageText, GUI.generateGBC(0,5,3,1,1,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(new JLabel("Info Text: "), GUI.generateGBC(0,6,3,1,1,1,0,5,GridBagConstraints.WEST));
+    //Creates the Billboard Editor GUI based on the private variables within the current Billboard Options object.
+    private Billboard BillboardEditorGUI() {
 
-        infoText.setPreferredSize(new Dimension(400,20));
-        myPanel.add(infoText, GUI.generateGBC(0,7,3,1,1,1,0,5,GridBagConstraints.WEST));
-
-
-        preview.setPreferredSize(new Dimension(352,240));
-        myPanel.add(preview, GUI.generateGBC(5,0,1,11,1,1,0,5,GridBagConstraints.WEST));
-
-
-        myPanel.add(new JLabel("Background Colour: "), GUI.generateGBC(3,0,1,1,1,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(backgroundColourPicker, GUI.generateGBC(3,1,1,8,1,1,0,5,GridBagConstraints.WEST));
+        //Render GUI components
+        panel.setLayout(new GridBagLayout());
+        panel.add(new JLabel("Billboard Name: "), GUI.generateGBC(0, 0, 3, 1, 1, 1, 0, 5, GridBagConstraints.WEST));
+        billboardName.setPreferredSize(new Dimension(400, 20));
+        panel.add(billboardName, GUI.generateGBC(0, 1, 3, 1, 1, 1, 0, 5, GridBagConstraints.WEST));
+        panel.add(new JLabel("Image Source: "), GUI.generateGBC(0, 2, 3, 1, 1, 1, 0, 5, GridBagConstraints.WEST));
+        imgSRC.setPreferredSize(new Dimension(250, 20));
+        panel.add(importFile, GUI.generateGBC(0, 3, 1, 1, 0, 1, 0, 5, GridBagConstraints.WEST));
+        panel.add(imgSRC, GUI.generateGBC(1, 3, 1, 1, 0, 1, 0, 5, GridBagConstraints.WEST));
+        panel.add(showPreview, GUI.generateGBC(2, 3, 1, 1, 0, 1, 0, 5, GridBagConstraints.WEST));
+        panel.add(new JLabel("Message Text: "), GUI.generateGBC(0, 4, 3, 1, 1, 1, 0, 5, GridBagConstraints.WEST));
+        messageText.setPreferredSize(new Dimension(400, 20));
+        panel.add(messageText, GUI.generateGBC(0, 5, 3, 1, 1, 1, 0, 5, GridBagConstraints.WEST));
+        panel.add(new JLabel("Info Text: "), GUI.generateGBC(0, 6, 3, 1, 1, 1, 0, 5, GridBagConstraints.WEST));
+        infoText.setPreferredSize(new Dimension(400, 20));
+        panel.add(infoText, GUI.generateGBC(0, 7, 3, 1, 1, 1, 0, 5, GridBagConstraints.WEST));
+        preview.setPreferredSize(new Dimension(352, 240));
+        panel.add(preview, GUI.generateGBC(5, 0, 1, 11, 1, 1, 0, 5, GridBagConstraints.WEST));
+        panel.add(new JLabel("Background Colour: "), GUI.generateGBC(3, 0, 1, 1, 1, 1, 0, 5, GridBagConstraints.WEST));
+        panel.add(backgroundColourPicker, GUI.generateGBC(3, 1, 1, 8, 1, 1, 0, 5, GridBagConstraints.WEST));
         backgroundColourPicker.setPreferredSize(new Dimension(450, 280));
-        myPanel.add(new JLabel("Message Colour: "), GUI.generateGBC(0,9,3,1,1,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(messageColourPicker, GUI.generateGBC(0,10,3,1,3,1,0,5,GridBagConstraints.WEST));
+        panel.add(new JLabel("Message Colour: "), GUI.generateGBC(0, 9, 3, 1, 1, 1, 0, 5, GridBagConstraints.WEST));
+        panel.add(messageColourPicker, GUI.generateGBC(0, 10, 3, 1, 3, 1, 0, 5, GridBagConstraints.WEST));
         messageColourPicker.setPreferredSize(new Dimension(450, 280));
-        myPanel.add(new JLabel("Info Colour: "), GUI.generateGBC(3,9,1,1,1,1,0,5,GridBagConstraints.WEST));
-        myPanel.add(infoColourPicker, GUI.generateGBC(3,10,1,7,1,1,0,5,GridBagConstraints.WEST));
+        panel.add(new JLabel("Info Colour: "), GUI.generateGBC(3, 9, 1, 1, 1, 1, 0, 5, GridBagConstraints.WEST));
+        panel.add(infoColourPicker, GUI.generateGBC(3, 10, 1, 7, 1, 1, 0, 5, GridBagConstraints.WEST));
         infoColourPicker.setPreferredSize(new Dimension(450, 280));
 
 
@@ -308,15 +301,15 @@ public class BillboardOptions {
         String[] options = new String[2];
         options[0] = "Submit";
         options[1] = "Cancel";
-        int result = JOptionPane.showOptionDialog(null, myPanel, "Billboard Editor", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+        int result = JOptionPane.showOptionDialog(null, panel, "Billboard Editor", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
 
         if (result == 0) {
             billboard.setName(billboardName.getText());
             //error check billboard before sending to server
             try {
-                new BillboardToImage(billboard,480,360).toImageIcon();
+                new BillboardToImage(billboard, 480, 360).toImageIcon();
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(JOptionPane.getRootFrame(),"Unable to generate billboard. Invalid Properties.", "Invalid Billboard Properties",JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Unable to generate billboard. Invalid Properties.", "Invalid Billboard Properties", JOptionPane.WARNING_MESSAGE);
                 return null;
             }
             return billboard;
@@ -327,5 +320,19 @@ public class BillboardOptions {
         }
 
         return null;
+    }
+
+    private static String encodeImage(File image) {
+        String base64Encoded = "";
+        try (FileInputStream inputStream = new FileInputStream(image)) {
+            byte[] imageBytes = new byte[(int) image.length()];
+            inputStream.read(imageBytes);
+            base64Encoded = Base64.getEncoder().encodeToString(imageBytes);
+        } catch (FileNotFoundException fnfe) {
+            System.out.println("Error selecting image file. Please ensure it is available and not corrupt.");
+        } catch (IOException ioex) {
+
+        }
+        return base64Encoded;
     }
 }

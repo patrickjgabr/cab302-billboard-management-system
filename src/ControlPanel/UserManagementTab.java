@@ -10,6 +10,8 @@ import static ControlPanel.CustomFont.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.xml.parsers.DocumentBuilder;
@@ -59,6 +61,19 @@ public class UserManagementTab {
         updateTable();
         setupDetails();
         mainPane.addTab("User Management", pane);
+        mainPane.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (e.getSource() instanceof JTabbedPane) {
+                    JTabbedPane panel = (JTabbedPane) e.getSource();
+                    if (panel.getSelectedIndex() == 2) {
+                        updateTable();
+                        pane.validate();
+                        pane.repaint();
+                    }
+                }
+            }
+        });
     }
 
     /**
