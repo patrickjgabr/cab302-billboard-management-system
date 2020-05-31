@@ -4,6 +4,7 @@ import Shared.Message;
 import Shared.BillboardToImage;
 import Viewer.GenerateBillboardFromXML;
 import org.w3c.dom.Attr;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -20,6 +21,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.awt.*;
@@ -28,6 +30,7 @@ import java.awt.event.ComponentEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Objects;
 import java.util.concurrent.Flow;
 
@@ -289,49 +292,75 @@ public class BillboardTab{
                 DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
                 DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
                 Document doc = dBuilder.newDocument();
+                doc.setXmlStandalone(true);
 
-                //Billboard root element
+                //create root element
                 Element root = doc.createElement("billboard");
                 Attr backgroundColour = doc.createAttribute("background");
                 backgroundColour.setValue(billboards.get(selected).getBackgroundColour());
                 root.setAttributeNode(backgroundColour);
                 doc.appendChild(root);
 
-                //Message Child Element
-                Element messageElement = doc.createElement("message");
-                Attr messageColour = doc.createAttribute("color");
-                messageColour.setValue(billboards.get(selected).getMessageTextColour());
-                root.setAttributeNode(messageColour);
+
+                //export message if exists
+                if (!billboards.get(selected).getMessageText().equals("")) {
+                    Element message = doc.createElement("message");
+                    message.appendChild(doc.createTextNode(billboards.get(selected).getMessageText()));
+                    Attr messageColour = doc.createAttribute("colour");
+                    messageColour.setValue(billboards.get(selected).getMessageTextColour());
+                    message.setAttributeNode(messageColour);
+                    root.appendChild(message);
+                }
 
 
-                //Information Child Element
-                Element infoElement = doc.createElement("information");
-                Attr infoColor = doc.createAttribute("color");
-                infoColor.setValue(billboards.get(selected).getInformationTextColour());
-                root.setAttributeNode(infoColor);
+                //export picture if exists as data or url;
+                if(!billboards.get(selected).getImageUrl().equals("")) {
+                    Element picture = doc.createElement("picture");
+                    try {
+                        Attr data = doc.createAttribute("data");
+                        Base64.getDecoder().decode(billboards.get(selected).getImageUrl());
+                        data.setValue(billboards.get(selected).getImageUrl());
+                        picture.setAttributeNode(data);
+                    } catch (Exception ex) {
+                        Attr url = doc.createAttribute("url");
+                        Base64.getDecoder().decode(billboards.get(selected).getImageUrl());
+                        url.setValue(billboards.get(selected).getImageUrl());
+                        picture.setAttributeNode(url);
+                    }
+                    root.appendChild(picture);
+                }
 
 
-                //Picture Child Element
-                Element pictureElement = doc.createElement("picture");
-                Attr imgURL = doc.createAttribute("url");
-                imgURL.setValue(billboards.get(selected).getPictureLink());
-                root.setAttributeNode(imgURL);
+                //export information text if it exists
+                if(!billboards.get(selected).getInformationText().equals("")) {
+                    Element information = doc.createElement("information");
+                    Attr infoColour = doc.createAttribute("colour");
+                    infoColour.setValue(billboards.get(selected).getInformationTextColour());
+                    information.setAttributeNode(infoColour);
+                    information.appendChild(doc.createTextNode(billboards.get(selected).getInformationText()));
+                    root.appendChild(information);
+                }
+
 
                 //Create XML file
-                TransformerFactory tFactory = TransformerFactory.newInstance();
-                Transformer tFormer = tFactory.newTransformer();
-                DOMSource source = new DOMSource(doc);
-
-                String xmlFilepath = f.getSelectedFile() + "Billboard" + billboards.get(selected).getBillboardID() + ".xml";
-                StreamResult sResult = new StreamResult(new File(xmlFilepath));
-
-                tFormer.transform(source, sResult);
-
-                System.out.println("Successfully Exported Billboard");
+                try {
+                    TransformerFactory tFactory = TransformerFactory.newInstance();
+                    Transformer tFormer = tFactory.newTransformer();
+                    DOMSource source = new DOMSource(doc);
+                    String xmlFilepath = f.getSelectedFile()
+                            + "\\"
+                            + billboards.get(selected).getBillboardID()
+                            + " "
+                            +  billboards.get(selected).getName() + " "
+                            +  billboards.get(selected).getCreatorName() + ".xml";
+                    StreamResult sResult = new StreamResult(new File(xmlFilepath));
+                    tFormer.transform(source, sResult);
+                    GUI.ServerDialogue(200, "Export Successful");
+                } catch (Exception error) {
+                    GUI.ServerDialogue(500,"");
+                }
             } catch (ParserConfigurationException pce) {
                 pce.printStackTrace();
-            } catch (TransformerException tfe) {
-                tfe.printStackTrace();
             }
         });
 
