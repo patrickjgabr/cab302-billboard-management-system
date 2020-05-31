@@ -1,26 +1,28 @@
 package Viewer;
 
-//import ControlPanel.CustomFont;
 import Shared.Billboard;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+
 
 public class GenerateBillboardFromXML{
+    /**
+     * Creates billboard object from XML file by scanning for certain tags and elements and assigning them to the
+     * appropriate billboard elements. If tags are not present, that element is assigned to an empty string "" on
+     * the billboard, and ignored when billboard is rendered.
+     * @param XMLFile File to be converted to billboard, must be correct format with proper tags.
+     * @param billboardName Name of billboard being created from the XML.
+     * @param creatorName Name of creator.
+     * @return Billboard object.
+     */
     public static Billboard XMLToBillboard(File XMLFile, String billboardName, String creatorName){
-        String background = "";
-        String message = "";
+        String background = "";             //every required billboard constructor. if they do not appear in
+        String message = "";                //the XML file then they are assigned an empty string and ignored.
         String info = "";
         String msgColour = "";
         String infoColour = "";
@@ -28,7 +30,7 @@ public class GenerateBillboardFromXML{
         String link = "";
         String data = "";
         try {
-            File input = XMLFile;
+            File input = XMLFile;           //input XML file
             DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = fac.newDocumentBuilder();
             Document doc = db.parse(input);
@@ -38,31 +40,31 @@ public class GenerateBillboardFromXML{
             Node node = n.item(0);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element el = (Element) node;
-                if (el.hasAttribute("background")) {
-                    background = el.getAttribute("background");
+                if (el.hasAttribute("background")) {                //checking for background attribute
+                    background = el.getAttribute("background");     //and assigning if present.
                 }
-                if(el.getElementsByTagName("picture").item(0) != null){
+                if(el.getElementsByTagName("picture").item(0) != null){                 //checking for picture attribute
                     if(el.getElementsByTagName("picture").item(0).hasAttributes()){
                         try{
-                            link = el.getElementsByTagName("picture").item(0).getAttributes().getNamedItem("url").getNodeValue();
+                            link = el.getElementsByTagName("picture").item(0).getAttributes().getNamedItem("url").getNodeValue();      //if URL format
                         }catch (Exception e){
                             try{
-                                data = el.getElementsByTagName("picture").item(0).getAttributes().getNamedItem("data").getNodeValue();
+                                data = el.getElementsByTagName("picture").item(0).getAttributes().getNamedItem("data").getNodeValue();  //if base64 encoded
                             }catch (Exception j){e.printStackTrace();}
                         }
 
                     }
                 };
-                if(el.getElementsByTagName("message").item(0) != null){                         //message and colour
+                if(el.getElementsByTagName("message").item(0) != null){                         //checking for message tag
                     message = el.getElementsByTagName("message").item(0).getTextContent();
                     if (el.getElementsByTagName("message").item(0).hasAttributes()){
-                        msgColour = el.getElementsByTagName("message").item(0).getAttributes().getNamedItem("colour").getNodeValue();
+                        msgColour = el.getElementsByTagName("message").item(0).getAttributes().getNamedItem("colour").getNodeValue();   //checking for message colour tag
                     }
                 }
-                if(el.getElementsByTagName("information").item(0) != null){                     //info text and colour
+                if(el.getElementsByTagName("information").item(0) != null){                     //checking for info text tag
                     info = el.getElementsByTagName("information").item(0).getTextContent();
                     if (el.getElementsByTagName("information").item(0).hasAttributes()){
-                        infoColour = el.getElementsByTagName("information").item(0).getAttributes().getNamedItem("colour").getNodeValue();
+                        infoColour = el.getElementsByTagName("information").item(0).getAttributes().getNamedItem("colour").getNodeValue();      //checking for info text colour tag
                     }
                 }
             }
@@ -70,9 +72,10 @@ public class GenerateBillboardFromXML{
         }catch (Exception e){
             e.printStackTrace();
         }
-        if(!link.equals("")){picture=link;}
-        else if(!data.equals("")){ picture=data; }
+        if(!link.equals("")){picture=link;}     //if url is not empty, set picture source as URL
+        else if(!data.equals("")){ picture=data; }      //if data attribute is not empty, set picture source as data attribute
 
-        return new Billboard(creatorName, billboardName, picture, message, msgColour, background, info, infoColour);
+        return new Billboard(creatorName, billboardName, picture, message, msgColour, background, info, infoColour);  //new billboard returned. 
     }
 }
+
