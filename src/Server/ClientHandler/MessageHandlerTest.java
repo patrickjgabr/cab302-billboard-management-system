@@ -15,7 +15,7 @@ import java.util.Arrays;
 public class MessageHandlerTest {
 
     /*
-    IMPORTANT: RUNNING THIS METHOD WILL RESET THE DATABASE
+    IMPORTANT: RUNNING THIS TEST WILL RESET THE DATABASE
      */
 
     private static Properties properties;
