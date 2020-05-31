@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 /**
  * The User class provides a storage structure for User objects which need to be networked between components including the Server, Control Panel and Viewer.
- * This class provides a highly pliable method to instantiating, storing and editing Users and their characters through its set of constructors and getter setter methods.
+ * This class provides a highly pliable method of instantiating, storing and editing Users and their properties through its set of constructors and getter setter methods.
  */
 public class User implements Serializable {
 
@@ -32,14 +32,21 @@ public class User implements Serializable {
 
     /**
      * Constructor which instantiates a User Object from a byte array containing the relevant User properties.
-     * This method is designed to recreate Users from the output of the getByteArray method
+     * This method is designed to recreate a Users Object from the output of the getByteArray method
      * @param bytes User Object as a byte array
      */
     public User(byte[] bytes){
         try {
+            //Instantiate a ObjectInputStream using the given byte array
             ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(bytes));
+
+            //Read the given object
             Object user = inputStream.readObject();
+
+            //Cast the Object to User
             User createdUser = (User) user;
+
+            //Assign the properties of User to the properties of this
             this.userName = createdUser.getUserName();
             this.userPassword = createdUser.getUserPassword();
             this.permission = createdUser.getPermission();
@@ -47,7 +54,7 @@ public class User implements Serializable {
             this.salt = createdUser.getSalt();
 
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+
         }
     }
 
