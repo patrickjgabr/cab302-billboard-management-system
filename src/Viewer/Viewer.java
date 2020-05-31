@@ -1,5 +1,7 @@
 package Viewer;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,14 +25,19 @@ public class Viewer {
      * @param args
      */
    public static void main (String[] args) {
-       boolean shouldSleep = true;
-       Billboard current = errorConnectingServer;
+       GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();
+       GraphicsDevice device = graphics.getDefaultScreenDevice();
+       Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+       int screenWidth = (int)screenSize.getWidth();
+       int screenHeight = (int)screenSize.getHeight();
+       boolean shouldSleep;
+       Billboard current;
        Client client = new Client();
        Message requestSched = new Message().getScheduleViewer();
        JFrame viewer = new JFrame("Viewer");                       //initialising jFrame viewer
        viewer.setExtendedState(JFrame.MAXIMIZED_BOTH);                  //setting up viewer to be full screen borderless
        viewer.setUndecorated(true);
-
+       viewer.setResizable(false);
        viewer.addMouseListener(new MouseAdapter() {                     //Action listener listening for mouse clicks to close window on click
            @Override
            public void mouseClicked(MouseEvent e) {
@@ -74,7 +81,7 @@ public class Viewer {
                int counter=0;
                for(int i=105;i>0;i--){          //main loop mario animation
                    Billboard errorCountdown = new Billboard("ROOT", "Server Error Billboard", marioData.get(counter) , "Error connecting to server","#000000","",("Retrying in " + i/7 +" seconds..."),"");
-                   JPanel image = new BillboardToImage(errorCountdown, 400, 400).toJPanel();
+                   JPanel image = new BillboardToImage(errorCountdown, screenWidth, screenHeight).toJPanel();
                    viewer.getContentPane().add(image);
                    viewer.pack();
                    viewer.setVisible(true);
@@ -85,10 +92,10 @@ public class Viewer {
                }
            }
             if(shouldSleep){        //normal case
-                JPanel image = new BillboardToImage(current, 400, 400).toJPanel();
+                JPanel image = new BillboardToImage(current, screenWidth, screenHeight).toJPanel();
                 viewer.getContentPane().add(image);
                 viewer.pack();
-                viewer.setVisible(true);
+                device.setFullScreenWindow(viewer);
                 try {
                     sleep(15000);
                 } catch (InterruptedException e) {
