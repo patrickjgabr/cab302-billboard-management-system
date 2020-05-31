@@ -1,7 +1,5 @@
 package ControlPanel;
 
-
-
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -25,7 +23,7 @@ public class UserAuthentication extends JFrame {
     private JTextField password;
 
     /**
-     * method for setting up username and password entry fields and sending inputs to server.
+     * Method for setting up username and password entry fields and sending provided inputs to server.
      */
     public UserAuthentication() {
         //user name
@@ -71,7 +69,7 @@ public class UserAuthentication extends JFrame {
 
 
         JPanel panel = new JPanel(new GridLayout(4, 1));
-        panel.add(user_label);
+        panel.add(user_label);                                                  //adding all components
         panel.add(username);
         panel.add(password_label);
         panel.add(password);
@@ -88,9 +86,19 @@ public class UserAuthentication extends JFrame {
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
     }
+
+    /**
+     * gets username of logged in user
+     * @return String of username
+     */
     public String getUsername() {
         return username.getText();
     }
+
+    /**
+     * gets logged in users password
+     * @return String containing users password
+     */
     public String getPassword() {
             MessageDigest passwordHash;
             try {
@@ -111,6 +119,10 @@ public class UserAuthentication extends JFrame {
         return submit;
     }
 
+    /**
+     * get current working frame. used in UserAuthentication method
+     * @return Jframe object of current working frame.
+     */
     public JFrame getFrame() {
         return frame;
     }

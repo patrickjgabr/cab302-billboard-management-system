@@ -1,6 +1,5 @@
 package Viewer;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -15,8 +14,8 @@ import static java.lang.Thread.sleep;
 
 public class Viewer {
     //default billboards for non-scheduled and error cases
-    public static Billboard noBillboardScheduled = new Billboard("ROOT", "Sched Error Billboard", "" , "No Billboard Scheduled","#FFFFFF","#000000","Retrying in 15","");
-    public static Billboard errorConnectingServer = new Billboard("ROOT", "Server Error Billboard", "" , "Error connecting to server","#000000","","Retrying in 15","");
+    public static Billboard noBillboardScheduled = new Billboard("ROOT", "Sched Error Billboard", "" , "No Billboard Scheduled","#000000","#FFFFFF","","");
+    public static Billboard errorConnectingServer = new Billboard("ROOT", "Server Error Billboard", "" , "Error connecting to server","#000000","#FFFFFF","Retrying in 15","");
 
     /**
      * Main method for running viewer. Can be run on any device and as long as the server is also running, will display scheduled billboards

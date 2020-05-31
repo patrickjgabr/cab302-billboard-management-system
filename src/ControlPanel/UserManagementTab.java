@@ -156,7 +156,7 @@ public class UserManagementTab {
 
         pane.add(information, GUI.generateGBC(1,1,1,1,1,1,GridBagConstraints.HORIZONTAL,18,GridBagConstraints.NORTHEAST));
 
-        editButton.addActionListener(ee -> {
+        editButton.addActionListener(ee -> {                                                //action listener for edit button.
             User edited = new UserManagementOptions().editUser(users.get(selected));
             if (edited != null) {
                 Message request = client.sendMessage(new Message(token).updateUser(edited));
@@ -169,7 +169,7 @@ public class UserManagementTab {
             }
         });
 
-        deleteButton.addActionListener(ee -> {
+        deleteButton.addActionListener(ee -> {                                                      //action listener for delete button
             Message request = client.sendMessage(new Message(token).deleteUser(users.get(selected)));
             GUI.ServerDialogue(request.getCommunicationID(),"Delete user successful.");
             updateTable();
@@ -182,7 +182,7 @@ public class UserManagementTab {
 
         });
 
-        JButton changePassword = new JButton("Change Password");
+        JButton changePassword = new JButton("Change Password");            //change password button and handler
         changePassword.setFont(buttons);
         changePassword.setBackground(buttonCol);
         changePassword.setBorder(new LineBorder(softBlue, 2, true));
@@ -272,10 +272,10 @@ public class UserManagementTab {
             }
         });
 
-        JPanel topButtons = new JPanel(new GridLayout(1,4,10,5));
+        JPanel topButtons = new JPanel(new GridLayout(1,4,10,5));       //setup grid bag layout for all buttons
         topButtons.setBorder(new EmptyBorder(10, 5, 10, 5));
-        topButtons.setPreferredSize(new Dimension(600, 50));
-        topButtons.add(createButton);
+        topButtons.setPreferredSize(new Dimension(600, 50));            //set button bar size
+        topButtons.add(createButton);               //add all buttons to top button bar.
         topButtons.add(editButton);
         topButtons.add(deleteButton);
         topButtons.add(changePassword);
