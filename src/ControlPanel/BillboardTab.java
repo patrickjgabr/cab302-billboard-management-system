@@ -260,13 +260,20 @@ public class BillboardTab {
                 if (edited != null) {
                     Message request = client.sendMessage(new Message(token).updateBillboard(edited));
                     GUI.ServerDialogue(request.getCommunicationID(), "Edit billboard successful.");
-
+                    updateTable();
+                    information.removeAll();
+                    preview.setIcon(null);
+                    information.add(new JLabel("Choose a billboard."));
+                    pane.validate();
+                    pane.repaint();
+                    editButton.setEnabled(false);
+                    deleteButton.setEnabled(false);
+                    exportButton.setEnabled(false);
                 }
             } else JOptionPane.showMessageDialog(null, "Please select a billboard first.");
         });
 
         deleteButton.addActionListener(e -> {
-            //
             if (!Objects.equals(editButton.getText(), "")) {
                 selected = rowSelected.getMinSelectionIndex();
                 Billboard delete = billboards.get(selected);
@@ -276,10 +283,11 @@ public class BillboardTab {
                     updateTable();
                     information.removeAll();
                     preview.setIcon(null);
+                    information.add(new JLabel("Select a user to view permissions."));
                     editButton.setEnabled(false);
                     deleteButton.setEnabled(false);
                     exportButton.setEnabled(false);
-                    information.add(new JLabel("Select a user to view permissions."));
+
                     pane.validate();
                     pane.repaint();
                 }
