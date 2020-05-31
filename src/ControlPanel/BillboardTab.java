@@ -323,7 +323,6 @@ public class BillboardTab{
                         picture.setAttributeNode(data);
                     } catch (Exception ex) {
                         Attr url = doc.createAttribute("url");
-                        Base64.getDecoder().decode(billboards.get(selected).getImageUrl());
                         url.setValue(billboards.get(selected).getImageUrl());
                         picture.setAttributeNode(url);
                     }
