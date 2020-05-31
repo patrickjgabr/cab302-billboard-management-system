@@ -14,6 +14,10 @@ import java.util.Arrays;
 
 public class MessageHandlerTest {
 
+    /*
+    IMPORTANT: RUNNING THIS METHOD WILL RESET THE DATABASE
+     */
+
     private static Properties properties;
     private static Database database;
 
@@ -785,5 +789,29 @@ public class MessageHandlerTest {
         message = new MessageHandler(message, properties).getReturnMessage();
 
         assertEquals(200, message.getCommunicationID());
+    }
+
+    @AfterAll
+    public static void refreshDatabase() {
+        Database database = new Database(properties);
+        User rootUser = new User("root", "c13866ce9e42e90d3cf50ded2dc9e00194ffc4ad4e15865cd1b368f168944646", new ArrayList<>(Arrays.asList(1, 1, 1, 1)), 100000,"y6WOb24rUAINN6KoUQ7lWNeniyTpsxPaZqzEhvAMzSqE5MrIx2kJS9TaTm0rl96n");
+
+        database.startConnection();
+        try {
+            database.runDelete("DELETE FROM sessions");
+            database.runDelete("DELETE FROM schedule");
+            database.runDelete("DELETE FROM billboards");
+            database.runDelete("DELETE FROM users");
+            database.closeConnection();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
+        UserDatabase userDatabase = new UserDatabase(properties);
+        try {
+            userDatabase.addToDatabase(rootUser);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
     }
 }
