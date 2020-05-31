@@ -2,6 +2,7 @@ package ControlPanel;
 
 import Shared.Billboard;
 import Shared.BillboardToImage;
+import Shared.Client;
 import Shared.Message;
 import Viewer.GenerateBillboardFromXML;
 import org.w3c.dom.Attr;

@@ -1,7 +1,6 @@
 package ControlPanel;
 import Shared.*;
 import Shared.Event;
-import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

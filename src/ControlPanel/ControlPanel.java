@@ -1,5 +1,6 @@
 package ControlPanel;
 
+import Shared.Client;
 import Shared.Message;
 import static ControlPanel.CustomFont.*;
 import static java.lang.System.exit;

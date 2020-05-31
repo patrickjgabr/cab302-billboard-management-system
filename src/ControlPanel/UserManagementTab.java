@@ -1,5 +1,6 @@
 package ControlPanel;
 
+import Shared.Client;
 import Shared.Message;
 import Shared.User;
 
@@ -253,7 +254,7 @@ public class UserManagementTab {
                 createPerm.setIcon(getPermissionsIcon(users.get(selected).getPermission().get(0)));
                 perms.add(createPerm, GUI.generateGBC(0, 0, 1, 1, 1, 1, GridBagConstraints.HORIZONTAL, 5, GridBagConstraints.WEST));
                 createPerm.setFont(permissionFont);
-                JCheckBox editPerm = new JCheckBox("    Edit Billboards");
+                JCheckBox editPerm = new JCheckBox("    Edit All Billboards");
                 editPerm.setIcon(getPermissionsIcon(users.get(selected).getPermission().get(1)));
                 perms.add(editPerm, GUI.generateGBC(0, 2, 1, 1, 1, 1, GridBagConstraints.HORIZONTAL, 5, GridBagConstraints.WEST));
                 editPerm.setFont(permissionFont);

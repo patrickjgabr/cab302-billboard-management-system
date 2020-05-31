@@ -1,4 +1,4 @@
-package ControlPanel;
+package Shared;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

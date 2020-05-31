@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import ControlPanel.Client;
+import Shared.Client;
 import Shared.*;
 
 import static java.lang.Thread.sleep;
