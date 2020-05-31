@@ -253,10 +253,16 @@ public class BillboardOptions {
         billboardName.setEditable(false);
         imgSRC.setText(billboard.getImageUrl());
         messageText.setText(billboard.getMessageText());
-        messageColourPicker.setColor(Color.decode(billboard.getMessageTextColour()));
-        backgroundColourPicker.setColor(Color.decode(billboard.getBackgroundColour()));
+        if(!billboard.getMessageTextColour().equals("")){
+            messageColourPicker.setColor(Color.decode(billboard.getMessageTextColour()));
+        }
+        if(!billboard.getBackgroundColour().equals("")){
+            backgroundColourPicker.setColor(Color.decode(billboard.getBackgroundColour()));
+        }
         infoText.setText(billboard.getInformationText());
-        infoColourPicker.setColor(Color.decode(billboard.getInformationTextColour()));
+        if(!billboard.getInformationTextColour().equals("")){
+            infoColourPicker.setColor(Color.decode(billboard.getInformationTextColour()));
+        }
         return BillboardEditorGUI();
     }
 
