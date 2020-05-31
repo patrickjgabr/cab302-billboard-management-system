@@ -103,7 +103,7 @@ public class UserManagementTab {
         table.setRowHeight(60);
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setPreferredSize(new Dimension(300,0));
-        pane.add(scrollPane, GUI.generateGBC(0,1,1,1,1,1,GridBagConstraints.VERTICAL, 0, GridBagConstraints.WEST));
+        pane.add(scrollPane, GUI.generateGBC(0,1,1,1,0,1,GridBagConstraints.VERTICAL, 0, GridBagConstraints.WEST));
     }
 
     /**

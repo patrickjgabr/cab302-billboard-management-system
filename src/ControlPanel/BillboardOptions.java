@@ -27,7 +27,6 @@ public class BillboardOptions {
     private JColorChooser backgroundColourPicker = new JColorChooser();
     private JTextField infoText = new JTextField();
     private JColorChooser infoColourPicker = new JColorChooser();
-    private String username;
     private JLabel preview = new JLabel("");
     private JPanel myPanel = new JPanel();
     private String blank;
@@ -37,7 +36,6 @@ public class BillboardOptions {
      * @param username username of user editing/creating billboard.
      */
     public BillboardOptions(String username) {
-        this.username = username;
         billboard.setName("");
         billboard.setMessageText("");
         billboard.setBillboardID(0);
@@ -46,6 +44,7 @@ public class BillboardOptions {
         billboard.setMessageTextColour("#000000");
         billboard.setInformationText("");
         billboard.setImageUrl("");
+        billboard.setCreatorName(username);
 
         try {
             Scanner fileScanner = new Scanner(new File("externalResources/blank.txt"));
@@ -80,6 +79,7 @@ public class BillboardOptions {
                     billboard.setImageUrl(blank);
                 }
                 preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
+                billboard.setImageUrl(imgSRC.getText());
 
             }
             @Override
@@ -89,6 +89,7 @@ public class BillboardOptions {
                     billboard.setImageUrl(blank);
                 }
                 preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
+                billboard.setImageUrl(imgSRC.getText());
             }
 
             @Override
@@ -98,6 +99,7 @@ public class BillboardOptions {
                     billboard.setImageUrl(blank);
                 }
                 preview.setIcon(new BillboardToImage(billboard, 352,240).toImageIcon());
+                billboard.setImageUrl(imgSRC.getText());
             }
         });
 
@@ -220,9 +222,10 @@ public class BillboardOptions {
 
     public Billboard editBillboard(Billboard billboard) {
         this.billboard.setBillboardID(billboard.getBillboardID());
+        this.billboard.setCreatorName(billboard.getCreatorName());
         billboardName.setText(billboard.getName());
         billboardName.setEditable(false);
-        imgSRC.setText(billboard.getPictureLink());
+        imgSRC.setText(billboard.getImageUrl());
         messageText.setText(billboard.getMessageText());
         messageColourPicker.setColor(Color.decode(billboard.getMessageTextColour()));
         backgroundColourPicker.setColor(Color.decode(billboard.getBackgroundColour()));
@@ -277,8 +280,6 @@ public class BillboardOptions {
         int result = JOptionPane.showOptionDialog(null, myPanel, "Billboard Editor", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
 
         if (result == 0) {
-            billboard.setImageUrl(billboard.getImageUrl());
-            billboard.setCreatorName(username);
             billboard.setName(billboardName.getText());
             //error check billboard before sending to server
             try {

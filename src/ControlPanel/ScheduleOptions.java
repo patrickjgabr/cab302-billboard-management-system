@@ -67,11 +67,14 @@ public class ScheduleOptions {
         for (int x = 1; x <=10; x++) {
             rawIntervals.add(Integer.toString(x));
         }
+
         this.intervals = new JComboBox<>(rawIntervals.toArray());
         ButtonGroup checkBoxGroup = new ButtonGroup();
         checkBoxGroup.add(daily);
         checkBoxGroup.add(hourly);
         checkBoxGroup.add(minutely);
+        intervalminutes.setEnabled(false);
+        intervals.setEnabled(false);
 
     }
     public Scheduled newSchedule() {
@@ -128,12 +131,15 @@ public class ScheduleOptions {
         }
         if (scheduled.getInterval(0) == 2) {
             hourly.setSelected(true);
+            intervals.setEnabled(true);
             intervals.setSelectedItem("" + scheduled.getInterval(1));
         }
         if (scheduled.getInterval(0) == 3) {
             minutely.setSelected(true);
             intervals.setSelectedItem("" + scheduled.getInterval(1));
+            intervals.setEnabled(true);
             intervalminutes.setSelectedItem("" + scheduled.getInterval(2));
+            intervalminutes.setEnabled(true);
         }
         return ScheduleEditorGUI(scheduled);
     }
@@ -144,8 +150,7 @@ public class ScheduleOptions {
     private  Scheduled ScheduleEditorGUI(Scheduled scheduled){
         JPanel myPanel = new JPanel(new GridBagLayout());
         JFrame f = new JFrame();
-        intervalminutes.setEnabled(false);
-        intervals.setEnabled(false);
+
         billboardsList.setPreferredSize(new Dimension(150,20));
         hour.setPreferredSize(new Dimension(50,20));
         minutes.setPreferredSize(new Dimension(50,20));

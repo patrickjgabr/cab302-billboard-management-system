@@ -328,9 +328,9 @@ public class MessageHandler {
                 //If a exception is thrown print an error message
                 } catch (Throwable throwable) {
 
-                    //Print a error message and set the return status to 500
-                    returnMessage.setCommunicationID(500);
-                    consoleMessage.printWarning("Database failed to add user",75);
+                    //Print a error message and set the return status to 519
+                    returnMessage.setCommunicationID(519);
+                    consoleMessage.printWarning("Database failed to add user username already exists",75);
                 }
 
             //If userPassword equals nothing then print an error message

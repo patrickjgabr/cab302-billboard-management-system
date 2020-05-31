@@ -61,7 +61,7 @@ public class BillboardToImage {
         //setting defaults
         Color bg = Color.white, mt = Color.black, it = Color.black;                            //bg = background colour, mt = message text colour, it = info text colour
 
-        boolean picture = !billboard.getPictureLink().equals("");
+        boolean picture = !billboard.getImageUrl().equals("");
         boolean info = !billboard.getInformationText().equals("");
         boolean message = !billboard.getMessageText().equals("");    //boolean determining whether text is present.
         BufferedImage bi = new BufferedImage(resolutionx, resolutiony, BufferedImage.TYPE_INT_RGB);
@@ -170,11 +170,11 @@ public class BillboardToImage {
         if (picture){
             BufferedImage image = null;
             try{
-                URL source = new URL(billboard.getPictureLink());                   //image display from URL
+                URL source = new URL(billboard.getImageUrl());                   //image display from URL
                 image = ImageIO.read(source);
             } catch (IOException e){
                 try{
-                    String data = billboard.getPictureLink();
+                    String data = billboard.getImageUrl();
                     byte[] decoded = Base64.getDecoder().decode(data);
                     image = ImageIO.read(new ByteArrayInputStream(decoded));                //image displayed from picture data
                 } catch (IOException ex) {

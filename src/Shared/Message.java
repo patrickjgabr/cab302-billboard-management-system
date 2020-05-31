@@ -93,96 +93,153 @@ public class Message implements Serializable {
         return this;
     }
 
-
+    /**
+     * Sets the Message Object to have communicationID 30
+     * @return Message Object
+     */
     public Message requestUsers() {
         this.communicationID = 30;
         return this;
     }
+
+    /**
+     * Sets the Message Object data to a User Object to be added into the database with communicationID 31
+     * @param user User Object to be added into the database
+     * @return Message Object
+     */
     public Message createUsers(User user) {
         this.communicationID = 31;
         this.data = user;
         return this;
     }
+
+    /**
+     *Sets the Message Object data to a User Object to update in the database with communicationID 32
+     * @param user User Object to be updated in the database
+     * @return Message Object
+     */
     public Message updateUser(User user) {
         this.communicationID = 32;
         this.data = user;
         return this;
     }
 
+    /**
+     *Sets the Message Object data to a User Object to be removed from the database with communicationID 33
+     * @param user User Object to be removed from the database
+     * @return Message Object
+     */
     public Message deleteUser(User user) {
         this.communicationID = 33;
         this.data = user;
         return this;
     }
 
+    /**
+     *Sets the Message Object data to a String array of the username and password to be updated in the database with communicationID 34
+     * @param username Current username
+     * @param password New password
+     * @return Message Object
+     */
     public Message updatePassword(String username, String password) {
         this.communicationID = 34;
         this.data= new String[]{username,password};
         return this;
     }
 
+    /**
+     *Sets the Message Object to have a communicationID 40
+     * @return Message Object
+     */
     public Message requestSchedule() {
         this.communicationID = 40;
         return this;
     }
+
+    /**
+     *Sets the Message Object data to a Scheduled Object to be added into the database with communicationID 41
+     * @param scheduled Scheduled Object to be added into the database
+     * @return Message Object
+     */
     public Message scheduleBillboard(Scheduled scheduled) {
         this.communicationID = 41;
         this.data = scheduled;
         return this;
     }
 
+    /**
+     *Sets the Message Object data to a Scheduled Object to be updated in the database with communicationID 42
+     * @param scheduled Scheduled Object to be update in the database
+     * @return Message Object
+     */
     public Message updateSchedule(Scheduled scheduled) {
         this.communicationID = 42;
         this.data = scheduled;
         return this;
     }
 
+    /**
+     *Sets the Message Object data to a Scheduled Object to be removed from the database with communicationID 43
+     * @param scheduled Scheduled Object to be removed from the database
+     * @return Message Object
+     */
     public Message deleteSchedule(Scheduled scheduled) {
         this.communicationID = 43;
         this.data = scheduled;
         return this;
     }
 
+    /**
+     *Sets the Message Object to have communicationID 50
+     * @return Message Object
+     */
     public Message getScheduleViewer() {
         this.communicationID = 50;
         return this;
     }
 
-
-
-   
-
     /**
-     * Returns the session information of the Control Panel
-     * @return Session object which contains session information about the Control Panel
+     *Returns the Messages session token
+     * @return Message session token
      */
     public String getSession() {
         return session;
     }
 
     /**
-     * Sets the session inforamtion of the communication packet
-     * @param session Session object for the Control Panel
+     *Sets the Message Object to have the given session
+     * @param session New session token
      */
     public void setSession(String session) {
         this.session = session;
     }
 
     /**
-     * Returns the data which the communication packet contains
-     * @return  A large number of different Classes that all extend Object
+     *Returns the Messages data (Variable type)
+     * @return Message data (Variable type)
      */
-
     public Object getData() {
         return data;
     }
 
+    /**
+     *Sets the Message Object data to a given Object
+     * @param data New data Object
+     */
     public void setData(Object data) { this.data = data; }
 
 
+    /**
+     *Returns the Messages communicationID
+     * @return Message communicationID
+     */
     public Integer getCommunicationID() {
         return communicationID;
     }
 
+    /**
+     *Sets the Message Object communicationID to be the given data
+     * @param communicationID New communicationID
+     */
     public void setCommunicationID(Integer communicationID) {this.communicationID = communicationID;}
 }
