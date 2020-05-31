@@ -89,6 +89,7 @@ public class ScheduleOptions {
     //Set GUI options based on schedule being edited.
     public Scheduled editSchedule(Scheduled scheduled) {
         billboardsList.setSelectedItem(scheduled.getBillboardName());
+        billboardsList.setEnabled(false);
         switch(scheduled.getDay()) {
             case 7:
                 day.setSelectedItem("Saturday");
