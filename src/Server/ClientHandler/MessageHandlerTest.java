@@ -1,17 +1,10 @@
-/*package Server.ClientHandler;
+package Server.ClientHandler;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import Server.Database.BillboardDatabase;
-import Server.Database.Database;
-import Server.Database.SessionDatabase;
-import Server.Database.UserDatabase;
-import Shared.Billboard;
-import Shared.Message;
-import Shared.Properties;
-import Shared.User;
+import Server.Database.*;
+import Shared.*;
 import org.junit.jupiter.api.*;
-
 import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -21,6 +14,10 @@ import java.util.Arrays;
 
 public class MessageHandlerTest {
 
+    /*
+    IMPORTANT: RUNNING THIS METHOD WILL RESET THE DATABASE
+     */
+
     private static Properties properties;
     private static Database database;
 
@@ -29,7 +26,7 @@ public class MessageHandlerTest {
             UserDatabase userDatabase = new UserDatabase(properties);
             User user = userDatabase.getUser("expiredToken", true);
 
-            Connection connection = DriverManager.getConnection(properties.getDatabaseURL(), properties.getDatabaseUser(), properties.getDatabasePassword());
+            Connection connection = DriverManager.getConnection(properties.getDatabaseURL() + '/' + properties.getDatabaseName(), properties.getDatabaseUser(), properties.getDatabasePassword());
             PreparedStatement statement = connection.prepareStatement("INSERT INTO sessions VALUES (?,?,?,?)");
             statement.clearParameters();
             statement.setString(1 ,"THISTOKENISEXPIRED");
@@ -79,11 +76,12 @@ public class MessageHandlerTest {
     public static void SetupVariables() {
         try {
             properties = new Properties();
-            properties.setDatabaseURL("jdbc:mariadb://localhost:3306/testdatabase");
             database = new Database(properties);
             setupTestDatabase();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
         }
     }
 
@@ -139,7 +137,7 @@ public class MessageHandlerTest {
         MessageHandler messageHandler = new MessageHandler(message, properties);
 
         Message returnMessage = messageHandler.getReturnMessage();
-        assertEquals(503, returnMessage.getCommunicationID());
+        assertEquals(200, returnMessage.getCommunicationID());
     }
 
     @Test
@@ -148,7 +146,7 @@ public class MessageHandlerTest {
         MessageHandler messageHandler = new MessageHandler(message, properties);
 
         Message returnMessage = messageHandler.getReturnMessage();
-        assertEquals(503, returnMessage.getCommunicationID());
+        assertEquals(200, returnMessage.getCommunicationID());
     }
 
     public String setRootToken() {
@@ -265,7 +263,7 @@ public class MessageHandlerTest {
 
         MessageHandler messageHandler2 = new MessageHandler(message, properties);
         Message returnMessage2 = messageHandler1.getReturnMessage();
-        assertEquals(506, returnMessage1.getCommunicationID());
+        assertEquals(506, returnMessage2.getCommunicationID());
     }
 
     @Test
@@ -302,7 +300,7 @@ public class MessageHandlerTest {
 
             MessageHandler messageHandler = new MessageHandler(message, properties);
             Message returnMessage = messageHandler.getReturnMessage();
-            assertEquals(504, returnMessage.getCommunicationID());
+            assertEquals(200, returnMessage.getCommunicationID());
         } catch (Throwable throwable) {
             assertEquals(false, true);
         }
@@ -329,11 +327,14 @@ public class MessageHandlerTest {
     public void UpdateBillboardValid() {
         try {
             BillboardDatabase billboardDatabase = new BillboardDatabase(properties);
-            Billboard billboard = billboardDatabase.getBillboard("name", false);
-            Billboard updateBillboard = new Billboard("root", "name", "NEWVALUE", "NEWVALUE", "NEWVALUE", "NEWVALUE", "NEWVALUE", "NEWVALUE");
-            updateBillboard.setBillboardID(billboard.getBillboardID());
+            Billboard newBillboard = new Billboard("root", "new", "NEWVALUE", "NEWVALUE", "NEWVALUE", "NEWVALUE", "NEWVALUE", "NEWVALUE");
 
-            Message message = new Message().updateBillboard(updateBillboard);
+            User root = new UserDatabase(properties).getUser("root", true);
+            billboardDatabase.addToDatabase(newBillboard, root.getUserID());
+            Billboard billboard = billboardDatabase.getBillboard("new", false);
+            billboard.setMessageText("NEW TEXT");
+
+            Message message = new Message().updateBillboard(billboard);
             message.setSession(setRootToken());
 
             MessageHandler messageHandler = new MessageHandler(message, properties);
@@ -341,19 +342,47 @@ public class MessageHandlerTest {
             assertEquals(200, returnMessage.getCommunicationID());
 
             Billboard billboard1 = billboardDatabase.getBillboard(billboard.getName(), false);
-            assertEquals("root", billboard1.getCreatorName());
-            assertEquals("name", billboard1.getName());
-            assertEquals("NEWVALUE", billboard1.getPictureLink());
-            assertEquals("NEWVALUE", billboard1.getMessageText());
-            assertEquals("NEWVALUE", billboard1.getMessageTextColour());
-            assertEquals("NEWVALUE", billboard1.getBackgroundColour());
-            assertEquals("NEWVALUE", billboard1.getInformationText());
-            assertEquals("NEWVALUE", billboard1.getInformationTextColour());
+            assertEquals("NEW TEXT", billboard1.getMessageText());
             assertEquals(0, billboard1.getScheduled());
 
         } catch (Throwable throwable) {
             assertEquals(false, true);
         }
+    }
+
+    @Test
+    public void RemoveBillboardDoesntExist() {
+        Billboard updateBillboard = new Billboard("root", "doesntExist", "NEWVALUE", "NEWVALUE", "NEWVALUE", "NEWVALUE", "NEWVALUE", "NEWVALUE");
+        Message message = new Message().deleteBillboard(updateBillboard);
+        message.setSession(setRootToken());
+
+        MessageHandler messageHandler = new MessageHandler(message, properties);
+        Message returnMessage = messageHandler.getReturnMessage();
+        assertEquals(500, returnMessage.getCommunicationID());
+    }
+
+    @Test
+    public void RemoveBillboardExists() {
+        Billboard billboard = new Billboard("root", "name", "NEWVALUE", "NEWVALUE", "NEWVALUE", "NEWVALUE", "NEWVALUE", "NEWVALUE");
+        Message message = new Message().createBillboard(billboard);
+        message.setSession(setRootToken());
+
+        MessageHandler messageHandler = new MessageHandler(message, properties);
+        messageHandler.getReturnMessage();
+
+        BillboardDatabase billboardDatabase = new BillboardDatabase(properties);
+        try {
+            billboard = billboardDatabase.getBillboard("name", false);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
+        message = new Message().deleteBillboard(billboard);
+        message.setSession(setRootToken());
+        messageHandler = new MessageHandler(message, properties);
+        Message returnMessage = messageHandler.getReturnMessage();
+
+        assertEquals(200, returnMessage.getCommunicationID());
     }
 
     @Test
@@ -430,7 +459,7 @@ public class MessageHandlerTest {
         Message returnMessage = messageHandler.getReturnMessage();
         Message returnMessage2 = messageHandler.getReturnMessage();
 
-        assertEquals(500, returnMessage2.getCommunicationID());
+        assertEquals(519, returnMessage2.getCommunicationID());
     }
 
     @Test
@@ -490,5 +519,299 @@ public class MessageHandlerTest {
             assertEquals(false, true);
         }
     }
+
+    @Test
+    public void RemoveUserNonExist() {
+        User doesntExist = new User("doesn'tExist", "089542505d659cecbb988bb5ccff5bccf85be2dfa8c221359079aee2531298bb", new ArrayList<>(Arrays.asList(1, 1, 1, 1)), 100000,"y6WOb24rUAINN6KoUQ7lWNeniyTpsxPaZqzEhvAMzSqE5MrIx2kJS9TaTm0rl96n");
+
+        Message message = new Message().deleteUser(doesntExist);
+        MessageHandler messageHandler = new MessageHandler(message, properties);
+        Message returnMessage = messageHandler.getReturnMessage();
+
+        assertEquals(503, returnMessage.getCommunicationID());
+    }
+
+    @Test
+    public void RemoveUserExists() {
+        User exist = new User("userExists", "089542505d659cecbb988bb5ccff5bccf85be2dfa8c221359079aee2531298bb", new ArrayList<>(Arrays.asList(1, 1, 1, 1)), 100000,"y6WOb24rUAINN6KoUQ7lWNeniyTpsxPaZqzEhvAMzSqE5MrIx2kJS9TaTm0rl96n");
+        UserDatabase userDatabase = new UserDatabase(properties);
+        try {
+            userDatabase.addToDatabase(exist);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
+        User user = null;
+        try {
+            user = new UserDatabase(properties).getUser("userExists", true);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
+        Message message = new Message().deleteUser(user);
+        message.setSession(setRootToken());
+        Message returnMessage = new MessageHandler(message, properties).getReturnMessage();
+
+        assertEquals(200, returnMessage.getCommunicationID());
+    }
+
+    @Test
+    public void GetScheduleNoSession() {
+        Message message = new Message();
+        Message returnMessage = new MessageHandler(message, properties).getReturnMessage();
+        assertEquals(503, returnMessage.getCommunicationID());
+    }
+
+    @Test
+    public void GetScheduleValidSession() {
+        Message message = new Message().requestSchedule();
+        message.setSession(setRootToken());
+
+        Message returnMessage = new MessageHandler(message, properties).getReturnMessage();
+
+        assertEquals(200, returnMessage.getCommunicationID());
+    }
+
+    @Test
+    public void CreateScheduleNoData() {
+        Message message = new Message();
+        message.setCommunicationID(41);
+        message.setSession(setRootToken());
+        Message returnMessage = new MessageHandler(message, properties).getReturnMessage();
+
+        assertEquals(500, returnMessage.getCommunicationID());
+    }
+
+    @Test
+    public void CreateScheduleInvalidData() {
+        Message message = new Message();
+        message.setCommunicationID(41);
+        message.setData(1);
+        message.setSession(setRootToken());
+        Message returnMessage = new MessageHandler(message, properties).getReturnMessage();
+
+        assertEquals(500, returnMessage.getCommunicationID());
+    }
+
+    @Test
+    public void CreateScheduleNoPerms() {
+        Message message = new Message();
+        message.setCommunicationID(41);
+        message.setSession(setNoPermsToken());
+
+        Message returnMessage = new MessageHandler(message, properties).getReturnMessage();
+        assertEquals(504, returnMessage.getCommunicationID());
+    }
+
+    @Test
+    public void CreateScheduleCorrect() {
+        Message message = new Message().createBillboard(new Billboard("root", "name", "imageUrl", "msgText", "", "#000FFF", "infoText", ""));
+        message.setSession(setRootToken());
+        MessageHandler messageHandler = new MessageHandler(message, properties);
+        messageHandler.getReturnMessage();
+
+        Billboard billboard = null;
+        try {
+            billboard = new BillboardDatabase(properties).getBillboard("name", false);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
+        User user = null;
+        try {
+            user = new UserDatabase(properties).getUser("root", true);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
+        Scheduled newschedule = new Scheduled(user.getUserID(),"root",billboard.getBillboardID(),"Test",ScheduleHelper.CalculateStart(1,0,0,1),60, new int[]{0,0,0});
+        message = new Message().scheduleBillboard(newschedule);
+        message.setSession(setRootToken());
+
+        Message returnMessage = new MessageHandler(message, properties).getReturnMessage();
+        assertEquals(200, returnMessage.getCommunicationID());
+    }
+
+    @Test
+    public void UpdateScheduleNoData() {
+        Message message = new Message();
+        message.setCommunicationID(42);
+        message.setSession(setRootToken());
+
+        MessageHandler messageHandler = new MessageHandler(message, properties);
+        message = messageHandler.getReturnMessage();
+
+        assertEquals(500, message.getCommunicationID());
+    }
+
+    @Test
+    public void UpdateScheduleInvalidData() {
+        Message message = new Message();
+        message.setData(1);
+        message.setCommunicationID(42);
+        message.setSession(setRootToken());
+
+        MessageHandler messageHandler = new MessageHandler(message, properties);
+        message = messageHandler.getReturnMessage();
+
+        assertEquals(500, message.getCommunicationID());
+    }
+
+    @Test
+    public void UpdateScheduleNoPerms() {
+
+        Message message = new Message().createBillboard(new Billboard("root", "name", "imageUrl", "msgText", "", "#000FFF", "infoText", ""));
+        message.setSession(setRootToken());
+        MessageHandler messageHandler = new MessageHandler(message, properties);
+        messageHandler.getReturnMessage();
+
+        Billboard billboard = null;
+        try {
+            billboard = new BillboardDatabase(properties).getBillboard("name", false);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
+        User user = null;
+        try {
+            user = new UserDatabase(properties).getUser("root", true);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
+        Scheduled newschedule = new Scheduled(user.getUserID(),"root",billboard.getBillboardID(),"Test",ScheduleHelper.CalculateStart(1,0,0,1),60, new int[]{0,0,0});
+        message = new Message().scheduleBillboard(newschedule);
+        message.setSession(setRootToken());
+
+        Message returnMessage = new MessageHandler(message, properties).getReturnMessage();
+
+        ArrayList<Scheduled> scheduled = null;
+
+        try {
+            scheduled = new ScheduleDatabase(properties).getSchedule();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
+        Scheduled schedule = scheduled.get(0);
+        message = new Message().updateSchedule(schedule);
+        message.setSession(setNoPermsToken());
+        message = new MessageHandler(message, properties).getReturnMessage();
+        assertEquals(517, message.getCommunicationID());
+    }
+
+    @Test
+    public void UpdateScheduleCorrect() {
+        Message message = new Message().createBillboard(new Billboard("root", "name1", "imageUrl", "msgText", "", "#000FFF", "infoText", ""));
+        message.setSession(setRootToken());
+        MessageHandler messageHandler = new MessageHandler(message, properties);
+        messageHandler.getReturnMessage();
+
+        Billboard billboard = null;
+        try {
+            billboard = new BillboardDatabase(properties).getBillboard("name1", false);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
+        User user = null;
+        try {
+            user = new UserDatabase(properties).getUser("root", true);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
+        Scheduled newschedule = new Scheduled(user.getUserID(),"root", billboard.getBillboardID(),"Test",ScheduleHelper.CalculateStart(1,0,0,1),60, new int[]{0,0,0});
+        message = new Message().scheduleBillboard(newschedule);
+        message.setSession(setRootToken());
+
+        messageHandler = new MessageHandler(message, properties);
+        messageHandler.getReturnMessage();
+
+        newschedule.setDay(5);
+        message = new Message().scheduleBillboard(newschedule);
+        message.setSession(setRootToken());
+
+        message = new MessageHandler(message, properties).getReturnMessage();
+
+        assertEquals(200, message.getCommunicationID());
+    }
+
+    @Test
+    public void RemoveScheduleNonExist() {
+        Scheduled scheduled = new Scheduled();
+        scheduled.setID(1);
+        Message message = new Message().deleteSchedule(scheduled);
+        message.setSession(setRootToken());
+
+        MessageHandler messageHandler = new MessageHandler(message, properties);
+        message = messageHandler.getReturnMessage();
+
+        assertEquals(514, message.getCommunicationID());
+    }
+
+    @Test
+    public void RemoveScheduleExist() {
+        Message message = new Message().createBillboard(new Billboard("root", "name3", "imageUrl", "msgText", "", "#000FFF", "infoText", ""));
+        message.setSession(setRootToken());
+        MessageHandler messageHandler = new MessageHandler(message, properties);
+        messageHandler.getReturnMessage();
+
+        Billboard billboard = null;
+        try {
+            billboard = new BillboardDatabase(properties).getBillboard("name3", false);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
+        User user = null;
+        try {
+            user = new UserDatabase(properties).getUser("root", true);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
+        Scheduled newschedule = new Scheduled(user.getUserID(),"root",billboard.getBillboardID(),billboard.getName(),ScheduleHelper.CalculateStart(1,0,0,1),60, new int[]{0,0,0});
+        message = new Message().scheduleBillboard(newschedule);
+        message.setSession(setRootToken());
+
+        message = new MessageHandler(message, properties).getReturnMessage();
+
+        ArrayList<Scheduled> schedule = null;
+        try {
+            schedule = new ScheduleDatabase(properties).getSchedule();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
+        message = new Message().deleteSchedule(schedule.get(0));
+        message.setSession(setRootToken());
+        message = new MessageHandler(message, properties).getReturnMessage();
+
+        assertEquals(200, message.getCommunicationID());
+    }
+
+    @AfterAll
+    public static void refreshDatabase() {
+        Database database = new Database(properties);
+        User rootUser = new User("root", "c13866ce9e42e90d3cf50ded2dc9e00194ffc4ad4e15865cd1b368f168944646", new ArrayList<>(Arrays.asList(1, 1, 1, 1)), 100000,"y6WOb24rUAINN6KoUQ7lWNeniyTpsxPaZqzEhvAMzSqE5MrIx2kJS9TaTm0rl96n");
+
+        database.startConnection();
+        try {
+            database.runDelete("DELETE FROM sessions");
+            database.runDelete("DELETE FROM schedule");
+            database.runDelete("DELETE FROM billboards");
+            database.runDelete("DELETE FROM users");
+            database.closeConnection();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
+        UserDatabase userDatabase = new UserDatabase(properties);
+        try {
+            userDatabase.addToDatabase(rootUser);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+    }
 }
-*/
