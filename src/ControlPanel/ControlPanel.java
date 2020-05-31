@@ -18,11 +18,9 @@ public class ControlPanel {
         new UserManagementTab(pane, permissions, client, token, username);     //render user management tab based on current user permissions
         pane.setFont(tabs);
         frame.getContentPane().add(pane);
-        frame.pack();
+
         frame.setTitle("Control Panel      User: " + username);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {             //window listener to show confirm option on close
                 int confirmed = JOptionPane.showConfirmDialog(null,
@@ -30,15 +28,11 @@ public class ControlPanel {
                         JOptionPane.YES_NO_OPTION);
                 if (confirmed == JOptionPane.YES_OPTION) {      //when closed exit gracefully
                     Client client = new Client();
-                    Message signout = new Message();
                     try {
-                        signout = client.sendMessage(new Message().logoutUser(token));
+                        client.sendMessage(new Message().logoutUser(token));
                     } catch (Exception ex) {
                         exit(0);
                     }
-                    System.out.println("Logged out Safely");
-                    System.out.println("Session ID: "+ token);
-                    System.out.println("Server Response: "+ signout.getCommunicationID());
                     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
                 }

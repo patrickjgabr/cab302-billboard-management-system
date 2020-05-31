@@ -114,7 +114,11 @@ public class UserAuthentication extends JFrame {
             return hashed;
         } catch (NoSuchAlgorithmException e) {return "";}
     }
-
+    /**
+     * get password from login dialogue
+     *
+     * @return SHA-256 hashed password
+     */
     public JButton getSubmit() {
         return submit;
     }

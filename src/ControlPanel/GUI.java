@@ -2,23 +2,31 @@ package ControlPanel;
 
 import javax.swing.*;
 import java.awt.*;
-
+/**
+ * GUI helper class used for miscellaneous methods.
+ */
 public class GUI {
+    /**
+     * Setup frame with options
+     * @return return modified frame
+     */
     public static JFrame SetupFrame() {
-        setLook();
-        JFrame frame = new JFrame();
-        frame.setPreferredSize(new Dimension(1080, 620));
-        return frame;
-    }
-
-    private static void setLook() {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
             System.out.println("Error setting GUI look and feel");
         }
+        JFrame frame = new JFrame();
+        frame.setPreferredSize(new Dimension(1080, 620));
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        return frame;
     }
+
+
 
     /**
      * Creates GridBagConstraints based on parameters set in constructor.
@@ -52,6 +60,12 @@ public class GUI {
     public static void ServerDialogue(int ID, String message) {
         if (ID == 200) {
             JOptionPane.showMessageDialog(JOptionPane.getRootFrame(),message, "Server Response ID: " + ID,JOptionPane.INFORMATION_MESSAGE);
+        }
+        else if (ID == 519) {
+            JOptionPane.showMessageDialog(JOptionPane.getRootFrame(),"User exists in database. Please try again." , "Server Response ID: " + ID,JOptionPane.WARNING_MESSAGE);
+        }
+        else if (ID == 506) {
+            JOptionPane.showMessageDialog(JOptionPane.getRootFrame(),"Billboard exists in database. Please try again." , "Server Response ID: " + ID,JOptionPane.WARNING_MESSAGE);
         }
         else {
             JOptionPane.showMessageDialog(JOptionPane.getRootFrame(),"Server Error: "+ ID + " Please contact Administrator." , "Server Response ID: " + ID,JOptionPane.WARNING_MESSAGE);
