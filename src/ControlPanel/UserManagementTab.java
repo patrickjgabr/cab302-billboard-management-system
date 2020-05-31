@@ -1,31 +1,18 @@
 package ControlPanel;
-import Server.Database.SessionDatabase;
-import Shared.Billboard;
 import Shared.User;
 import Shared.Message;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import static ControlPanel.CustomFont.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
-import java.io.IOException;
-import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
-
-import static ControlPanel.CustomFont.*;
-import static ControlPanel.CustomFont.tableHeader;
 
 public class UserManagementTab {
     private JTable table;
@@ -59,6 +46,19 @@ public class UserManagementTab {
         updateTable();
         setupDetails();
         mainPane.addTab("User Management", pane);
+        mainPane.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (e.getSource() instanceof JTabbedPane) {
+                    JTabbedPane panel = (JTabbedPane) e.getSource();
+                    if (panel.getSelectedIndex() == 2) {
+                        updateTable();
+                        pane.validate();
+                        pane.repaint();
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -242,26 +242,26 @@ public class UserManagementTab {
                 name.setFont(CustomFont.username);
                 name.setPreferredSize(new Dimension(500,50));
                 JLabel userID = new JLabel("<html><h2>User ID: " + users.get(selected).getUserID() +"</h2><html>");
-                userID.setFont(userIDfont);
+                userID.setFont(userIDFont);
                 userID.setPreferredSize(new Dimension(200,50));
                 JPanel perms = new JPanel();
                 perms.setLayout(new GridBagLayout());
-                perms.setFont(userIDfont);
+                perms.setFont(userIDFont);
                 JCheckBox createPerm = new JCheckBox("    Create Billboards");
                 createPerm.setIcon(getPermissionsIcon(users.get(selected).getPermission().get(0)));
                 perms.add(createPerm, GUI.generateGBC(0,0,1,1,1,1,GridBagConstraints.HORIZONTAL, 5, GridBagConstraints.WEST));
-                createPerm.setFont(permissionfont);
+                createPerm.setFont(permissionFont);
                 JCheckBox editPerm = new JCheckBox("    Edit Billboards");
                 editPerm.setIcon(getPermissionsIcon(users.get(selected).getPermission().get(1)));
                 perms.add(editPerm, GUI.generateGBC(0,2,1,1,1,1,GridBagConstraints.HORIZONTAL, 5, GridBagConstraints.WEST));
-                editPerm.setFont(permissionfont);
+                editPerm.setFont(permissionFont);
                 JCheckBox schedulePerm = new JCheckBox("    Schedule Billboards");
                 schedulePerm.setIcon(getPermissionsIcon(users.get(selected).getPermission().get(2)));
                 perms.add(schedulePerm, GUI.generateGBC(0,4,1,1,1,1,GridBagConstraints.HORIZONTAL, 5, GridBagConstraints.WEST));
-                schedulePerm.setFont(permissionfont);
+                schedulePerm.setFont(permissionFont);
                 JCheckBox editUserPerm = new JCheckBox("    Edit Users");
                 editUserPerm.setIcon(getPermissionsIcon(users.get(selected).getPermission().get(3)));
-                editUserPerm.setFont(permissionfont);
+                editUserPerm.setFont(permissionFont);
                 perms.add(editUserPerm, GUI.generateGBC(0,6,1,1,1,1, GridBagConstraints.HORIZONTAL, 5, GridBagConstraints.WEST));
                 perms.setPreferredSize(new Dimension(200,300));
                 perms.setAlignmentX( Component.LEFT_ALIGNMENT );

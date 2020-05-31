@@ -1,41 +1,34 @@
 package ControlPanel;
 
-import Shared.Billboard;
 import Shared.Message;
-import Shared.TestCase;
-import Shared.User;
-
 import static ControlPanel.CustomFont.*;
 import static java.lang.System.exit;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.AreaAveragingScaleFilter;
 import java.util.ArrayList;
 
 public class ControlPanel {
     private static void ShowControlPanel(ArrayList<Integer> permissions, String token, Client client, String username) {
-        JFrame frame = GUI.SetupFrame();
+        JFrame frame = GUI.SetupFrame();        //call to setup frame method to set size and instantiate frame.
         JTabbedPane pane = new JTabbedPane();
-        BillboardTab billboardsPane = new BillboardTab(pane, permissions, client, token, username);
-        ScheduleTab userManagementPane = new ScheduleTab(pane, permissions, client, token, username);
-        UserManagementTab schedulePane = new UserManagementTab(pane, permissions, client, token, username);
+        new BillboardTab(pane, permissions, client, token, username);     //render billboard tab based on current user permissions
+        new ScheduleTab(pane, permissions, client, token, username);   //render schedule tab based on current user permissions
+        new UserManagementTab(pane, permissions, client, token, username);     //render user management tab based on current user permissions
         pane.setFont(tabs);
         frame.getContentPane().add(pane);
         frame.pack();
-        frame.setTitle("Control Panel   User: " + username);
+        frame.setTitle("Control Panel      User: " + username);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
+            public void windowClosing(WindowEvent e) {             //window listener to show confirm option on close
                 int confirmed = JOptionPane.showConfirmDialog(null,
                         "Are you sure you want to exit the program?", "Exit",
                         JOptionPane.YES_NO_OPTION);
-                if (confirmed == JOptionPane.YES_OPTION) {
+                if (confirmed == JOptionPane.YES_OPTION) {      //when closed exit gracefully
                     Client client = new Client();
                     Message signout = new Message();
                     try {

@@ -20,6 +20,21 @@ public class GUI {
         }
     }
 
+    /**
+     * Creates GridBagConstraints based on parameters set in constructor.
+     *
+     * @param gx grid x coordinate for GridBagConstraints.
+     * @param gy grid y coordinate for GridBagConstraints.
+     * @param gw grid width for GridBagConstraints.
+     * @param gh grid height for GridBagConstraints.
+     * @param wx weight x for GridBagConstraints.
+     * @param wy weight y for GridBagConstraints.
+     * @param fill fill property of element in GridBagLayout.
+     * @param inset  border size in pixels around element.
+     * @param anchor anchor location of element in GridBagLayout.
+     *
+     */
+
     public static GridBagConstraints generateGBC(int gx, int gy, int gw, int gh, int wx, int wy, int fill, int inset, int anchor) {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = gx;

@@ -1,21 +1,13 @@
 package Shared;
-import ControlPanel.Client;
-import Shared.Billboard;
-import org.w3c.dom.css.Rect;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.tools.Tool;
 import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.List;
-import java.util.Iterator;
 
 public class BillboardToImage {
     private Billboard billboard;
@@ -24,8 +16,8 @@ public class BillboardToImage {
     /**
      * Default billboard to image constructor
      * @param billboard Billboard to be converted for display
-     * @param resolutionx image width resolution
-     * @param resolutiony image height resolution
+     * @param resolutionx x resolution (width) for provided billboard to be rendered at
+     * @param resolutiony y resolution (height) for provided billboard to be rendered at
      */
     public BillboardToImage(Billboard billboard, Integer resolutionx, Integer resolutiony){
         this.billboard = billboard;
@@ -53,19 +45,19 @@ public class BillboardToImage {
     }
 
     /**
-     * method to handle creation of billboard. First checks for colour tags before drawing text in appropriate colours, then places text
-     *  in the right position according to other present elements.
+     * Method to handle creation of billboard. First checks for colour tags before drawing text in appropriate colours, then places text
+     *  in the correct position according to other present elements.
      * @return ImageIcon containing message text, info text and picture where applicable.
      */
     private ImageIcon Generate() {
         //setting defaults
         Color bg = Color.white, mt = Color.black, it = Color.black;                            //bg = background colour, mt = message text colour, it = info text colour
 
-        boolean picture = !billboard.getImageUrl().equals("");
-        boolean info = !billboard.getInformationText().equals("");
-        boolean message = !billboard.getMessageText().equals("");    //boolean determining whether text is present.
+        boolean picture = !billboard.getImageUrl().equals("");                  //boolean indicating presence of picture.
+        boolean info = !billboard.getInformationText().equals("");              //boolean for determining whether text is present.
+        boolean message = !billboard.getMessageText().equals("");
         BufferedImage bi = new BufferedImage(resolutionx, resolutiony, BufferedImage.TYPE_INT_RGB);
-        Rectangle screen = new Rectangle(bi.getWidth(),bi.getHeight());
+        Rectangle screen = new Rectangle(bi.getWidth(),bi.getHeight());         //screen width and height
         Graphics gr = bi.getGraphics();
         Font text = gr.getFont();
 
@@ -99,12 +91,12 @@ public class BillboardToImage {
 
 
         //---------------------Info text----------------------//
-        if (!billboard.getInformationTextColour().equals("")) {                                   //check if info text colour is specified and set colour
+        if (!billboard.getInformationTextColour().equals("")) {                      //check if info text colour is specified and set colour
             it = Color.decode(billboard.getInformationTextColour()); }
         gr.setColor(it);
 
         if (info) {
-            String wrapped = wrapString(billboard.getInformationText(), "\n", 60);
+            String wrapped = wrapString(billboard.getInformationText(), "\n", 60);      //wrap string across multiple lines if necessary
             String [] lines = wrapped.split("\n");
 
             int longestStringIndex = 0;
@@ -114,13 +106,13 @@ public class BillboardToImage {
                 }
             }
 
-            int infoTextWidth = gr.getFontMetrics(text).stringWidth(lines[longestStringIndex]);      //calculating max text width
+            int infoTextWidth = gr.getFontMetrics(text).stringWidth(lines[longestStringIndex]);        //calculating max text width
             double infoWidthRatio = imageWidth / (double) infoTextWidth;
             double newInfoFontSize = (text.getSize() * infoWidthRatio);
 
-            if (newInfoFontSize >= 130){ newInfoFontSize = 130;}                                    //don't let info text size exceed 130
+            if (newInfoFontSize >= 130){ newInfoFontSize = 130;}                                 //don't let info text size exceed 130
 
-            if (newInfoFontSize >= newMessageFontSize){newInfoFontSize = newMessageFontSize-5;}
+            if (newInfoFontSize >= newMessageFontSize){newInfoFontSize = newMessageFontSize-5;}     //dont let info text size exceed message text size
             gr.setFont(new Font("Dialogue", Font.PLAIN, (int) newInfoFontSize));
 
             int imageHeight = bi.getHeight();
@@ -146,7 +138,7 @@ public class BillboardToImage {
             //draw in bottom third of screen if picture is present. (same for picture && message)
             else if(picture){
                 imageHeight = (imageHeight /3) - lineHeight;
-                Rectangle singleLineRect = new Rectangle(10,(bi.getHeight()/2), bi.getWidth(), bi.getHeight()/2);
+                Rectangle singleLineRect = new Rectangle(10,(bi.getHeight()/2), bi.getWidth(), (bi.getHeight()/2) + 30);
                 if (lines.length == 1){
                     drawCenteredText(gr, billboard.getInformationText(), singleLineRect);
                 }
@@ -176,7 +168,7 @@ public class BillboardToImage {
                 try{
                     String data = billboard.getImageUrl();
                     byte[] decoded = Base64.getDecoder().decode(data);
-                    image = ImageIO.read(new ByteArrayInputStream(decoded));                //image displayed from picture data
+                    image = ImageIO.read(new ByteArrayInputStream(decoded));          //image displayed from picture data
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -184,7 +176,6 @@ public class BillboardToImage {
             assert image != null;
             drawScaledImage(gr, image, info, message);
         }
-
 
         return new ImageIcon(bi);
     }

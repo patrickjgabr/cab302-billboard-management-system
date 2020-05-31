@@ -5,6 +5,15 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class ScheduleHelper {
+
+    /**
+     * creates and integer array that stores the day and calculates the start time in minutes based on time of day.
+     *
+     * @param day day from 1 - 7;
+     * @param hour hour from 0 - 11;
+     * @param minute minute from 0 - 59;
+     * @param period integer 0("AM") or 1("PM");
+     */
     public static int[] CalculateStart (int day, int hour, int minute, int period) {
         int[] calendar = new int[2];
         calendar[0] = day;
@@ -15,6 +24,12 @@ public class ScheduleHelper {
         return calendar;
     }
 
+
+    /**
+     * Converts schedule objects into individual events.
+     *
+     * @param schedule ArrayList of scheduled objects;
+     */
     public static ArrayList<Event> GenerateEvents (ArrayList<Scheduled> schedule) {
         ArrayList<Event> events = new ArrayList<>();
         for (Scheduled x : schedule) {
