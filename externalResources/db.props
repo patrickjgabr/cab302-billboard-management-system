@@ -2,3 +2,6 @@ jdbc.url=jdbc:mariadb://localhost:3306
 jdbc.schema=applicationdatabase
 jdbc.userName=root
 jdbc.password=password
+
+
+
