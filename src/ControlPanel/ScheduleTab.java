@@ -16,7 +16,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 
-
+//ScheduleTab class handles all the functionality that involves scheduling billboards. This class will
+//generate a GUI for the user to interface with the scheduler database on the server.
 public class ScheduleTab {
     private JPanel pane;
     private Client client;
@@ -25,6 +26,16 @@ public class ScheduleTab {
     private ArrayList<Scheduled> schedule;
     private int selected;
     private ArrayList<Integer> permissions;
+
+    /**
+     * Default constructor used to instantiate a ScheduleTab object.
+     * @param mainPane the parent JTabbedPane.
+     * @param permissions contains an ArrayList of permissions of length 4.
+     * @param client object used to initiate communication to the server.
+     * @param token token of the currently logged in user.
+     * @param username username of logged in user.
+     */
+
     public ScheduleTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client,  String token, String username){
         this.pane = new JPanel();
         this.client = client;
@@ -35,6 +46,7 @@ public class ScheduleTab {
         pane.setLayout(new GridBagLayout());
         refresh();
         mainPane.addTab("Schedule", pane);
+        //pane listener to update on change.
         mainPane.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -50,11 +62,15 @@ public class ScheduleTab {
         });
     }
 
+    //convert minutes to 12 hour time.
     private String toTime(int min) {
         String period;
         int hours = min / 60;
         if (min < 720) {
             period = "AM";
+            if (hours == 0) {
+                hours = 12;
+            }
         }
         else {
             period = "PM";
@@ -82,6 +98,8 @@ public class ScheduleTab {
         ArrayList<JScrollPane> columns = new ArrayList<>();
         String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
         JPanel topBar = new JPanel(new GridLayout(1,3, 5, 5));
+
+        //create buttons
         JButton createButton = new JButton("Schedule a Billboard");
         if (permissions.get(2).equals(1)) {
             createButton.setEnabled(true);
@@ -102,6 +120,7 @@ public class ScheduleTab {
                 refresh();
             }
         });
+
         JButton editButton = new JButton("");
         editButton.setVisible(false);
         editButton.setEnabled(false);
@@ -118,6 +137,7 @@ public class ScheduleTab {
                 }
             }
         });
+
         JButton deleteButton = new JButton("");
         deleteButton.setVisible(false);
         deleteButton.setEnabled(false);
@@ -135,9 +155,12 @@ public class ScheduleTab {
         topBar.add(editButton);
         topBar.add(deleteButton);
         pane.add(topBar,GUI.generateGBC(0,0,7,1,1,0,0,5,GridBagConstraints.NORTHWEST));
+
+        //bottom bar
         JLabel bottom = new JLabel("Select Event");
         pane.add(bottom, GUI.generateGBC(0,2,7,1,1,0,0,5,GridBagConstraints.NORTHWEST));
 
+        //create table for each day of the week
         for (int i = 1; i <= 7; i++) {
             DefaultTableModel model = new DefaultTableModel() {
                 @Override
@@ -158,9 +181,11 @@ public class ScheduleTab {
             int empty = 0;
             int current = 0;
             int count = 1;
+            //check every minute of the day for an event
             for (int x = 0; x < 1440; x++) {
                 for(int y = 0; y < events.size(); y++) {
                     if(x >= events.get(y).getStartTime() && x < events.get(y).getEndTime()) {
+                        //event found
                         if(empty != 0) {
                             model.addRow(new Object[]{" "});
                             table.setRowHeight(model.getRowCount()-1,empty);
@@ -182,21 +207,26 @@ public class ScheduleTab {
                         count++;
                         break;
                     }
+                    //no event. increment empty
                     if(y == events.size()-1) {
                         empty++;
                     }
                 }
             }
+            // create a blank row with the remaining column height.
             if (empty != 0) {
                 model.addRow(new Object[]{" "});
                 table.setRowHeight(model.getRowCount()-1,empty);
             }
+            // create a blank row of max height if no events exist.
             if (events.size() == 0) {
                 model.addRow(new Object[]{" "});
                 table.setRowHeight(0,1440);
             }
+            //set table to multiline render.
             table.setDefaultRenderer(Object.class, new MultiLineCellRenderer());
             table.setRowSelectionAllowed(false);
+            //click an event
             table.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
                         JTable target = (JTable)e.getSource();
@@ -224,7 +254,9 @@ public class ScheduleTab {
                 }
             });
         }
+        //enable vertical scrollbar for last column.
         columns.get(6).setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        //last scroll bar is applied to all columns.
         for(int x = 0; x < 7; x++) {
             columns.get(x).getVerticalScrollBar().setModel(columns.get(6).getVerticalScrollBar().getModel());
             pane.add(columns.get(x), GUI.generateGBC(x,1,1,1,1,1,GridBagConstraints.BOTH,0,GridBagConstraints.NORTHWEST));
@@ -234,7 +266,7 @@ public class ScheduleTab {
 
 
 
-
+//class used to create a custom renderer for multi line cell rendering
 class MultiLineCellRenderer extends JTextArea implements TableCellRenderer {
 
     public MultiLineCellRenderer() {

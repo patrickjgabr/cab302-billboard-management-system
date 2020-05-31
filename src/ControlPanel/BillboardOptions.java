@@ -20,7 +20,6 @@ import java.util.Scanner;
 
 /**
  * The BillboardOptions class is used to create or modify billboards
- *
  */
 public class BillboardOptions {
     private Billboard billboard = new Billboard();
@@ -228,7 +227,19 @@ public class BillboardOptions {
 
     }
 
-
+    private static String encodeImage(File image) {
+        String base64Encoded = "";
+        try (FileInputStream inputStream = new FileInputStream(image)) {
+            byte[] imageBytes = new byte[(int) image.length()];
+            inputStream.read(imageBytes);
+            base64Encoded = Base64.getEncoder().encodeToString(imageBytes);
+        } catch (FileNotFoundException e) {
+            System.out.println("Error selecting image file. Please ensure it is available and not corrupt.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return base64Encoded;
+    }
 
     /**
      * Instantiates the billboard editor with new Billboard object
@@ -238,7 +249,6 @@ public class BillboardOptions {
     public Billboard newBillboard() {
         return BillboardEditorGUI();
     }
-
 
     /**
      * Instantiates the billboard editor with existing billboard
@@ -253,14 +263,14 @@ public class BillboardOptions {
         billboardName.setEditable(false);
         imgSRC.setText(billboard.getImageUrl());
         messageText.setText(billboard.getMessageText());
-        if(!billboard.getMessageTextColour().equals("")){
+        if (!billboard.getMessageTextColour().equals("")) {
             messageColourPicker.setColor(Color.decode(billboard.getMessageTextColour()));
         }
-        if(!billboard.getBackgroundColour().equals("")){
+        if (!billboard.getBackgroundColour().equals("")) {
             backgroundColourPicker.setColor(Color.decode(billboard.getBackgroundColour()));
         }
         infoText.setText(billboard.getInformationText());
-        if(!billboard.getInformationTextColour().equals("")){
+        if (!billboard.getInformationTextColour().equals("")) {
             infoColourPicker.setColor(Color.decode(billboard.getInformationTextColour()));
         }
         return BillboardEditorGUI();
@@ -322,19 +332,5 @@ public class BillboardOptions {
         }
 
         return null;
-    }
-
-    private static String encodeImage(File image) {
-        String base64Encoded = "";
-        try (FileInputStream inputStream = new FileInputStream(image)) {
-            byte[] imageBytes = new byte[(int) image.length()];
-            inputStream.read(imageBytes);
-            base64Encoded = Base64.getEncoder().encodeToString(imageBytes);
-        } catch (FileNotFoundException e) {
-            System.out.println("Error selecting image file. Please ensure it is available and not corrupt.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return base64Encoded;
     }
 }

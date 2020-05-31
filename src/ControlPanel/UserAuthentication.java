@@ -1,14 +1,10 @@
 package ControlPanel;
 
 
-
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -16,8 +12,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 
+
+/**
+ * UserAuthentication class handles the dialogue box for user login.
+ */
 public class UserAuthentication extends JFrame {
     private JButton submit;
     private JFrame frame;
@@ -32,7 +31,7 @@ public class UserAuthentication extends JFrame {
         this.frame = new JFrame();
         JLabel user_label = new JLabel();
         user_label.setFont(CustomFont.login);
-        user_label.setBorder(new EmptyBorder(10,10,10,0));
+        user_label.setBorder(new EmptyBorder(10, 10, 10, 0));
         user_label.setText("User Name :");
         user_label.setHorizontalAlignment(JLabel.CENTER);
         this.username = new JTextField();
@@ -43,7 +42,7 @@ public class UserAuthentication extends JFrame {
         //password
         JLabel password_label = new JLabel();
         password_label.setFont(CustomFont.login);
-        password_label.setBorder(new EmptyBorder(10,10,10,0));
+        password_label.setBorder(new EmptyBorder(10, 10, 10, 0));
         password_label.setText("Password :");
         password_label.setHorizontalAlignment(JLabel.CENTER);
         this.password = new JPasswordField();
@@ -66,10 +65,13 @@ public class UserAuthentication extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 try {
                     Desktop.getDesktop().browse(new URI("https://www.youtube.com/watch?v=dQw4w9WgXcQ"));
-                } catch (IOException | URISyntaxException ex) { ex.printStackTrace(); } }
+                } catch (IOException | URISyntaxException ex) {
+                    ex.printStackTrace();
+                }
+            }
         });
 
-
+        //setup components
         JPanel panel = new JPanel(new GridLayout(4, 1));
         panel.add(user_label);
         panel.add(username);
@@ -79,7 +81,7 @@ public class UserAuthentication extends JFrame {
         panel.add(message);
         panel.add(submit);
         panel.add(link);
-        panel.setBorder(new EmptyBorder(5,5,5,5));
+        panel.setBorder(new EmptyBorder(5, 5, 5, 5));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(panel, BorderLayout.CENTER);
         frame.setTitle("Login");
@@ -88,29 +90,51 @@ public class UserAuthentication extends JFrame {
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
     }
+
+    /**
+     * get username from login dialogue
+     *
+     * @return username from text field
+     */
     public String getUsername() {
         return username.getText();
     }
+
+    /**
+     * get password from login dialogue
+     *
+     * @return hashed password
+     */
     public String getPassword() {
-            MessageDigest passwordHash;
-            try {
-                passwordHash = MessageDigest.getInstance("SHA-256");
-                passwordHash.update(password.getText().getBytes());
-                byte [] byteArray = passwordHash.digest();
-                StringBuilder sb = new StringBuilder();
-                for (byte b : byteArray) {
-                    sb.append(String.format("%02x", b & 0xFF));
-                }
-                String hashed = sb.toString();
-                System.out.println("hashed" + hashed);
-            return hashed;
-        } catch (NoSuchAlgorithmException e) {return "";}
+        MessageDigest passwordHash;
+        try {
+            passwordHash = MessageDigest.getInstance("SHA-256");
+            passwordHash.update(password.getText().getBytes());
+            byte[] byteArray = passwordHash.digest();
+            StringBuilder sb = new StringBuilder();
+            for (byte b : byteArray) {
+                sb.append(String.format("%02x", b & 0xFF));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            return "";
+        }
     }
 
+    /**
+     * get password from login dialogue
+     *
+     * @return SHA-256 hashed password
+     */
     public JButton getSubmit() {
         return submit;
     }
 
+    /**
+     * get login dialogue frame
+     *
+     * @return login dialogue frame
+     */
     public JFrame getFrame() {
         return frame;
     }
