@@ -1,8 +1,8 @@
 package ControlPanel;
-import Shared.User;
-import Shared.Message;
 
-import static ControlPanel.CustomFont.*;
+import Shared.Message;
+import Shared.User;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -14,28 +14,31 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
+import static ControlPanel.CustomFont.*;
+
 public class UserManagementTab {
+    Icon yes = new ImageIcon("externalResources/confirm.png");
+    Icon no = new ImageIcon("externalResources/deny.png");
     private JTable table;
     private ArrayList<User> users;
     private ArrayList<Integer> perms;
-    private  JPanel pane;
+    private JPanel pane;
     private Client client;
     private String token;
     private JPanel information;
     private int selected;
     private String username;
-    Icon yes = new ImageIcon("externalResources/confirm.png");
-    Icon no = new ImageIcon("externalResources/deny.png");
 
     /**
      * method for setting private variable values based on parameters given from control panel.
-     * @param mainPane tabbed pane for adding all swing elements to. Essentially the frame.
+     *
+     * @param mainPane    tabbed pane for adding all swing elements to. Essentially the frame.
      * @param permissions array list of permission integers for the user currently logged in.
-     * @param client Client that is being used in session.
-     * @param token token of logged in user.
-     * @param username name of logged in user.
+     * @param client      Client that is being used in session.
+     * @param token       token of logged in user.
+     * @param username    name of logged in user.
      */
-    public UserManagementTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client,  String token, String username) {
+    public UserManagementTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client, String token, String username) {
         this.client = client;
         this.token = token;
         this.pane = new JPanel();
@@ -46,6 +49,7 @@ public class UserManagementTab {
         updateTable();
         setupDetails();
         mainPane.addTab("User Management", pane);
+        //pane listener to update on change.
         mainPane.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -64,19 +68,18 @@ public class UserManagementTab {
     /**
      * method to be called when a change is made to the user table and it requires updating. e.g. after edit, add or delete user is called.
      */
-    public void updateTable(){
+    public void updateTable() {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
         if (perms.get(3).equals(1)) {
             this.users = (ArrayList<User>) client.sendMessage(new Message(token).requestUsers()).getData();
-        }
-        else {
+        } else {
             this.users = new ArrayList<>();
         }
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         for (User user : users) {
             model.addRow(new Object[]{
-                    "<html><h2> &nbsp ID: " + user.getUserID() + "&nbsp &nbsp | &nbsp &nbsp " +  user.getUserName() + "</h2></html>"});
+                    "<html><h2> &nbsp ID: " + user.getUserID() + "&nbsp &nbsp | &nbsp &nbsp " + user.getUserName() + "</h2></html>"});
         }
     }
 
@@ -84,7 +87,7 @@ public class UserManagementTab {
      * method to set up table displaying a list of users.
      */
     public void setupUserTable() {
-        DefaultTableModel model = new DefaultTableModel(){
+        DefaultTableModel model = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -99,11 +102,11 @@ public class UserManagementTab {
         table.setSelectionBackground(buttonCol);
         table.setSelectionForeground(Color.black);
         table.setFont(tableContentsF);
-        table.setAutoResizeMode( JTable.AUTO_RESIZE_OFF );
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         table.setRowHeight(60);
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setPreferredSize(new Dimension(300,0));
-        pane.add(scrollPane, GUI.generateGBC(0,1,1,1,0,1,GridBagConstraints.VERTICAL, 0, GridBagConstraints.WEST));
+        scrollPane.setPreferredSize(new Dimension(300, 0));
+        pane.add(scrollPane, GUI.generateGBC(0, 1, 1, 1, 0, 1, GridBagConstraints.VERTICAL, 0, GridBagConstraints.WEST));
     }
 
     /**
@@ -117,9 +120,9 @@ public class UserManagementTab {
         createButton.setBorder(new LineBorder(softBlue, 2, true));
         createButton.addActionListener(e -> {
             User created = new UserManagementOptions().newUser();
-            if (created != null){
+            if (created != null) {
                 Message request = client.sendMessage(new Message(token).createUsers(created));
-                GUI.ServerDialogue(request.getCommunicationID(),"Create user successful.");
+                GUI.ServerDialogue(request.getCommunicationID(), "Create user successful.");
                 updateTable();
                 information.removeAll();
                 information.add(new JLabel("Select a user to view permissions."));
@@ -127,7 +130,7 @@ public class UserManagementTab {
                 pane.repaint();
             }
         });
-        if(perms.get(3)!=1){
+        if (perms.get(3) != 1) {
             createButton.setEnabled(false);
         }
         JButton editButton = new JButton("Edit");
@@ -148,19 +151,18 @@ public class UserManagementTab {
         if (perms.get(3).equals(1)) {
             createButton.setEnabled(true);
             information.add(new JLabel("Select a user to view permissions."));
-        }
-        else {
+        } else {
             createButton.setEnabled(false);
             information.add(new JLabel(" \"Edit User's\" permission required."));
         }
 
-        pane.add(information, GUI.generateGBC(1,1,1,1,1,1,GridBagConstraints.HORIZONTAL,18,GridBagConstraints.NORTHEAST));
+        pane.add(information, GUI.generateGBC(1, 1, 1, 1, 1, 1, GridBagConstraints.HORIZONTAL, 18, GridBagConstraints.NORTHEAST));
 
         editButton.addActionListener(ee -> {
             User edited = new UserManagementOptions().editUser(users.get(selected));
             if (edited != null) {
                 Message request = client.sendMessage(new Message(token).updateUser(edited));
-                GUI.ServerDialogue(request.getCommunicationID(),"Edit user successful.");
+                GUI.ServerDialogue(request.getCommunicationID(), "Edit user successful.");
                 updateTable();
                 information.removeAll();
                 information.add(new JLabel("Select a user to view permissions."));
@@ -171,7 +173,7 @@ public class UserManagementTab {
 
         deleteButton.addActionListener(ee -> {
             Message request = client.sendMessage(new Message(token).deleteUser(users.get(selected)));
-            GUI.ServerDialogue(request.getCommunicationID(),"Delete user successful.");
+            GUI.ServerDialogue(request.getCommunicationID(), "Delete user successful.");
             updateTable();
             information.removeAll();
             information.add(new JLabel("Select a user to view permissions."));
@@ -196,26 +198,25 @@ public class UserManagementTab {
             int option = JOptionPane.showOptionDialog(null, panel, "The title",
                     JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
                     null, options, options[1]);
-            if(option == 0)
-            {
+            if (option == 0) {
                 char[] password = pass.getPassword();
                 if (new String(password).equals("")) {
-                    JOptionPane.showMessageDialog(JOptionPane.getRootFrame(),"Please enter a valid password.", "Empty Password",JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Please enter a valid password.", "Empty Password", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
 
                 try {
                     MessageDigest passwordHash = MessageDigest.getInstance("SHA-256");
                     passwordHash.update(new String(password).getBytes());
-                    byte [] byteArray = passwordHash.digest();
+                    byte[] byteArray = passwordHash.digest();
 
                     StringBuilder sb = new StringBuilder();
                     for (byte b : byteArray) {
                         sb.append(String.format("%02x", b & 0xFF));
                     }
                     String hashed = sb.toString();
-                    Message request = client.sendMessage(new Message(token).updatePassword(username,hashed));
-                    GUI.ServerDialogue(request.getCommunicationID(),"Password updated.");
+                    Message request = client.sendMessage(new Message(token).updatePassword(username, hashed));
+                    GUI.ServerDialogue(request.getCommunicationID(), "Password updated.");
 
                 } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();
@@ -226,45 +227,46 @@ public class UserManagementTab {
 
         ListSelectionModel rowSelected = table.getSelectionModel();             //setup list selection model to listen for a selection of the table
         rowSelected.addListSelectionListener(e -> {
-            if (!rowSelected.isSelectionEmpty()){          //check if row is selected and user has correct permissions
+            if (!rowSelected.isSelectionEmpty()) {          //check if row is selected and user has correct permissions
                 information.removeAll();
                 this.selected = rowSelected.getMinSelectionIndex();
-                if(perms.get(3).equals(1)){                      //if user has edit user permissions
+                if (perms.get(3).equals(1)) {                      //if user has edit user permissions
                     editButton.setEnabled(true);
-                    if(!username.equals(users.get(selected).getUserName())){          //AND user is not root user
+                    if (!username.equals(users.get(selected).getUserName())) {          //AND user is not root user
                         deleteButton.setEnabled(true);                              //enable delete button
-                    }
-                    else {deleteButton.setEnabled(false);}                          //otherwise disable button.
+                    } else {
+                        deleteButton.setEnabled(false);
+                    }                          //otherwise disable button.
                 }
                 editButton.setText("Edit '" + users.get(selected).getUserName() + "'");
                 deleteButton.setText("Delete '" + users.get(selected).getUserName() + "'");
-                JLabel name = new JLabel("<html>" + users.get(selected).getUserName() +"<html>");
+                JLabel name = new JLabel("<html>" + users.get(selected).getUserName() + "<html>");
                 name.setFont(CustomFont.username);
-                name.setPreferredSize(new Dimension(500,50));
-                JLabel userID = new JLabel("<html><h2>User ID: " + users.get(selected).getUserID() +"</h2><html>");
+                name.setPreferredSize(new Dimension(500, 50));
+                JLabel userID = new JLabel("<html><h2>User ID: " + users.get(selected).getUserID() + "</h2><html>");
                 userID.setFont(userIDFont);
-                userID.setPreferredSize(new Dimension(200,50));
+                userID.setPreferredSize(new Dimension(200, 50));
                 JPanel perms = new JPanel();
                 perms.setLayout(new GridBagLayout());
                 perms.setFont(userIDFont);
                 JCheckBox createPerm = new JCheckBox("    Create Billboards");
                 createPerm.setIcon(getPermissionsIcon(users.get(selected).getPermission().get(0)));
-                perms.add(createPerm, GUI.generateGBC(0,0,1,1,1,1,GridBagConstraints.HORIZONTAL, 5, GridBagConstraints.WEST));
+                perms.add(createPerm, GUI.generateGBC(0, 0, 1, 1, 1, 1, GridBagConstraints.HORIZONTAL, 5, GridBagConstraints.WEST));
                 createPerm.setFont(permissionFont);
                 JCheckBox editPerm = new JCheckBox("    Edit Billboards");
                 editPerm.setIcon(getPermissionsIcon(users.get(selected).getPermission().get(1)));
-                perms.add(editPerm, GUI.generateGBC(0,2,1,1,1,1,GridBagConstraints.HORIZONTAL, 5, GridBagConstraints.WEST));
+                perms.add(editPerm, GUI.generateGBC(0, 2, 1, 1, 1, 1, GridBagConstraints.HORIZONTAL, 5, GridBagConstraints.WEST));
                 editPerm.setFont(permissionFont);
                 JCheckBox schedulePerm = new JCheckBox("    Schedule Billboards");
                 schedulePerm.setIcon(getPermissionsIcon(users.get(selected).getPermission().get(2)));
-                perms.add(schedulePerm, GUI.generateGBC(0,4,1,1,1,1,GridBagConstraints.HORIZONTAL, 5, GridBagConstraints.WEST));
+                perms.add(schedulePerm, GUI.generateGBC(0, 4, 1, 1, 1, 1, GridBagConstraints.HORIZONTAL, 5, GridBagConstraints.WEST));
                 schedulePerm.setFont(permissionFont);
                 JCheckBox editUserPerm = new JCheckBox("    Edit Users");
                 editUserPerm.setIcon(getPermissionsIcon(users.get(selected).getPermission().get(3)));
                 editUserPerm.setFont(permissionFont);
-                perms.add(editUserPerm, GUI.generateGBC(0,6,1,1,1,1, GridBagConstraints.HORIZONTAL, 5, GridBagConstraints.WEST));
-                perms.setPreferredSize(new Dimension(200,300));
-                perms.setAlignmentX( Component.LEFT_ALIGNMENT );
+                perms.add(editUserPerm, GUI.generateGBC(0, 6, 1, 1, 1, 1, GridBagConstraints.HORIZONTAL, 5, GridBagConstraints.WEST));
+                perms.setPreferredSize(new Dimension(200, 300));
+                perms.setAlignmentX(Component.LEFT_ALIGNMENT);
                 perms.setBorder(new LineBorder(buttonCol, 2, true));
                 information.add(name);
                 information.add(userID);
@@ -272,25 +274,27 @@ public class UserManagementTab {
             }
         });
 
-        JPanel topButtons = new JPanel(new GridLayout(1,4,10,5));
+        JPanel topButtons = new JPanel(new GridLayout(1, 4, 10, 5));
         topButtons.setBorder(new EmptyBorder(10, 5, 10, 5));
         topButtons.setPreferredSize(new Dimension(600, 50));
         topButtons.add(createButton);
         topButtons.add(editButton);
         topButtons.add(deleteButton);
         topButtons.add(changePassword);
-        pane.add(topButtons, GUI.generateGBC(0,0,2,1,0,0,0, 5, GridBagConstraints.WEST));
+        pane.add(topButtons, GUI.generateGBC(0, 0, 2, 1, 0, 0, 0, 5, GridBagConstraints.WEST));
     }
 
     /**
      * method for determining which permission icon to use based on the users permissions. red for no permission, green if they have it.
+     *
      * @param permission either a 1 or 0 - 1 for yes, 0 for no.
      * @return icon to be displayed in checkbox.
      */
-    public Icon getPermissionsIcon(Integer permission){
-        if (permission == 1){
+    public Icon getPermissionsIcon(Integer permission) {
+        if (permission == 1) {
             return yes;
+        } else {
+            return no;
         }
-        else{
-            return no; } }
+    }
 }

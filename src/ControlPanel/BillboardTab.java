@@ -28,6 +28,10 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Objects;
 
+/**
+ * BillboardTab class handles all the functionality that involves the creation, deletion and editing of the billboards.
+ * This class will generate a GUI for the user to interface with the billboards stored in the server.
+ */
 public class BillboardTab {
     private JTable table;
     private ArrayList<Billboard> billboards;
@@ -47,10 +51,11 @@ public class BillboardTab {
 
     /**
      * Default constructor used to instantiate a BillboardTab object.
-     * @param mainPane the parent JTabbedPane.
+     *
+     * @param mainPane    the parent JTabbedPane.
      * @param permissions contains an ArrayList of permissions of length 4.
-     * @param client object used to initiate communication to the server.
-     * @param token token of the currently logged in user.
+     * @param client      object used to initiate communication to the server.
+     * @param token       token of the currently logged in user.
      */
     public BillboardTab(JTabbedPane mainPane, ArrayList<Integer> permissions, Client client, String token, String username) {
         this.client = client;
@@ -64,6 +69,7 @@ public class BillboardTab {
         updateTable();
         setupPane();
         mainPane.addTab("Billboard", pane);
+        //pane listener to update on change.
         mainPane.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
