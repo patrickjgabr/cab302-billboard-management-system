@@ -124,10 +124,10 @@ public class BillboardTab {
             importButton.setEnabled(true);
         }
         menuButtons.add(createButton);
+        menuButtons.add(importButton);
         menuButtons.add(editButton);
         menuButtons.add(deleteButton);
         menuButtons.add(exportButton);
-        menuButtons.add(importButton);
         pane.add(menuButtons, GUI.generateGBC(0, 0, 2, 1, 0, 0, 0, 5, GridBagConstraints.WEST));
 
         //setup Billboard Preview

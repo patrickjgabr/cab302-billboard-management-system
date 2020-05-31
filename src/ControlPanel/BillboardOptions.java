@@ -315,10 +315,6 @@ public class BillboardOptions {
             return billboard;
         }
 
-        if (result == 2) {
-            return null;
-        }
-
         return null;
     }
 
@@ -328,10 +324,10 @@ public class BillboardOptions {
             byte[] imageBytes = new byte[(int) image.length()];
             inputStream.read(imageBytes);
             base64Encoded = Base64.getEncoder().encodeToString(imageBytes);
-        } catch (FileNotFoundException fnfe) {
+        } catch (FileNotFoundException e) {
             System.out.println("Error selecting image file. Please ensure it is available and not corrupt.");
-        } catch (IOException ioex) {
-
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return base64Encoded;
     }
