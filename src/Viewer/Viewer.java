@@ -96,7 +96,7 @@ public class Viewer {
                 viewer.pack();
                 device.setFullScreenWindow(viewer);
                 try {
-                    sleep(15000);
+                    sleep(14500);
                 } catch (InterruptedException e) {
                     System.exit(0);
                 }
