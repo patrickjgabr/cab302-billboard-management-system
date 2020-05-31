@@ -3,16 +3,21 @@ package ControlPanel;
 import Shared.Billboard;
 import Shared.BillboardToImage;
 import Shared.Message;
+import Viewer.GenerateBillboardFromXML;
 
+import javax.imageio.ImageIO;
 import javax.lang.model.util.SimpleAnnotationValueVisitor6;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.net.URL;
+import java.util.Base64;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -65,7 +70,22 @@ public class BillboardOptions {
         });
 
         importFile.addActionListener(e -> {
-            //import file here.
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setAcceptAllFileFilterUsed(false);
+            fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+            FileNameExtensionFilter png = new FileNameExtensionFilter("*.png", "png");
+            FileNameExtensionFilter bmp = new FileNameExtensionFilter("*.bmp", "bmp");
+            FileNameExtensionFilter jpeg = new FileNameExtensionFilter("*.jpeg", "jpeg");
+            FileNameExtensionFilter jpg = new FileNameExtensionFilter("*.jpg", "jpg");
+            fileChooser.addChoosableFileFilter(png);
+            fileChooser.addChoosableFileFilter(bmp);
+            fileChooser.addChoosableFileFilter(jpeg);
+            fileChooser.addChoosableFileFilter(jpg);
+            int result = fileChooser.showOpenDialog(JOptionPane.getRootFrame());
+
+            if (result == JFileChooser.APPROVE_OPTION) {
+                imgSRC.setText(encodeImage(fileChooser.getSelectedFile()));
+            }
         });
 
 
@@ -201,8 +221,20 @@ public class BillboardOptions {
             }
         });
 
+    }
 
+    public static String encodeImage(File image){
+        String base64Encoded = "";
+        try(FileInputStream inputStream = new FileInputStream(image)){
+            byte[] imageBytes = new byte[(int)image.length()];
+            inputStream.read(imageBytes);
+            base64Encoded = Base64.getEncoder().encodeToString(imageBytes);
+        }catch (FileNotFoundException fnfe){
+            System.out.println("Error selecting image file. Please ensure it is available and not corrupt.");
+        }catch(IOException ioex){
 
+        }
+        return base64Encoded;
     }
 
     /**
@@ -219,7 +251,6 @@ public class BillboardOptions {
      * @param billboard Billboard object used to obtain parameters to edit a billboard
      * @return returns edited billboard object with new fields.
      */
-
     public Billboard editBillboard(Billboard billboard) {
         this.billboard.setBillboardID(billboard.getBillboardID());
         this.billboard.setCreatorName(billboard.getCreatorName());
