@@ -6,7 +6,6 @@ import java.io.*;
  * The Billboard class provides a storage structure for Billboard objects which need to be networked between components including the Server, Control Panel and Viewer.
  * This class provides a highly pliable methods of instantiating, storing and editing Billboards and their properties through its set of constructors and getter setter methods.
  */
-
 public class Billboard implements Serializable {
 
     private String name;
