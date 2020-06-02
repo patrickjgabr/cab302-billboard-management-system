@@ -109,9 +109,7 @@ public class UserAuthentication extends JFrame {
                 for (byte b : byteArray) {
                     sb.append(String.format("%02x", b & 0xFF));
                 }
-                String hashed = sb.toString();
-                System.out.println("hashed" + hashed);
-            return hashed;
+                return sb.toString();
         } catch (NoSuchAlgorithmException e) {return "";}
     }
     /**
