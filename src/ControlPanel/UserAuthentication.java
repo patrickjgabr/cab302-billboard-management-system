@@ -85,6 +85,7 @@ public class UserAuthentication extends JFrame {
         frame.setSize(350, 180);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
     }
 
     /**

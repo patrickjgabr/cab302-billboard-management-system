@@ -54,7 +54,7 @@ public class ControlPanel {
                 options[0] = "Yes";
                 options[1] = "Sign Out";
                 options[2] = "Cancel";
-                int result = JOptionPane.showOptionDialog(null, "Would you like to exit the program?", "Close Control Panel.", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+                int result = JOptionPane.showOptionDialog(null, "Are you sure you want to exit the program?", "Close Control Panel.", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
                 if(result == 0) {
                     client.sendMessage(new Message().logoutUser(token));
                     System.exit(0);
@@ -71,6 +71,12 @@ public class ControlPanel {
     }
 
     public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException | InstantiationException e) {
+            e.printStackTrace();
+            System.out.println("Error setting GUI look and feel");
+        }
         UserAuthentication();
     }
 }

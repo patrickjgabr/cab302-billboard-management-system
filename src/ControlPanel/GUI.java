@@ -11,12 +11,7 @@ public class GUI {
      * @return return modified frame
      */
     public static JFrame SetupFrame() {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException | InstantiationException e) {
-            e.printStackTrace();
-            System.out.println("Error setting GUI look and feel");
-        }
+
         JFrame frame = new JFrame();
         frame.setPreferredSize(new Dimension(1080, 620));
         frame.pack();
