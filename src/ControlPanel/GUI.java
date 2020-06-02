@@ -67,6 +67,10 @@ public class GUI {
         else if (ID == 506) {
             JOptionPane.showMessageDialog(JOptionPane.getRootFrame(),"Billboard exists in database. Please try again." , "Server Response ID: " + ID,JOptionPane.WARNING_MESSAGE);
         }
+        else if (ID == 503) {
+            JOptionPane.showMessageDialog(JOptionPane.getRootFrame(),"Token invalid or expired." , "Server Response ID: " + ID,JOptionPane.WARNING_MESSAGE);
+            System.exit(0);
+        }
         else {
             JOptionPane.showMessageDialog(JOptionPane.getRootFrame(),"Server Error: "+ ID + " Please contact Administrator." , "Server Response ID: " + ID,JOptionPane.WARNING_MESSAGE);
         }

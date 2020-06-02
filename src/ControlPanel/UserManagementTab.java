@@ -73,7 +73,12 @@ public class UserManagementTab {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
         if (perms.get(3).equals(1)) {
-            this.users = (ArrayList<User>) client.sendMessage(new Message(token).requestUsers()).getData();
+
+            Message request = client.sendMessage(new Message(token).requestUsers());
+            if (request.getCommunicationID() != 200) {
+                GUI.ServerDialogue(request.getCommunicationID(), "");
+            }
+            this.users = (ArrayList<User>) request.getData();
         } else {
             this.users = new ArrayList<>();
         }

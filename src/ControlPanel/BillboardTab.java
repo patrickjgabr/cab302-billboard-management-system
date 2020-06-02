@@ -90,7 +90,11 @@ public class BillboardTab {
     private void updateTable() {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
-        this.billboards = (ArrayList<Billboard>) client.sendMessage(new Message(token).requestBillboards()).getData();
+        Message request = client.sendMessage(new Message(token).requestBillboards());
+        if (request.getCommunicationID() != 200) {
+            GUI.ServerDialogue(request.getCommunicationID(), "");
+        }
+        this.billboards = (ArrayList<Billboard>) request.getData();
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         for (Billboard billboard : billboards) {
             model.addRow(new Object[]{

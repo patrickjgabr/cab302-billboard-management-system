@@ -223,9 +223,7 @@ public class ScheduleOptions {
                 JOptionPane.showConfirmDialog(null, "Duration exceeds interval duration", "Error", JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE);
             }
         }
-        if (result == 1) {
-            return null;
-        }
+
 
         return null;
 

@@ -86,7 +86,13 @@ public class ScheduleTab {
 
     private  void refresh() {
         //this.schedule = TestCase.schedule();
-        this.schedule = (ArrayList<Scheduled>) client.sendMessage(new Message(token).requestSchedule()).getData();
+
+
+        Message request = client.sendMessage(new Message(token).requestSchedule());
+        if (request.getCommunicationID() != 200) {
+            GUI.ServerDialogue(request.getCommunicationID(), "");
+        }
+        this.schedule = (ArrayList<Scheduled>) request.getData();
         pane.removeAll();
         pane.revalidate();
         pane.repaint();
